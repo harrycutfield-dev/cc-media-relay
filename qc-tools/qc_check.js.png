@@ -1,0 +1,787 @@
+/* ============================================================================
+   qc_check.js — QUALITY GATE for suburb-update drafts (LOCKED v3 format)
+   ----------------------------------------------------------------------------
+   Run in a logged-in live.activepipe.com tab:   await qcCheck(<commId>, "<Suburb>")
+   Or batch:                                     await qcAll([[id,"Suburb"],...])
+
+   Fail-closed. Every check returns PASS / FAIL / WARN with the observed value.
+   A draft is only "ship-ready" when errors.length === 0.
+
+   WHY: at 34 suburbs a silent defect (wrong suburb leaking through a clone,
+   a stale grid, a dropped photo, grey body text) would go out to thousands of
+   homeowners. This gate is cheaper than a retraction.
+   ========================================================================== */
+
+const QC_SPEC = {
+  category_id: 80756,
+  header_banner_id: null,   // set at runtime from the first verified build
+  footer_banner_id: null,
+  tiles_img_id: null,
+  hpi_img_id: null,
+  // every image id used by MORE THAN ONE suburb this run (the two shared graphics
+  // + both banners). Pass it so check 10b can prove the suburb section's graph is
+  // that suburb's own, not a region-wide image reused under a suburb heading.
+  shared_img_ids: [],
+  // LOCKED naming. <S> = suburb, <U> = SUBURB in caps, <V> = run version number.
+  // The 34 emails are UPDATED IN PLACE each week and the version bumps: V1 -> V2 ->
+  // V3. The exact-name assertion is what proves the bump actually happened, so a
+  // rebuild that silently left last week's name behind fails here.
+  name_pattern: 'V<V> - <S> Suburb Update',
+  subject_pattern: 'HARRISON CUTFIELD | THE LATEST <U> NEWS',
+  version: null,
+  // 'reuse'  = update the existing 34 communications in place (LOCKED 17 Aug)
+  // 'create' = the old clone-a-new-email-per-week model; keeps the never-sent gate
+  mode: 'reuse',
+  // comm ids referenced by any running/scheduled campaign - never edit these
+  active_campaign_emails: null,
+  // Run date 'YYYY-MM-DD'. Required by check 17 - without it the economic figures
+  // cannot be aged and the tiles image could carry last month's rates unnoticed.
+  run_date: null,
+  max_stamp_age_days: 21,
+  // REFERENCE ONLY - the locked v3 heading wording, kept for authors. Check 4 no
+  // longer reads this: sections are resolved by CONTENT (qcSections), so editing
+  // this list changes nothing. Do not mistake it for a control.
+  headings_reference: [
+    'Recently sold in <S>', 'Considering selling?', 'News Around <S>',
+    'North Shore headlines', 'Economic update', 'The <S> Market right now',
+    'Ray White in <S>', 'Other agencies listings', 'Selling on your radar?'
+  ],
+  // Sections that may legitimately be ABSENT when their data was empty.
+  // LOCKED 16 Aug (Harrison): 'sold' and 'news' are NO LONGER droppable - the sold
+  // section widens its window instead (08 §5h ladder) and news always runs. The
+  // pulse drops only on the REINZ 5-sale gate, which is a fabrication guard rather
+  // than an emptiness rule. Keys are SECTION KEYS now, not heading strings.
+  droppable: { grid: true, other_agency: true, pulse: true },
+  // panel_id -> required backgroundColor (null = don't care)
+  bg: { 5: '#000000', 6: '#ffffff' },
+  quiet_heading: 'Other agencies listings',   // header-three #8a8a8a italic on #ffffff
+  banned_text: [
+    'Stapleford', 'Anytown', 'digital appraisal', 'Lorem ipsum',
+    '{{', '}}', 'undefined', 'NaN', '$0', 'null'
+  ]
+};
+
+const ALL_SUBURBS = ['Albany Heights','Bayswater','Bayview','Beach Haven','Belmont','Birkdale',
+  'Browns Bay','Campbells Bay','Castor Bay','Chatswood','Dairy Flat','Devonport','Forrest Hill',
+  'Glenfield','Greenhithe','Hauraki','Hillcrest','Hobsonville','Long Bay','Mairangi Bay','Milford',
+  'Murrays Bay','Northcote','Northcross','Oteha','Paremoremo','Rosedale','Rothesay Bay','Sunnynook',
+  'Takapuna','Torbay','Totara Vale','Waiake','Windsor Park'];
+
+// _parse is deliberately TOLERANT (accepts an object or a JSON string) so the
+// text checks keep working either way. That tolerance is also a trap: on 15 Aug a
+// bad edit re-stringified panel contents, ActivePipe rendered the raw Draft.js JSON
+// as visible body copy, and QC passed clean because _parse silently absorbed it.
+// Check 3b below is the guard - it asserts the STORED TYPE, never the parsed value.
+// Never "fix" a QC failure by making a check more tolerant.
+function _parse(v) { try { return typeof v === 'string' ? JSON.parse(v) : v; } catch (e) { return null; } }
+function _text(p) {
+  const out = [];
+  for (const k of ['textOne', 'textTwo', 'textThree']) {
+    const cs = _parse(p.contents && p.contents[k]);
+    if (cs && cs.blocks) out.push(cs.blocks.map(b => b.text).join('\n'));
+  }
+  return out.join('\n');
+}
+function _head(p) {
+  const cs = _parse(p.contents && p.contents.textOne);
+  return cs && cs.blocks ? cs.blocks.map(b => b.text).join('').trim() : '';
+}
+
+/* Strip macrons before comparing. The live emails spell Pāremoremo and Tōtara Vale
+   correctly, but ALL_SUBURBS and most callers pass ASCII. Measured 15 Aug: a raw
+   compare made every heading, section and fingerprint check MISS on those two - they
+   fingerprinted as completely empty and would have read as "all sections dropped".
+   Fold both sides of every suburb-name comparison; never fix it by de-macronising
+   the email, which would misspell a te reo place name to thousands of locals. */
+function _fold(s) {
+  return String(s == null ? '' : s).normalize('NFD').replace(/[̀-ͯ]/g, '');
+}
+
+/* djb2 - a content hash, not a security hash. Used only to tell "this section is
+   byte-identical to last week" from "this section changed". */
+function _hash(s) {
+  let h = 5381;
+  for (let i = 0; i < s.length; i++) h = ((h * 33) ^ s.charCodeAt(i)) >>> 0;
+  return h.toString(16);
+}
+
+/* ---------------------------------------------------------------------------
+   SECTION RESOLVER - content-first, layout-agnostic.
+
+   Every structural check used to key off panel_id 5 heading bars and exact heading
+   strings. That coupled the whole gate to one layout: change the design and the
+   checks quietly pass on nothing. Sections are now found by what they CONTAIN.
+
+   An "opener" is either the old black heading bar (panel_id 5) or a text panel
+   whose first real block is a header-two headline (the editorial layout). A section
+   runs from its opener to the next opener. The KEY is then decided by structure
+   first (a grid panel means it IS the grid section) and label second, so an
+   editorial headline like "What changed hands in Torbay" still resolves to `sold`.
+--------------------------------------------------------------------------- */
+const SECTION_SIGNATURES = [
+  { key: 'grid',         re: /ray white in\b|on the market with us/i },
+  { key: 'other_agency', re: /other agenc|also listed nearby/i },
+  { key: 'sold',         re: /recently sold|changed hands|what sold/i },
+  { key: 'pulse',        re: /market right now|where prices sit|market\b.*\bright now/i },
+  { key: 'ns_headlines', re: /north shore headlines/i },
+  { key: 'economic',     re: /economic update|rates, prices/i },
+  { key: 'news',         re: /news around|news in\b/i },
+  { key: 'cta',          re: /considering selling|selling on your radar|curious what|valuation/i }
+];
+
+function _openerLabel(p) {
+  if (p.panel_id === 5) return _head(p);            // old: the bar IS the heading
+  if (p.panel_id === 6) {                            // new: kicker + header-two
+    const cs = _parse(p.contents && p.contents.textOne);
+    const blocks = (cs && cs.blocks) || [];
+    const hi = blocks.findIndex(b => b.type === 'header-two' && (b.text || '').trim());
+    if (hi >= 0) {
+      const kicker = blocks.slice(0, hi).map(b => b.text).filter(t => (t || '').trim()).join(' ');
+      return ((kicker ? kicker + ' ' : '') + blocks[hi].text).trim();
+    }
+  }
+  return null;
+}
+
+function qcSections(pc) {
+  const secs = [];
+  pc.forEach((p, i) => {
+    const label = _openerLabel(p);
+    if (label) secs.push({ label, start: i, end: pc.length, key: null, panels: [] });
+  });
+  secs.forEach((s, n) => { if (n + 1 < secs.length) s.end = secs[n + 1].start; });
+  secs.forEach(s => {
+    s.panels = pc.slice(s.start, s.end);
+    const text = s.panels.map(_text).join('\n');
+    // structure wins over wording - a grid panel makes it the grid section whatever
+    // the headline says, and an editorial headline never has to be parsed for it
+    if (s.panels.some(p => p.panel_id === 17)) { s.key = 'grid'; return; }
+    if (s.panels.some(p => p.panel_id === 11)) { s.key = 'other_agency'; return; }
+    const hit = SECTION_SIGNATURES.find(sg => sg.re.test(s.label));
+    if (hit) { s.key = hit.key; return; }
+    // last resort: infer from the body when the headline is purely editorial
+    const prices = (text.match(/\$[\d,]{6,}/g) || []).length;
+    if (prices >= 2 && /\b\d{1,2}\s+[A-Za-z]{3}[a-z]*\s+\d{4}\b/.test(text)) s.key = 'sold';
+    else if (/homes sold across|median/i.test(text)) s.key = 'pulse';
+  });
+  return secs;
+}
+
+/* Per-section content fingerprint, built on the section resolver so it works under
+   any layout. Powers two checks: week-over-week staleness (16) and the run-level
+   cross-suburb duplicate check in qcAll.
+
+   ONLY suburb-scoped sections are fingerprinted. The CTAs, North Shore headlines and
+   economic block are region-wide and byte-identical across all 34 by design - including
+   them would make the cross-suburb duplicate check fire on every single suburb, and a
+   check that always fails gets switched off, which is how you end up with no check.
+
+   The grid is fingerprinted on its LISTINGS (address + price) rather than its wrapper
+   copy, because a grid whose stock changed carries the same surrounding text. */
+const SCOPED_SECTIONS = ['intro', 'sold', 'pulse', 'grid', 'other_agency', 'news'];
+
+function qcFingerprint(pc, suburb) {
+  const secs = qcSections(pc);
+  const out = {};
+  const first = secs.length ? secs[0].start : pc.length;
+  const intro = pc.slice(0, first).map(_text).join('');
+  if (intro.trim()) out.intro = intro;
+  secs.forEach(s => {
+    if (!s.key || SCOPED_SECTIONS.indexOf(s.key) < 0) return;
+    let chunk = '';
+    s.panels.forEach(p => {
+      chunk += _text(p);
+      if (p.panel_id === 17) {
+        const ls = (p.contents && p.contents.propertyListings) || [];
+        chunk += ls.map(l => (l.address || '') + '|' + (l.displayprice || '')).join(';');
+      }
+      if (p.panel_id === 11) {
+        ['imageOne', 'imageTwo', 'imageThree'].forEach(k => {
+          const im = p.contents && p.contents[k];
+          if (im && im.src) chunk += '|' + im.src;
+        });
+      }
+    });
+    if (chunk) out[s.key] = (out[s.key] || '') + chunk;
+  });
+  Object.keys(out).forEach(k => { out[k] = _hash(out[k]); });
+  return out;
+}
+
+/* `idOrObj` accepts a communication id OR an already-fetched communication object.
+   Passing the object matters at scale: qcCheck and qcReconcile each used to fetch
+   independently, so a 34-suburb run made 68 GETs where 34 would do. qc_run.js
+   fetches once and hands the same object to both. */
+async function qcCheck(idOrObj, suburb, spec, expect, prev) {
+  spec = Object.assign({}, QC_SPEC, spec || {});
+  const BASE = 'https://api.activepipe.com';
+  let o, id;
+  if (idOrObj && typeof idOrObj === 'object') {
+    o = idOrObj; id = o.id;
+  } else {
+    id = idOrObj;
+    const r = await fetch(BASE + '/communications/' + id, { credentials: 'include', headers: { Accept: 'application/json' } });
+    if (!r.ok) return { id, suburb, fatal: 'GET ' + r.status };
+    o = await r.json();
+  }
+  const pc = (o.email.panelcontents || []).slice().sort((a, b) => a.position - b.position);
+
+  const errors = [], warns = [], info = {};
+
+  // ---- 1. SEND-SAFETY (hard gate) ----------------------------------------
+  // MODE MATTERS (locked 17 Aug). The 34 emails are now UPDATED IN PLACE week to
+  // week rather than cloned, so `firstsent_at` is permanently populated on every
+  // one of them from the 15 Aug send. Under the old create-per-week model an
+  // absent firstsent_at was the proof that a draft had never gone out; that proof
+  // is simply gone now, and asserting it would fail all 34 every single week -
+  // which is worse than useless, because a check that always fails gets ignored.
+  //
+  // What replaces it: NEVER EDIT A COMMUNICATION WHOSE CAMPAIGN IS LIVE. Editing
+  // mid-send is the one way in-place reuse can reach recipients with half-built
+  // content. The caller passes the ids of communications referenced by any
+  // running/scheduled campaign; this refuses to pass them.
+  if (spec.mode === 'reuse') {
+    const live = spec.active_campaign_emails || [];
+    if (live.indexOf(o.id) >= 0)
+      errors.push('EDITING A LIVE EMAIL: comm ' + o.id + ' is referenced by a running/scheduled campaign');
+    if (!spec.active_campaign_emails)
+      warns.push('active_campaign_emails not supplied - cannot prove this email is not mid-send');
+  } else if (o.firstsent_at) {
+    errors.push('SENT! firstsent_at=' + o.firstsent_at);
+  }
+  if (o.communicationcategory && o.communicationcategory.id !== spec.category_id)
+    errors.push('category=' + o.communicationcategory.id + ' expected ' + spec.category_id);
+
+  // ---- 2. subject + name carry the suburb --------------------------------
+  // LOCKED 15 Aug (Harrison): the subject is FULL CAPS.
+  //   subject: "HARRISON CUTFIELD | THE LATEST <SUBURB> NEWS"
+  //   name:    "V1 - <Suburb> Suburb Update"
+  // Both come from spec so a dated weekly run can restamp them without editing this
+  // file. The 15 Aug caps change was made in ActivePipe but NOT here, so this gate
+  // would have failed all 34 next run against its own stale expectation.
+  const subj = (o.email && o.email.subject) || '';
+  const wantSubj = spec.subject_pattern.replace('<U>', suburb.toUpperCase()).replace('<S>', suburb);
+  const wantName = spec.name_pattern.replace('<V>', spec.version).replace('<S>', suburb);
+  if (spec.mode === 'reuse' && !spec.version)
+    errors.push('spec.version missing - cannot tell V2 from last week\'s V1');
+  if ((o.name || '') !== wantName) errors.push('name must be "' + wantName + '", got "' + o.name + '"');
+  if (/^TEST\b/i.test(o.name || '')) errors.push('name still starts with TEST');
+  if (subj !== wantSubj) errors.push('subject must be "' + wantSubj + '", got "' + subj + '"');
+  if (subj && subj !== subj.toUpperCase()) errors.push('subject is not FULL CAPS (locked 15 Aug): "' + subj + '"');
+  info.subject = subj;
+
+  // ---- 3. positions contiguous -------------------------------------------
+  const posOk = pc.every((p, i) => p.position === i);
+  if (!posOk) errors.push('positions not contiguous 0..n-1');
+  info.panels = pc.length;
+
+  // ---- 3b. panel contents are OBJECTS, never JSON strings ------------------
+  // Harrison caught this on Northcross 15 Aug: the pulse panel held
+  //   "{\"blocks\":[{\"key\":\"p3eykqs\",\"text\":\"Three homes sold across..."
+  // as a literal string, so the email rendered raw Draft.js JSON to the reader.
+  // Cause: an edit did contents.textOne = JSON.stringify(obj). ActivePipe stores
+  // these as objects; a string is silently accepted by the API and only shows up
+  // in the rendered email. Assert the TYPE, because every text check downstream
+  // parses strings transparently and will not see it.
+  const rawJson = [];
+  for (const p of pc) {
+    for (const k of Object.keys(p.contents || {})) {
+      const v = p.contents[k];
+      if (typeof v === 'string' && /^\s*[\{\[]/.test(v)) rawJson.push('pos' + p.position + '.' + k);
+    }
+  }
+  if (rawJson.length) errors.push('RAW JSON STRING in contents (renders as visible text): ' + rawJson.join(', '));
+
+  // and belt-and-braces: Draft.js keys must never appear in visible copy
+  const visible = pc.map(_text).join('\n');
+  if (/"blocks"|inlineStyleRanges|entityRanges|entityMap/.test(visible))
+    errors.push('Draft.js artefact visible in body copy');
+
+  // ---- 4. SECTIONS: presence, order, completeness -------------------------
+  // REWRITTEN 16 Aug to resolve sections by CONTENT (see qcSections above).
+  // The old version matched exact heading strings on panel_id 5 bars. Against any
+  // layout that does not use those bars it would find no headings, compare an empty
+  // list, and report no errors at all - a gate inspecting an empty set, which reads
+  // as coverage. That is exactly how the Browns Bay intro shipped to 29 suburbs.
+  const sections = qcSections(pc);
+  const keys = sections.map(s => s.key).filter(Boolean);
+  info.sections = sections.map(s => (s.key || '?') + ':' + s.label.slice(0, 38));
+
+  // locked relative order; 'cta' appears twice (top and tail)
+  const ORDER = ['sold', 'cta', 'news', 'ns_headlines', 'economic', 'pulse', 'grid', 'other_agency', 'cta'];
+  const MANDATORY = ['sold', 'news', 'ns_headlines', 'economic'];
+  MANDATORY.forEach(k => {
+    if (keys.indexOf(k) < 0) errors.push('MISSING mandatory section: ' + k);
+  });
+  const ctaCount = keys.filter(k => k === 'cta').length;
+  if (ctaCount < 2) errors.push('expected 2 valuation CTA sections, got ' + ctaCount);
+
+  // a droppable section may be absent ONLY when its data really was empty,
+  // and must be present whenever it was not - both directions are defects.
+  const dropKeys = Object.keys(spec.droppable);
+  if (expect) {
+    dropKeys.forEach(k => {
+      const present = keys.indexOf(k) >= 0;
+      if (!present && expect[k]) errors.push('section dropped but data exists: ' + k);
+      if (present && expect[k] === false) errors.push('section rendered but data was empty: ' + k);
+    });
+  } else {
+    const gone = dropKeys.filter(k => keys.indexOf(k) < 0);
+    if (gone.length) warns.push('dropped sections (unverified - pass `expect` from data.json): ' + gone.join(', '));
+  }
+  info.dropped = dropKeys.filter(k => keys.indexOf(k) < 0);
+
+  // the sections present must follow the locked relative order
+  let oi = -1, orderOk = true;
+  keys.forEach(k => {
+    const at = ORDER.indexOf(k, oi + 1);
+    if (at < 0) orderOk = false; else oi = at;
+  });
+  if (!orderOk) errors.push('section ORDER wrong: ' + keys.join(' > '));
+
+  // every section opener must carry a body (the old "orphan heading" check)
+  sections.forEach(s => {
+    if (s.panels.length < 2 && s.key !== 'cta') {
+      errors.push('empty section (opener with no body): "' + s.label.slice(0, 50) + '"');
+    }
+  });
+
+  // ...and the INVERSE: structural content that resolved to no section at all.
+  // Caught on Albany Heights 15 Aug - other-agency listings rendered with no
+  // heading above them, so they read as part of the market section.
+  if (pc.some(p => p.panel_id === 17) && keys.indexOf('grid') < 0)
+    errors.push('property grid panel present but no grid section resolved (missing heading?)');
+  if (pc.some(p => p.panel_id === 11) && keys.indexOf('other_agency') < 0)
+    errors.push('other-agency photo panels present but no other-agency section resolved');
+
+  // no filler standing in for a real section. NOTE: "No recorded sales in <S> in
+  // the past 12 months" is now LEGITIMATE (08 §5h widening ladder, last rung) and
+  // must not be flagged - only the vague non-answers are.
+  const FILLER = /\b(nothing to report|none this week|no data|coming soon|check back)\b/i;
+  pc.filter(p => p.panel_id === 6).forEach(p => {
+    if (FILLER.test(_text(p))) errors.push('filler text instead of dropped section: "' + _text(p).slice(0, 60) + '"');
+  });
+
+  // ---- 5. FOREIGN SUBURB ANYWHERE IN THE EMAIL ---------------------------
+  // REWRITTEN 15 Aug after the worst defect of the project: 29 of 34 emails went out
+  // saying "Here is what moved in Browns Bay this fortnight" - the intro greeting was
+  // never substituted when cloning the Browns Bay master. Harrison caught it, not this
+  // gate.
+  //
+  // WHY THE OLD CHECK MISSED IT: it only scanned panel_id 6 panels whose IMMEDIATELY
+  // PRECEDING panel was a panel_id 5 heading matching a few section names. The intro
+  // sits BEFORE the first heading, so it was never scanned at all - not once, in any
+  // suburb. A check with a blind spot is worse than no check, because it reads as
+  // coverage.
+  //
+  // Now: scan EVERY text-bearing panel. A foreign suburb name is an ERROR wherever it
+  // appears, and the burden is on the EXEMPTIONS to justify themselves - not on the
+  // scan to find the right place to look. The three known-legitimate forms, all
+  // verified against real listings, downgrade to warnings:
+  //   STREET  "Browns Bay Road" IS a street in Rothesay Bay; "Belmont Terrace" in Milford
+  //   AGENCY  "Barfoot & Thompson Browns Bay" is a branch name in an attribution line
+  //   BOARD   "Devonport Takapuna Local Board" is an official body
+  const body = pc.map(_text).join('\n');
+  const AGENCY = '(?:Barfoot\\s*&\\s*Thompson|Harcourts(?:\\s+Cooper\\s*&\\s*Co)?|Cooper\\s*&\\s*Co|Ray\\s+White|Bayleys|LJ\\s+Hooker|Century\\s*21|Mike\\s+Pero|Professionals|Unlimited\\s+Potential|Premium|The\\s+Agency)';
+  const STREET = '(?:Road|Rd|Street|St|Avenue|Ave|Terrace|Tce|Drive|Dr|Place|Pl|Crescent|Cres|Lane|Rise|Way|Highway|Hwy|Parade|Pde|Close|Grove|Court|Ct)';
+  const foreign = [], excused = [];
+  let cur = '(intro, before first section)';
+  for (const p of pc) {
+    const lbl = _openerLabel(p);
+    if (lbl) { cur = lbl; if (p.panel_id === 5) continue; }
+    const t = _fold(_text(p));
+    if (!t) continue;
+    for (const s of ALL_SUBURBS) {
+      const sf = _fold(s);
+      if (sf === _fold(suburb)) continue;
+      const re = new RegExp('\\b' + sf + '\\b', 'g');
+      let m;
+      while ((m = re.exec(t))) {
+        const after = t.slice(m.index + sf.length, m.index + sf.length + 40);
+        const before = t.slice(Math.max(0, m.index - 40), m.index);
+        const where = s + ' in "' + cur + '" @pos' + p.position;
+        if (new RegExp('^\\s+' + STREET + '\\b', 'i').test(after)) excused.push(where + ' [street]');
+        else if (new RegExp(AGENCY + '\\s*$', 'i').test(before)) excused.push(where + ' [agency branch]');
+        // Official bodies read "Devonport Takapuna Local Board" - the qualifier sits
+        // BETWEEN the suburb name and "Local Board", so allow a couple of words.
+        else if (/^[\s\w-]{0,24}\b(Local Board|Ward|Ki Uta Ki Tai)\b/i.test(after)) excused.push(where + ' [official body]');
+        else foreign.push(where);
+      }
+    }
+  }
+  if (foreign.length) errors.push('FOREIGN SUBURB in copy: ' + foreign.join(' ;; '));
+  if (excused.length) warns.push('suburb name present but excused (verify): ' + excused.join(', '));
+  info.foreignSuburb = foreign;
+
+  // ---- 5b. the INTRO must name THIS suburb -------------------------------
+  // The positive half of the check above. A missing name is as much a substitution
+  // failure as a wrong one, and "no suburb at all" would otherwise sail through.
+  const firstOpener = sections.length ? sections[0].start : pc.length;
+  const introText = pc.slice(0, firstOpener).map(_text).join(' ');
+  if (!introText.trim()) {
+    errors.push('no intro copy before the first heading');
+  } else if (!new RegExp('\\b' + _fold(suburb) + '\\b', 'i').test(_fold(introText))) {
+    errors.push('INTRO does not name ' + suburb + ': "' + introText.replace(/\s+/g, ' ').trim().slice(0, 90) + '"');
+  }
+
+  // ---- 6. banned / placeholder text --------------------------------------
+  const hits = spec.banned_text.filter(b => body.indexOf(b) >= 0);
+  if (hits.length) errors.push('placeholder/leak text: ' + hits.join(', '));
+
+  // ---- 7. body text is BLACK (no theme-grey runs) -------------------------
+  let greyRuns = 0, totalRuns = 0;
+  for (const p of pc) {
+    if (p.panel_id !== 6) continue;
+    for (const k of ['textOne', 'textTwo', 'textThree']) {
+      const cs = _parse(p.contents && p.contents[k]);
+      if (!cs || !cs.blocks) continue;
+      for (const b of cs.blocks) {
+        if (!(b.text || '').trim()) continue;
+        totalRuns++;
+        if (!(b.inlineStyleRanges || []).some(x => x.style === '#000000')) greyRuns++;
+      }
+    }
+  }
+  if (greyRuns) errors.push('grey body runs (missing #000000): ' + greyRuns + '/' + totalRuns);
+  info.bodyRuns = totalRuns;
+
+  // ---- 8. panel backgrounds ----------------------------------------------
+  const bgBad = [];
+  for (const p of pc) {
+    const want2 = spec.bg[p.panel_id];
+    if (!want2) continue;
+    const got = (p.options && p.options.backgroundColor) || '';
+    if (p.panel_id === 5 && _head(p) === spec.quiet_heading) continue;   // quiet heading is #ffffff
+    if (got.toLowerCase() !== want2) bgBad.push('pos' + p.position + ' pid' + p.panel_id + '=' + (got || 'none'));
+  }
+  if (bgBad.length) errors.push('bad backgrounds: ' + bgBad.join(', '));
+
+  // ---- 9. quiet heading style --------------------------------------------
+  const qh = pc.find(p => p.panel_id === 5 && _head(p) === spec.quiet_heading);
+  if (qh) {
+    const cs = _parse(qh.contents.textOne);
+    const b = cs && cs.blocks && cs.blocks[0];
+    const st = b ? (b.inlineStyleRanges || []).map(x => x.style) : [];
+    if (!b || b.type !== 'header-three') errors.push('quiet heading not header-three');
+    if (st.indexOf('#8a8a8a') < 0) errors.push('quiet heading not #8a8a8a');
+    if (st.indexOf('#fbe80f') >= 0 || st.indexOf('BOLD') >= 0) errors.push('quiet heading must not be yellow/bold');
+  }
+
+  // ---- 10. images: banners + shared graphs, all 6 keys --------------------
+  const imgs = pc.filter(p => p.panel_id === 9);
+  info.imagePanels = imgs.length;
+  const badImg = [];
+  imgs.forEach(p => {
+    const io = p.contents && p.contents.imageOne;
+    if (!io) { badImg.push('pos' + p.position + ' empty'); return; }
+    ['id', 'src', 'key', 'secret', 'width', 'height'].forEach(k => {
+      if (io[k] === undefined || io[k] === null || io[k] === '') badImg.push('pos' + p.position + ' missing ' + k);
+    });
+  });
+  if (badImg.length) errors.push('image objects incomplete: ' + badImg.join(', '));
+  const ids = imgs.map(p => (p.contents.imageOne || {}).id);
+  info.imageIds = ids;
+  if (spec.header_banner_id && ids[0] !== spec.header_banner_id) errors.push('first image is not the LOCKED HEADER banner (got ' + ids[0] + ')');
+  if (spec.footer_banner_id && ids[ids.length - 1] !== spec.footer_banner_id) errors.push('last image is not the LOCKED FOOTER banner (got ' + ids[ids.length - 1] + ')');
+  if (spec.tiles_img_id && ids.indexOf(spec.tiles_img_id) < 0) errors.push('economic TILES image missing');
+  if (spec.hpi_img_id && ids.indexOf(spec.hpi_img_id) < 0) errors.push('HPI line image missing');
+
+  // ---- 10b. suburb section carries the SUBURB's own graph -----------------
+  // The defect this catches (Harrison, 15 Aug): "The <Suburb> Market right now"
+  // shipped with the SHARED North Shore HPI image under it, so every suburb's
+  // section showed the same region-wide chart. The image inside that section
+  // must be a per-suburb id, never one of the two shared ids.
+  const pulseSec = sections.find(s => s.key === 'pulse');
+  const secHead = pulseSec ? pulseSec.label : ('The ' + suburb + ' Market right now');
+  const secStart = pulseSec ? pulseSec.start : -1;
+  if (secStart >= 0) {
+    const secEnd = pulseSec.end;
+    const secImgs = [];
+    for (let i = secStart + 1; i < secEnd; i++) {
+      if (pc[i].panel_id !== 9) continue;
+      const o = _parse(pc[i].contents && pc[i].contents.imageOne);
+      if (o && o.id) secImgs.push(o.id);
+    }
+    if (!secImgs.length) {
+      errors.push('suburb section has no market graph image');
+    } else {
+      if (spec.hpi_img_id && secImgs.indexOf(spec.hpi_img_id) >= 0)
+        errors.push('SHARED North Shore HPI image is inside "' + secHead + '" — region data under a suburb heading; move it to North Shore headlines');
+      if (spec.tiles_img_id && secImgs.indexOf(spec.tiles_img_id) >= 0)
+        errors.push('shared economic TILES image is inside "' + secHead + '"');
+      if (!spec.shared_img_ids || !spec.shared_img_ids.length) {
+        // Silently skipping this left the check decorative. If the caller does not
+        // say which ids are shared, 10b cannot prove anything - say so, do not pass.
+        errors.push('QC MISCONFIGURED: shared_img_ids not supplied, so check 10b cannot prove the suburb graph is this suburb own image');
+      } else {
+        const shared = secImgs.filter(i => spec.shared_img_ids.indexOf(i) >= 0);
+        if (shared.length) errors.push('suburb section image is SHARED across suburbs: ' + shared.join(','));
+      }
+    }
+    info.suburbSectionImages = secImgs;
+  }
+
+  // ---- 11. property grid --------------------------------------------------
+  const grid = pc.find(p => p.panel_id === 17);
+  if (grid) {
+    const op = grid.options || {};
+    const listings = (grid.contents && grid.contents.propertyListings) || [];
+    if (op.feed !== false) errors.push('grid feed !== false');
+    if ('detailsLayout' in op) errors.push('grid has detailsLayout (kills REQUEST AN INSPECTION)');
+    if (op.itemCount % 2 !== 0) errors.push('grid itemCount ODD (' + op.itemCount + ') — orphans a row');
+    if (listings.length !== op.itemCount) errors.push('grid itemCount ' + op.itemCount + ' != listings ' + listings.length);
+    const wrongCity = listings.filter(p => _fold((p.city || '')).toLowerCase() !== _fold(suburb).toLowerCase());
+    if (wrongCity.length) errors.push('grid has ' + wrongCity.length + ' listing(s) NOT in ' + suburb);
+    const noImg = listings.filter(p => !(p.images || []).length || !p.images.every(im => im.src && im.key && im.secret && im.id));
+    if (noImg.length) errors.push('grid listings with bad images: ' + noImg.length);
+    info.grid = op.itemCount;
+  } else {
+    warns.push('no property grid (ok only if <2 office listings)');
+    info.grid = 0;
+  }
+
+  // ---- 12. other-agency block --------------------------------------------
+  const oaSec = sections.find(s => s.key === 'other_agency');
+  const p11 = pc.filter(p => p.panel_id === 11);
+  const enq = pc.filter(p => p.panel_id === 3 && /ENQUIRE/i.test((p.options && p.options.buttonText) || ''));
+  if (oaSec) {
+    // A suburb can legitimately have ONE other-agency listing - Rosedale, Waiake and
+    // Milford all do. The old rule hardcoded "expected 2" and would have failed those
+    // three every single week. Consistency across the three parallel structures is the
+    // real invariant and a stronger check than any fixed count: photo panels, ENQUIRE
+    // buttons and "Marketed by" lines must agree, because a mismatch means a listing
+    // was half-removed.
+    if (p11.length < 1 || p11.length > 2)
+      errors.push('other-agency: expected 1-2 photo panels, got ' + p11.length);
+    if (enq.length !== p11.length)
+      errors.push('other-agency: ' + p11.length + ' photo panel(s) but ' + enq.length + ' ENQUIRE button(s) - a listing was half-removed');
+    p11.forEach((p, i) => {
+      ['imageOne', 'imageTwo', 'imageThree'].forEach(k => {
+        const im = p.contents && p.contents[k];
+        if (!im || !im.src || !im.key || !im.secret) errors.push('other-agency photo ' + (i + 1) + '.' + k + ' incomplete');
+      });
+    });
+    // attribution mandatory
+    const oaText = pc.filter(p => p.panel_id === 6 && /Marketed by/i.test(_text(p)));
+    // attribution is mandatory - one "Marketed by" per listing, no more, no fewer
+    if (oaText.length !== p11.length)
+      errors.push('other-agency: ' + p11.length + ' listing(s) but ' + oaText.length +
+        ' "Marketed by" line(s) - attribution is mandatory on every one');
+  } else {
+    warns.push('NO other-agency section');
+  }
+  info.otherAgency = oaSec ? p11.length : 0;
+
+  // ---- 13. CTA buttons ----------------------------------------------------
+  const val = pc.filter(p => p.panel_id === 3 && /VALUATION/i.test((p.options && p.options.buttonText) || ''));
+  if (val.length !== 2) errors.push('expected 2 valuation CTA buttons, got ' + val.length);
+  const noLink = pc.filter(p => p.panel_id === 3 && !((p.options || {}).buttonLink));
+  if (noLink.length) errors.push(noLink.length + ' button(s) with no link');
+
+  // ---- 14. sold list sanity ----------------------------------------------
+  const soldSec = sections.find(s => s.key === 'sold');
+  if (soldSec) {
+    const t = soldSec.panels.slice(1).map(_text).join('\n');
+    const prices = (t.match(/\$[\d,]{6,}/g) || []);
+    // With the widening ladder a thin suburb can legitimately show ONE sale, or the
+    // last-rung "no recorded sales in the past 12 months" line. Only a section that
+    // shows neither is broken - the old "expect ~5 prices" rule would have failed
+    // Waiake and Rosedale every week for doing exactly what they were told to do.
+    const noSalesLine = /no recorded sales|no recent sales/i.test(t);
+    if (!prices.length && !noSalesLine)
+      errors.push('sold section shows no prices and no "no recorded sales" line');
+    if (/\b0 bed\b/.test(t)) errors.push('sold list shows "0 bed" (unknown must be omitted)');
+    if (/0 sqm/.test(t)) errors.push('sold list shows "0 sqm"');
+    info.soldPrices = prices.length;
+  }
+
+  // ---- 18. the sold section's WINDOW LABEL must match its DATA -------------
+  // The widening ladder (08 §5h) lets a thin suburb widen week -> fortnight -> month
+  // -> quarter -> year rather than print "no sales". That is only honest if the
+  // sentence names the window actually used. Claiming "this week" over a list whose
+  // oldest sale is three months old is precisely the failure this exists to stop,
+  // and it is invisible to every other check here - the copy reads perfectly.
+  //
+  // Deliberately design-agnostic: it finds the sold list by CONTENT (prices + dates),
+  // not by a heading panel, so it survives the move away from panel_id 5 heading bars.
+  if (spec.run_date) {
+    const WINDOWS = [
+      [/\bthis week\b/i, 8, 'this week'],
+      [/\bpast (?:fortnight|two weeks)\b/i, 15, 'past fortnight'],
+      [/\bpast month\b/i, 32, 'past month'],
+      [/\bpast (?:three months|quarter)\b/i, 94, 'past three months'],
+      [/\bpast six months\b/i, 187, 'past six months'],
+      [/\bpast (?:year|12 months|twelve months)\b/i, 367, 'past year']
+    ];
+    const MON = { jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11 };
+    const DATE = /\b(\d{1,2})\s+([A-Za-z]{3})[a-z]*\s+(\d{4})\b/g;
+    // Read the window phrase ONLY from the sold section's own copy.
+    // Phase 0 caught this: an earlier version searched two panels back, so it picked
+    // up "here is what moved in Torbay this week" from the INTRO and tested that
+    // against a sold list correctly labelled "past month" - failing a clean email.
+    // The intro's general framing is not the sold section's claim.
+    const soldS = sections.find(s => s.key === 'sold');
+    if (soldS) {
+      const t = soldS.panels.map(_text).join('\n');
+      const claimed = WINDOWS.find(w => w[0].test(t));
+      const run = new Date(spec.run_date + 'T00:00:00');
+      const ages = [];
+      let m;
+      const re = new RegExp(DATE.source, 'g');
+      while ((m = re.exec(t))) {
+        const mo = MON[m[2].toLowerCase()];
+        if (mo === undefined) continue;
+        ages.push(Math.round((run - new Date(+m[3], mo, +m[1])) / 86400000));
+      }
+      if (ages.length) {
+        const oldest = Math.max.apply(null, ages);
+        info.oldestSaleDays = oldest;
+        info.soldWindow = claimed ? claimed[2] : null;
+        if (!claimed) {
+          warns.push('sold section names no time window - say which period it covers');
+        } else if (oldest > claimed[1]) {
+          errors.push('sold section claims "' + claimed[2] + '" but its oldest sale is ' +
+            oldest + ' days old - widen the label to match the data');
+        }
+        if (ages.some(a => a < 0)) errors.push('sold list contains a FUTURE sale date');
+      }
+    }
+  }
+
+  // ---- 15. market pulse names the suburb ---------------------------------
+  // Only required when the pulse section is present — §5h allows it to be dropped
+  // when there were no sales to compute a median from.
+  const pulseSectionPresent = keys.indexOf('pulse') >= 0;
+  const pulse = pc.find(p => p.panel_id === 6 && /homes sold across/i.test(_text(p)));
+  if (pulseSectionPresent) {
+    if (!pulse) errors.push('market pulse sentence missing');
+    else if (_text(pulse).indexOf(suburb) < 0) errors.push('market pulse does not name ' + suburb);
+  } else if (pulse) {
+    errors.push('market pulse sentence present but its heading was dropped');
+  }
+
+  // ---- 16. FRESHNESS - this week must not repeat last week -----------------
+  // The defect no other check in this file can see. A weekly rebuild that silently
+  // reuses last week's sold list, pulse, grid or listings produces a PERFECT email:
+  // well-formed panels, right suburb, nothing empty, every heading present. It only
+  // shows up against the previous run. Region-wide content (economic tiles, HPI,
+  // banners) SHOULD be identical week to week when no new release has landed, so
+  // only suburb-scoped sections are held to this.
+  const fp = qcFingerprint(pc, suburb);
+  info.fingerprint = fp;
+  if (prev) {
+    const stale = Object.keys(fp).filter(k => fp[k] && prev[k] && fp[k] === prev[k]);
+    if (stale.length) errors.push('UNCHANGED since last run (stale content): ' + stale.join(', '));
+    info.changed = Object.keys(fp).filter(k => stale.indexOf(k) < 0);
+  } else {
+    warns.push('no previous fingerprint passed - staleness UNVERIFIED (pass prevMap to qcAll)');
+  }
+
+  // ---- 17. the economic figures carry a live "as at" date ------------------
+  // The tiles are an IMAGE, so last month's rates render just as crisply as this
+  // week's and nothing above would notice. The caption under them is the only place
+  // the age of those figures is visible to the reader OR to this gate.
+  if (spec.run_date) {
+    const capText = pc.filter(p => p.panel_id === 6).map(_text).join('\n');
+    const m = capText.match(/as at\s+(\d{1,2}\s+[A-Za-z]{3,9}\s+\d{4})/i);
+    if (!m) {
+      errors.push('no "as at <date>" stamp in the body copy - economic figures undateable');
+    } else {
+      const d = new Date(m[1]);
+      const age = (new Date(spec.run_date + 'T00:00:00') - d) / 86400000;
+      if (!isFinite(age)) errors.push('unparseable "as at" date: ' + m[1]);
+      else {
+        info.stampAgeDays = Math.round(age);
+        if (age < 0) errors.push('"as at" date is in the FUTURE: ' + m[1]);
+        else if (age > spec.max_stamp_age_days)
+          errors.push('economic figures STALE: "as at ' + m[1] + '" is ' + Math.round(age) +
+            ' days old (max ' + spec.max_stamp_age_days + ')');
+      }
+    }
+  } else {
+    warns.push('spec.run_date not set - economic staleness UNVERIFIED');
+  }
+
+  return {
+    id, suburb,
+    status: errors.length ? 'FAIL' : (warns.length ? 'PASS-with-warnings' : 'PASS'),
+    errors, warns, info
+  };
+}
+
+/* pairs: [[id, "Suburb"], ...] or [[id, "Suburb", expect], ...]
+   expect  = {sold, pulse, grid, other_agency, news} booleans from that suburb's
+             data.json. Pass it - without it a dropped section is only a WARN, so a
+             section silently lost to a build bug would still read as PASS-with-warnings.
+   prevMap = {"<Suburb>": <fingerprint from LAST week>} - see qcFingerprints. Pass it
+             or a rebuild that quietly reused last week's copy passes every check. */
+async function qcAll(pairs, spec, prevMap) {
+  const out = [];
+  for (const [id, sub, expect] of pairs) {
+    out.push(await qcCheck(id, sub, spec, expect, prevMap && prevMap[sub]));
+  }
+
+  // ---- RUN-LEVEL: no two suburbs may share suburb-scoped copy --------------
+  // THE CHECK THAT WOULD HAVE CAUGHT THE 15 AUG DISASTER ON ITS OWN. 29 emails all
+  // carried the identical Browns Bay intro; per-email checks each saw one
+  // well-formed email and passed. Across the run the duplication is unmissable.
+  // Generic by design: it catches ANY unsubstituted section, not just the intro and
+  // not just a suburb name - if two suburbs' sold lists, pulses or news are
+  // byte-identical, a substitution step silently did nothing.
+  const bySection = {};
+  out.forEach(r => {
+    const fp = (r.info && r.info.fingerprint) || {};
+    Object.keys(fp).forEach(sec => {
+      const k = sec + ' ' + fp[sec];
+      (bySection[k] = bySection[k] || []).push(r.suburb);
+    });
+  });
+  Object.keys(bySection).forEach(k => {
+    const subs = bySection[k];
+    if (subs.length < 2) return;
+    const sec = k.split(' ')[0];
+    subs.forEach(s => {
+      const r = out.find(x => x.suburb === s);
+      if (!r) return;
+      r.errors.push('IDENTICAL "' + sec + '" copy shared with: ' + subs.filter(x => x !== s).join(', ') +
+        ' - a substitution step did not run');
+      r.status = 'FAIL';
+    });
+  });
+
+  // ---- RUN-LEVEL: every suburb market graph must be that suburb's OWN image --
+  // qcCheck can only see one email, so it can prove the graph is not one of the two
+  // KNOWN shared ids - it cannot see that Torbay and Waiake were handed the same
+  // per-suburb png by a build bug. Only a cross-suburb pass can. 34 emails must use
+  // 34 distinct ids.
+  const seen = {};
+  out.forEach(r => ((r.info && r.info.suburbSectionImages) || []).forEach(i => {
+    (seen[i] = seen[i] || []).push(r.suburb);
+  }));
+  Object.keys(seen).filter(i => seen[i].length > 1).forEach(i => {
+    seen[i].forEach(s => {
+      const r = out.find(x => x.suburb === s);
+      if (!r) return;
+      r.errors.push('suburb market graph image ' + i + ' is SHARED with: ' +
+        seen[i].filter(x => x !== s).join(', '));
+      r.status = 'FAIL';
+    });
+  });
+
+  return out;
+}
+
+/* Save this at the end of every run and pass it back next week as qcAll's prevMap:
+     JSON.stringify(qcFingerprints(results))  ->  <run>/qc-fingerprints.json   */
+function qcFingerprints(results) {
+  const out = {};
+  results.forEach(r => { if (r.info && r.info.fingerprint) out[r.suburb] = r.info.fingerprint; });
+  return out;
+}
+
+/* compact one-line-per-suburb summary for the console */
+function qcSummary(results) {
+  return results.map(r => r.suburb + ': ' + (r.fatal || r.status) +
+    (r.errors && r.errors.length ? ' | ERR: ' + r.errors.join(' ;; ') : '') +
+    (r.warns && r.warns.length ? ' | warn: ' + r.warns.join(' ; ') : '')).join('\n');
+}
