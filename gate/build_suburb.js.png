@@ -1,0 +1,381 @@
+/* ============================================================================
+   build_suburb.js — the Wednesday in-place rebuild for one suburb.
+
+   Runs in a logged-in live.activepipe.com tab, AFTER ap_helpers.js, qc_check.js
+   and qc_reconcile.js are loaded, and after these globals exist:
+
+     window.__SPEC   build-spec.json for this run (fetched from the relay)
+     window.__PROPS  GET /properties?status=current, the whole office feed
+     window.__GRAPH  raw_base for this run's per-suburb market graphics
+
+   MODEL: UPDATE IN PLACE (locked 17 Aug). The suburb's OWN existing email is
+   fetched, its mutable surface snapshotted, its panel array rebuilt in memory,
+   and written back with ONE full-object PUT. Nothing is ever cloned and no new
+   communication is ever created.
+
+   WHAT IT DOES NOT DO: it never creates a campaign, never activates anything,
+   and never sends. The gates run separately.
+   ========================================================================== */
+(function (root) {
+
+  const fold = s => String(s == null ? '' : s).normalize('NFD').replace(/[̀-ͯ]/g, '');
+  const same = (a, b) => fold(a).trim().toLowerCase() === fold(b).trim().toLowerCase();
+  const rkey = () => Math.random().toString(36).slice(2, 10);
+
+  /* A Draft.js block in the locked style: body copy is always #000000 (qc_check 7
+     fails any run that is not), headlines add BOLD on top of it. */
+  function blk(text, bold, type) {
+    const r = [];
+    if (text) {
+      r.push({ offset: 0, length: text.length, style: '#000000' });
+      if (bold) r.push({ offset: 0, length: text.length, style: 'BOLD' });
+    }
+    return {
+      key: rkey(), text: text || '', type: type || 'unstyled', depth: 0,
+      inlineStyleRanges: r, entityRanges: [], data: {}
+    };
+  }
+
+  /* lines: array of strings, or [text, true] for a BOLD headline line. */
+  function setText(panel, lines) {
+    panel.contents.textOne = {
+      blocks: lines.map(l => Array.isArray(l) ? blk(l[0], l[1]) : blk(l)),
+      entityMap: {}
+    };
+  }
+
+  const parse = v => { try { return typeof v === 'string' ? JSON.parse(v) : v; } catch (e) { return null; } };
+  const ptext = p => ['textOne', 'textTwo', 'textThree']
+    .map(k => { const c = parse(p.contents && p.contents[k]); return c && c.blocks ? c.blocks.map(b => b.text).join('\n') : ''; })
+    .filter(Boolean).join('\n');
+
+  /* ---------------------------------------------------------------- images */
+  /* The per-suburb market graphic is a real upload: it has to live on ActivePipe
+     because it is generated, not public. Other-agency photos are NOT uploaded -
+     they are already public on Trade Me's CDN and the panel takes a bare src, which
+     is exactly what the signed-off Torbay V2 build does. That saves 66 uploads. */
+  async function uploadGraph(slug) {
+    const url = root.__GRAPH + '/' + encodeURIComponent(slug + '-market.png');
+    const blob = await (await fetch(url)).blob();
+    const fd = new FormData();
+    fd.append('file', blob, slug + '-market.png');
+    const r = await fetch(AP.BASE + '/images', { method: 'POST', credentials: 'include', body: fd });
+    if (!r.ok) throw new Error('image upload ' + r.status);
+    const j = await r.json();
+    const im = j.image || j.data || j;
+    // The API returns `url`; the panel renders from `src`. Mapping it is not optional -
+    // an image object without src renders blank and every structural check still passes.
+    return { id: im.id, src: im.src || im.url, key: im.key, secret: im.secret, width: im.width, height: im.height };
+  }
+
+  function tmImage(photoUrl, n) {
+    return { id: Number(String(photoUrl).replace(/\D/g, '').slice(-10)), src: photoUrl, key: 'tm' + n, secret: 'tm' + n, width: 800, height: 533 };
+  }
+
+  /* ------------------------------------------------------------ office grid */
+  /* Every current office listing in the suburb, oldest first, trimmed to an EVEN
+     count so the two-up grid never orphans a row (qc_check 11). Below two listings
+     the whole section drops - 08 §5h - and returns by itself next week. */
+  function gridFor(suburb) {
+    const live = root.__PROPS
+      .filter(p => same(p.city, suburb))
+      .sort((a, b) => a.id - b.id);
+    const n = live.length - (live.length % 2);
+    return live.slice(0, n).map(p => ({
+      id: p.id,
+      address: p.address,
+      city: p.city,
+      displayprice: p.displayprice,
+      bedrooms: p.bedrooms,
+      bathrooms: p.bathrooms,
+      url: p.url,
+      images: (p.images || [])
+        .filter(im => (im.url || im.cdn_url) && im.key && im.secret && im.id)
+        .slice(0, 5)
+        .map(im => ({ id: im.id, src: im.url || im.cdn_url, key: im.key, secret: im.secret, width: im.width, height: im.height }))
+    })).filter(l => l.images.length);
+  }
+
+  /* Same building as one of our own listings? "2/8 Park Rise" against our own
+     "8/8 Park Rise" is a competitor's unit in the same block, directly under our
+     grid. Legal, but an own goal, so it is skipped in favour of the next candidate. */
+  function building(a) {
+    const m = String(a || '').match(/(\d+[A-Za-z]?)\s+([A-Za-z' ]+)$/);
+    return m ? (m[1] + ' ' + m[2]).toLowerCase().trim() : String(a || '').toLowerCase();
+  }
+
+  function pickOA(cands, grid) {
+    const ours = grid.map(g => building(g.address));
+    const out = [];
+    for (const c of cands) {
+      if (ours.indexOf(building(c.address)) >= 0) continue;
+      out.push(c);
+      if (out.length === 2) break;
+    }
+    return out.length ? out : cands.slice(0, 2);
+  }
+
+  /* -------------------------------------------------------------- news copy */
+  /* NEWS CARRIES EVENTS, NOT STATISTICS (locked 17 Aug). Every line below reports
+     something that happened or is scheduled. The only figure allowed anywhere in
+     this section is the Ray White listing count, and it is read straight off the
+     grid that renders a few panels lower, so the two can never disagree. */
+  const KIND = m => /auction/i.test(m) ? 'auction'
+    : /deadline/i.test(m) ? 'deadline'
+      : /tender/i.test(m) ? 'tender' : 'price';
+  const KIND_PHRASE = { auction: 'by auction', deadline: 'by deadline sale', tender: 'by tender', price: 'at an advertised price' };
+  const KIND_HEAD = {
+    auction: 'Auction campaigns are running in ',
+    deadline: 'Deadline sales are shaping current stock in ',
+    tender: 'Tender campaigns are running in ',
+    price: 'Priced listings are giving buyers a clear number in '
+  };
+
+  function newsLines(suburb, oa, grid) {
+    const lines = [];
+    if (oa.length) {
+      const k1 = KIND(oa[0].method);
+      lines.push([KIND_HEAD[k1] + suburb, true]);
+      if (oa.length > 1) {
+        const k2 = KIND(oa[1].method);
+        lines.push(k1 === k2
+          ? oa[0].address + ' and ' + oa[1].address + ' are both being marketed ' + KIND_PHRASE[k1] + ', so buyers have a set date to work to.'
+          : oa[0].address + ' is being marketed ' + KIND_PHRASE[k1] + ' and ' + oa[1].address + ' ' + KIND_PHRASE[k2] + ', which gives local buyers two very different campaigns to compare.');
+      } else {
+        lines.push(oa[0].address + ' is being marketed ' + KIND_PHRASE[k1] + '.');
+      }
+      lines.push('');
+    }
+
+    lines.push(['Granny flats up to 70sqm no longer need building consent', true]);
+    lines.push('A standalone dwelling up to 70sqm can now be built without building consent if it is single storey, meets the Building Code and is built or supervised by a Licensed Building Practitioner. Relevant for ' + suburb + ' sites with room at the rear.');
+    lines.push('');
+
+    if (grid.length) {
+      lines.push(['Ray White is marketing ' + grid.length + ' homes in ' + suburb, true]);
+      lines.push('A mix of family homes, units and townhouses currently on the market with us.');
+    } else {
+      lines.push(['Ray White is between listings in ' + suburb, true]);
+      lines.push('Nothing of ours is on the market here this week, which is usually when a quiet off-market approach works best.');
+    }
+    return lines;
+  }
+
+  /* Region-wide copy, identical across all 34 by design. qcFingerprint deliberately
+     excludes these sections, so byte-identical is correct here and only suburb-scoped
+     sections are held to the cross-suburb duplicate rule. */
+  const NS_HEADLINES = [
+    ['Council votes for more density near transport lines', true],
+    'Auckland Council voted 17 to 5 for greater intensification around major public transport routes and town centres under Plan Change 120, lifting zoned capacity from roughly 1.2 million homes to an estimated 1.5 to 1.7 million.',
+    '',
+    ['Smaller town centres cut from the density plan', true],
+    'The amended plan leaves most zoning untouched apart from downzoning for flood and natural hazard risk.',
+    '',
+    ['Granny flats up to 70sqm no longer need building consent', true],
+    'Since January a standalone dwelling up to 70sqm can be built without building consent if it is single storey, meets the Building Code and is built or supervised by a Licensed Building Practitioner.'
+  ];
+
+  /* ------------------------------------------------------------- snapshot */
+  /* <run>/<slug>/before.json is the ONLY record of last week's email once V2 is
+     written, and the only thing to roll back to. It is taken before a single field
+     is touched. */
+  function snapshot(o) {
+    const pc = AP.panels(o);
+    return {
+      id: o.id, name: o.name, subject: o.email.subject,
+      panels: pc.map(p => {
+        const rec = { pos: p.position, pid: p.panel_id, text: ptext(p) };
+        ['imageOne', 'imageTwo', 'imageThree'].forEach(k => {
+          const im = p.contents && p.contents[k];
+          if (im && im.id) (rec.images = rec.images || {})[k] = { id: im.id, src: im.src };
+        });
+        if (p.panel_id === 17) {
+          rec.itemCount = (p.options || {}).itemCount;
+          rec.listings = ((p.contents || {}).propertyListings || []).map(l => l.address + ' | ' + l.displayprice);
+        }
+        if (p.panel_id === 3) rec.button = (p.options || {}).buttonText;
+        return rec;
+      })
+    };
+  }
+
+  /* ------------------------------------------------------------ the build */
+  async function buildSuburb(suburb, opts) {
+    opts = opts || {};
+    const S = root.__SPEC.suburbs[suburb];
+    if (!S) throw new Error('suburb missing from build-spec: ' + suburb);
+
+    const o = await AP.get(S.email);
+    if (!o || !o.email) throw new Error('GET failed for ' + S.email);
+    root.__SNAP = root.__SNAP || {};
+    root.__SNAP[suburb] = snapshot(o);
+
+    const pc = AP.panels(o);
+    const secs = qcSections(pc);
+    const sec = k => secs.find(s => s.key === k);
+    const bodyOf = s => s && s.panels.find(p => p.panel_id === 6);
+    const notes = [];
+
+    const grid = gridFor(suburb);
+    const oa = pickOA(S.oa_candidates || [], grid);
+
+    /* ---- intro: keep the merge-field greeting block untouched, rewrite the line */
+    const first = secs.length ? secs[0].start : pc.length;
+    let introDone = false;
+    for (let i = 0; i < first; i++) {
+      const cs = pc[i].contents && pc[i].contents.textOne;
+      if (!cs || !cs.blocks) continue;
+      const last = cs.blocks.map((b, n) => [b, n]).filter(x => (x[0].text || '').trim()).pop();
+      if (!last || last[1] === 0) continue;
+      const b = last[0];
+      b.text = S.intro;
+      b.inlineStyleRanges = [{ offset: 0, length: S.intro.length, style: '#000000' }];
+      b.entityRanges = [];
+      introDone = true;
+    }
+    if (!introDone) throw new Error('no intro block found');
+
+    /* ---- recently sold (never drops; the window label is the honest part) */
+    const soldBody = bodyOf(sec('sold'));
+    if (!soldBody) throw new Error('no sold body panel');
+    setText(soldBody, S.sold_lines);
+
+    /* ---- market pulse + THIS suburb's own graphic */
+    const pulseSec = sec('pulse');
+    if (!pulseSec) throw new Error('no pulse section');
+    setText(bodyOf(pulseSec), [S.pulse]);
+    const pulseImg = pulseSec.panels.find(p => p.panel_id === 9);
+    if (!pulseImg) throw new Error('no pulse image panel');
+    const g = opts.graph || await uploadGraph(S.slug);
+    pulseImg.contents.imageOne = g;
+    notes.push('graph=' + g.id);
+
+    /* ---- shared region graphics: HPI under North Shore headlines, tiles under
+            Economic update. Never the other way round - a region chart under a
+            suburb heading is the 15 Aug defect check 10b exists for. */
+    const nsSec = sec('ns_headlines'), ecSec = sec('economic');
+    if (!nsSec || !ecSec) throw new Error('missing region section');
+    const nsImg = nsSec.panels.find(p => p.panel_id === 9);
+    const ecImg = ecSec.panels.find(p => p.panel_id === 9);
+    if (!nsImg || !ecImg) throw new Error('missing region image panel');
+    nsImg.contents.imageOne = root.__SHARED.hpi;
+    ecImg.contents.imageOne = root.__SHARED.tiles;
+    setText(bodyOf(nsSec), NS_HEADLINES);
+    setText(bodyOf(ecSec), ['Rates, prices and auction clearance across the North Shore, ' +
+      root.__SPEC.macro.as_at_text + '. Sources: RBNZ, REINZ, interest.co.nz.']);
+
+    /* ---- news */
+    setText(bodyOf(sec('news')), newsLines(suburb, oa, grid));
+
+    /* ---- banners */
+    const imgPanels = pc.filter(p => p.panel_id === 9);
+    imgPanels[0].contents.imageOne = root.__SHARED.header;
+    imgPanels[imgPanels.length - 1].contents.imageOne = root.__SHARED.footer;
+
+    /* ---- Ray White grid */
+    let out = pc.slice();
+    const gSec = sec('grid');
+    if (grid.length >= 2) {
+      if (gSec) {
+        const gp = gSec.panels.find(p => p.panel_id === 17);
+        gp.contents.propertyListings = grid;
+        gp.options = Object.assign({}, gp.options, { itemCount: grid.length, feed: false });
+        delete gp.options.detailsLayout;
+        notes.push('grid=' + grid.length);
+      } else {
+        notes.push('grid=INSERT:' + grid.length);      // handled by insertGrid()
+      }
+    } else if (gSec) {
+      out = out.filter(p => gSec.panels.indexOf(p) < 0);
+      notes.push('grid=DROPPED');
+    } else {
+      notes.push('grid=0');
+    }
+
+    /* ---- other agencies */
+    const oSec = sec('other_agency');
+    if (oSec) {
+      const texts = oSec.panels.filter(p => p.panel_id === 6);
+      const p11s = oSec.panels.filter(p => p.panel_id === 11);
+      const use = Math.min(oa.length, p11s.length);
+      for (let i = 0; i < use; i++) {
+        setText(texts[i], [
+          oa[i].address,
+          oa[i].beds + ' bedrooms. ' + oa[i].method,
+          'Marketed by ' + oa[i].agency
+        ]);
+        ['imageOne', 'imageTwo', 'imageThree'].forEach((k, n) => {
+          p11s[i].contents[k] = tmImage(oa[i].photos[n], i * 3 + n);
+        });
+      }
+      notes.push('oa=' + use);
+    } else {
+      notes.push('oa=NONE');
+    }
+
+    /* ---- naming + write */
+    o.name = 'V' + root.__SPEC.version + ' - ' + suburb + ' Suburb Update';
+    o.email.subject = 'HARRISON CUTFIELD | THE LATEST ' + fold(suburb).toUpperCase() + ' NEWS';
+    out.forEach((p, i) => { p.position = i; });
+    o.email.panelcontents = out;
+
+    const wantName = o.name;
+    const res = await AP.put(o, fresh => fresh.name === wantName &&
+      (fresh.email.panelcontents || []).length === out.length);
+    return { suburb, id: S.email, ok: res.ok, status: res.status, panels: out.length, notes: notes.join(' ') };
+  }
+
+  /* --------------------------------------------------- returning sections */
+  /* A dropped section "returns automatically when stock exists" (08 §5h). For a
+     suburb that had none last week that means the panels do not exist and have to be
+     created, which is the one thing in-place editing cannot do by mutation. They are
+     cloned from a suburb that has the section built correctly - the signed-off Torbay
+     V2 - with ids stripped so ActivePipe mints new ones, and written as their own
+     verified PUT before the content build runs. Two small writes beat one big one
+     here: if the clone is rejected, nothing else has been touched yet. */
+  function cloneP(p, emailId) {
+    const c = JSON.parse(JSON.stringify(p));
+    delete c.id;
+    c.email_id = emailId;
+    return c;
+  }
+
+  async function addSection(suburb, kind, donorId) {
+    const S = root.__SPEC.suburbs[suburb];
+    const o = await AP.get(S.email);
+    const donor = await AP.get(donorId || 3883177);
+    const dpc = AP.panels(donor), dsec = qcSections(dpc);
+    const pc = AP.panels(o), secs = qcSections(pc);
+    if (secs.some(s => s.key === kind)) return { suburb, kind, skipped: 'already present' };
+
+    const src = dsec.find(s => s.key === kind);
+    if (!src) throw new Error('donor has no ' + kind + ' section');
+
+    let block;
+    if (kind === 'grid') {
+      block = src.panels.map(p => cloneP(p, o.email.id));
+      setText(block[0], ['Ray White in ' + suburb]);
+      // the heading bar keeps the donor's styling; only the words change
+      block[0].contents.textOne.blocks[0].type = dpc[src.start].contents.textOne.blocks[0].type;
+      block[0].contents.textOne.blocks[0].inlineStyleRanges =
+        JSON.parse(JSON.stringify(dpc[src.start].contents.textOne.blocks[0].inlineStyleRanges || []))
+          .map(r => ({ offset: 0, length: ('Ray White in ' + suburb).length, style: r.style }));
+    } else {
+      block = src.panels.map(p => cloneP(p, o.email.id));   // heading + 2 x (text, photos, button)
+    }
+
+    // insert after the section it must follow: grid after pulse, other_agency after grid
+    const afterKey = kind === 'grid' ? 'pulse' : (secs.some(s => s.key === 'grid') ? 'grid' : 'pulse');
+    const after = secs.find(s => s.key === afterKey);
+    const at = after ? after.end : pc.length;
+    const out = pc.slice(0, at).concat(block, pc.slice(at));
+    out.forEach((p, i) => { p.position = i; });
+    o.email.panelcontents = out;
+    const want = out.length;
+    const res = await AP.put(o, fresh => (fresh.email.panelcontents || []).length === want);
+    return { suburb, kind, added: block.length, ok: res.ok, status: res.status, panels: want };
+  }
+
+  root.SU = { buildSuburb, addSection, gridFor, pickOA, newsLines, snapshot, uploadGraph, tmImage, blk, setText, NS_HEADLINES, building };
+})(window);
+'build_suburb.js loaded';

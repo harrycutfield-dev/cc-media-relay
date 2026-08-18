@@ -1,0 +1,2577 @@
+{
+ "run_date": "2026-08-18",
+ "suburbs": {
+  "Albany Heights": {
+   "slug": "albany-heights",
+   "email": 3883317,
+   "audience": 8076002,
+   "window": "the past fortnight",
+   "window_days": 14,
+   "gate_days": 15,
+   "oldest_days": 8,
+   "intro": "Here is what moved in Albany Heights over the past fortnight: what sold, what is on the market, and the news worth knowing about.",
+   "sold_lines": [
+    "One home sold across Albany Heights over the past fortnight.",
+    "",
+    "38 Golden Morning Drive  $1,810,000",
+    "sold 10 Aug 2026, private treaty"
+   ],
+   "sold_src": [
+    {
+     "address": "38 Golden Morning Drive",
+     "price": 1810000,
+     "date": "10 Aug 2026"
+    }
+   ],
+   "pulse": "34 homes sold across Albany Heights over the past year, at a median of $1,260,000. The middle half sold between $1,020,000 and $1,770,000, and homes are taking a median 57 days to sell. That is about 1 in 35 homes changing hands.",
+   "stats": {
+    "sales": 34,
+    "median": 1260000,
+    "p25": 1020000,
+    "p75": 1770000,
+    "days": 57,
+    "average": 1412962,
+    "turnover": 0.02886
+   },
+   "oa_candidates": [
+    {
+     "address": "12 Stevensons Crescent",
+     "beds": 5,
+     "method": "Auction on 26 Aug, 2:00 pm",
+     "agency": "Bayleys Real Estate Coatesville",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2320376320.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2321911608.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2320376322.jpg"
+     ]
+    },
+    {
+     "address": "6 Aoraki Crescent",
+     "beds": 3,
+     "method": "Deadline sale by 18 Aug",
+     "agency": "Harcourts Cooper & Co Browns Bay",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2317846126.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2317846128.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2317846131.jpg"
+     ]
+    },
+    {
+     "address": "20 Stevensons Crescent",
+     "beds": 6,
+     "method": "Price by negotiation",
+     "agency": "Premium Real Estate Group Ltd MREINZ",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2301797977.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2301797991.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2301797985.jpg"
+     ]
+    }
+   ]
+  },
+  "Bayswater": {
+   "slug": "bayswater",
+   "email": 3883223,
+   "audience": 8076021,
+   "window": "the past fortnight",
+   "window_days": 14,
+   "gate_days": 15,
+   "oldest_days": 14,
+   "intro": "Here is what moved in Bayswater over the past fortnight: what sold, what is on the market, and the news worth knowing about.",
+   "sold_lines": [
+    "One home sold across Bayswater over the past fortnight.",
+    "",
+    "13A Bayswater Avenue  $1,800,000",
+    "6 bed, sold 4 Aug 2026, 43 days, auction"
+   ],
+   "sold_src": [
+    {
+     "address": "13A Bayswater Avenue",
+     "price": 1800000,
+     "date": "4 Aug 2026"
+    }
+   ],
+   "pulse": "40 homes sold across Bayswater over the past year, at a median of $1,550,000. The middle half sold between $906,000 and $1,780,000, and homes are taking a median 56 days to sell. That is about 1 in 37 homes changing hands.",
+   "stats": {
+    "sales": 40,
+    "median": 1550000,
+    "p25": 906000,
+    "p75": 1780000,
+    "days": 56,
+    "average": 1519900,
+    "turnover": 0.02699
+   },
+   "oa_candidates": [
+    {
+     "address": "2/118 Bayswater Avenue",
+     "beds": 5,
+     "method": "Auction on 10 Sept, 12:00 pm",
+     "agency": "Harcourts Cooper & Co Devonport",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2323210133.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2323210140.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2323210146.jpg"
+     ]
+    },
+    {
+     "address": "9 Norwood Road",
+     "beds": 1,
+     "method": "For sale by tender, 1 Sept",
+     "agency": "New Zealand Sotheby's International Realty North",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2320707764.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2320707767.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2320707769.jpg"
+     ]
+    },
+    {
+     "address": "5/56 Beresford Street",
+     "beds": 2,
+     "method": "Deadline sale by 19 Aug",
+     "agency": "Prestige Real Estate International Ltd",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2320116779.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2320116785.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2320116790.jpg"
+     ]
+    }
+   ]
+  },
+  "Bayview": {
+   "slug": "bayview",
+   "email": 3883318,
+   "audience": 8075997,
+   "window": "the past fortnight",
+   "window_days": 14,
+   "gate_days": 15,
+   "oldest_days": 10,
+   "intro": "Here is what moved in Bayview over the past fortnight: what sold, what is on the market, and the news worth knowing about.",
+   "sold_lines": [
+    "One home sold across Bayview over the past fortnight.",
+    "",
+    "2 Glendawn Place  $1,210,000",
+    "4 bed, sold 8 Aug 2026, 25 days, auction"
+   ],
+   "sold_src": [
+    {
+     "address": "2 Glendawn Place",
+     "price": 1210000,
+     "date": "8 Aug 2026"
+    }
+   ],
+   "pulse": "126 homes sold across Bayview over the past year, at a median of $923,000. The middle half sold between $845,000 and $1,040,000, and homes are taking a median 42 days to sell. That is about 1 in 31 homes changing hands.",
+   "stats": {
+    "sales": 126,
+    "median": 923000,
+    "p25": 845000,
+    "p75": 1040000,
+    "days": 42,
+    "average": 949797,
+    "turnover": 0.03236
+   },
+   "oa_candidates": [
+    {
+     "address": "14 Emery Grove",
+     "beds": 4,
+     "method": "Deadline sale by 9 Sept",
+     "agency": "Harcourts Cooper & Co Takapuna",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2324158344.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2324158348.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2324158360.jpg"
+     ]
+    },
+    {
+     "address": "1/508 Glenfield Road",
+     "beds": 4,
+     "method": "Auction on 3 Sept, 12:00 pm",
+     "agency": "Harcourts Cooper & Co North Shore Central",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322838424.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322838437.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322838547.jpg"
+     ]
+    },
+    {
+     "address": "2/159A Manuka Road",
+     "beds": 3,
+     "method": "Auction on 3 Sept, 12:00 pm",
+     "agency": "Harcourts Cooper & Co Silverdale",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322469109.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322469117.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322469119.jpg"
+     ]
+    }
+   ]
+  },
+  "Beach Haven": {
+   "slug": "beach-haven",
+   "email": 3883189,
+   "audience": 8075999,
+   "window": "this week",
+   "window_days": 7,
+   "gate_days": 8,
+   "oldest_days": 7,
+   "intro": "Here is what moved in Beach Haven this week: what sold, what is on the market, and the news worth knowing about.",
+   "sold_lines": [
+    "Two homes sold across Beach Haven this week.",
+    "",
+    "2/143 Rangatira Road  $885,000",
+    "3 bed, sold 13 Aug 2026, 264 days, private treaty",
+    "",
+    "132 Lancaster Road  $865,000",
+    "3 bed, sold 11 Aug 2026, 72 days, private treaty"
+   ],
+   "sold_src": [
+    {
+     "address": "2/143 Rangatira Road",
+     "price": 885000,
+     "date": "13 Aug 2026"
+    },
+    {
+     "address": "132 Lancaster Road",
+     "price": 865000,
+     "date": "11 Aug 2026"
+    }
+   ],
+   "pulse": "201 homes sold across Beach Haven over the past year, at a median of $967,000. The middle half sold between $849,000 and $1,100,000, and homes are taking a median 48 days to sell. That is about 1 in 27 homes changing hands.",
+   "stats": {
+    "sales": 201,
+    "median": 967000,
+    "p25": 849000,
+    "p75": 1100000,
+    "days": 48,
+    "average": 1014955,
+    "turnover": 0.03651
+   },
+   "oa_candidates": [
+    {
+     "address": "23/13 Cresta Avenue",
+     "beds": 2,
+     "method": "Asking price $789,000",
+     "agency": "Barfoot & Thompson Projects",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2321754660.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2321754763.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2321754620.jpg"
+     ]
+    },
+    {
+     "address": "3/13 Cresta Avenue",
+     "beds": 3,
+     "method": "Asking price $969,000",
+     "agency": "Barfoot & Thompson Projects",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2321754793.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2321754746.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2321754698.jpg"
+     ]
+    },
+    {
+     "address": "10 Fordham Street",
+     "beds": 3,
+     "method": "Auction on 27 Aug, 10:00 am",
+     "agency": "Barfoot & Thompson Devonport",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2321203180.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2321203201.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2321203205.jpg"
+     ]
+    }
+   ]
+  },
+  "Belmont": {
+   "slug": "belmont",
+   "email": 3883222,
+   "audience": 8076020,
+   "window": "this week",
+   "window_days": 7,
+   "gate_days": 8,
+   "oldest_days": 5,
+   "intro": "Here is what moved in Belmont this week: what sold, what is on the market, and the news worth knowing about.",
+   "sold_lines": [
+    "One home sold across Belmont this week.",
+    "",
+    "16C Egremont St  $1,535,000",
+    "5 bed, sold 13 Aug 2026, 116 days, private treaty"
+   ],
+   "sold_src": [
+    {
+     "address": "16C Egremont St",
+     "price": 1535000,
+     "date": "13 Aug 2026"
+    }
+   ],
+   "pulse": "52 homes sold across Belmont over the past year, at a median of $1,300,000. The middle half sold between $1,040,000 and $1,580,000, and homes are taking a median 39 days to sell. That is about 1 in 44 homes changing hands.",
+   "stats": {
+    "sales": 52,
+    "median": 1300000,
+    "p25": 1040000,
+    "p75": 1580000,
+    "days": 39,
+    "average": 1601113,
+    "turnover": 0.02277
+   },
+   "oa_candidates": [
+    {
+     "address": "Lot 6/3 Corrella Road",
+     "beds": 3,
+     "method": "Enquiries over $1,200,000",
+     "agency": "Harcourts Cooper & Co Devonport",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2309118354.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2309118350.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2309118345.jpg"
+     ]
+    },
+    {
+     "address": "Lot 4, 33 Williamson Avenue",
+     "beds": 4,
+     "method": "Asking price $1,249,000",
+     "agency": "Barfoot & Thompson Royal Oak",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2320768972.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2321357049.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2316734838.jpg"
+     ]
+    },
+    {
+     "address": "110A Lake Road",
+     "beds": 2,
+     "method": "Price by negotiation",
+     "agency": "Harcourts Cooper & Co Milford",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2319266460.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2319295458.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2319266462.jpg"
+     ]
+    }
+   ]
+  },
+  "Birkdale": {
+   "slug": "birkdale",
+   "email": 3883319,
+   "audience": 8075986,
+   "window": "this week",
+   "window_days": 7,
+   "gate_days": 8,
+   "oldest_days": 6,
+   "intro": "Here is what moved in Birkdale this week: what sold, what is on the market, and the news worth knowing about.",
+   "sold_lines": [
+    "Four homes sold across Birkdale this week.",
+    "",
+    "2/256A Birkdale Road  $730,000",
+    "3 bed, sold 14 Aug 2026, 31 days, private treaty",
+    "",
+    "17A Roseneath Place  $1,189,000",
+    "4 bed, sold 13 Aug 2026, 40 days, auction",
+    "",
+    "37B Salisbury Road  $815,000",
+    "2 bed, sold 13 Aug 2026, 162 days, private treaty",
+    "",
+    "6 Hellyers Street  $1,300,000",
+    "5 bed, sold 12 Aug 2026, 51 days, auction"
+   ],
+   "sold_src": [
+    {
+     "address": "2/256A Birkdale Road",
+     "price": 730000,
+     "date": "14 Aug 2026"
+    },
+    {
+     "address": "17A Roseneath Place",
+     "price": 1189000,
+     "date": "13 Aug 2026"
+    },
+    {
+     "address": "37B Salisbury Road",
+     "price": 815000,
+     "date": "13 Aug 2026"
+    },
+    {
+     "address": "6 Hellyers Street",
+     "price": 1300000,
+     "date": "12 Aug 2026"
+    }
+   ],
+   "pulse": "177 homes sold across Birkdale over the past year, at a median of $896,000. The middle half sold between $779,000 and $1,020,000, and homes are taking a median 48 days to sell. That is about 1 in 26 homes changing hands.",
+   "stats": {
+    "sales": 177,
+    "median": 896000,
+    "p25": 779000,
+    "p75": 1020000,
+    "days": 48,
+    "average": 913414,
+    "turnover": 0.0388
+   },
+   "oa_candidates": [
+    {
+     "address": "88 Birkdale Road",
+     "beds": 3,
+     "method": "Auction on 3 Sept, 10:00 am",
+     "agency": "Barfoot & Thompson Birkenhead",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2323190841.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2323190833.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2323190823.jpg"
+     ]
+    },
+    {
+     "address": "30 Seon Place",
+     "beds": 2,
+     "method": "Asking price $669,000",
+     "agency": "Whitestone Group",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2318896422.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2318896428.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2318896423.jpg"
+     ]
+    },
+    {
+     "address": "41E Salisbury Road",
+     "beds": 4,
+     "method": "Price by negotiation",
+     "agency": "Harcourts Cooper & Co Birkenhead",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2318077316.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2318077324.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2318077329.jpg"
+     ]
+    }
+   ]
+  },
+  "Browns Bay": {
+   "slug": "browns-bay",
+   "email": 3883030,
+   "audience": 8075993,
+   "window": "the past fortnight",
+   "window_days": 14,
+   "gate_days": 15,
+   "oldest_days": 12,
+   "intro": "Here is what moved in Browns Bay over the past fortnight: what sold, what is on the market, and the news worth knowing about.",
+   "sold_lines": [
+    "Five homes sold across Browns Bay over the past fortnight.",
+    "",
+    "91 Langana Avenue  $1,585,000",
+    "3 bed, sold 10 Aug 2026, 38 days, auction",
+    "",
+    "4/3 Glen Road  $740,000",
+    "3 bed, sold 10 Aug 2026, 12 days, private treaty",
+    "",
+    "29 Oban Road  $1,720,000",
+    "4 bed, sold 9 Aug 2026, 48 days, auction",
+    "",
+    "B302/525 East Coast Road  $735,000",
+    "2 bed, sold 7 Aug 2026, 61 days, private treaty",
+    "",
+    "1B Robin Lane  $1,150,000",
+    "4 bed, sold 6 Aug 2026, 117 days, private treaty"
+   ],
+   "sold_src": [
+    {
+     "address": "91 Langana Avenue",
+     "price": 1585000,
+     "date": "10 Aug 2026"
+    },
+    {
+     "address": "4/3 Glen Road",
+     "price": 740000,
+     "date": "10 Aug 2026"
+    },
+    {
+     "address": "29 Oban Road",
+     "price": 1720000,
+     "date": "9 Aug 2026"
+    },
+    {
+     "address": "B302/525 East Coast Road",
+     "price": 735000,
+     "date": "7 Aug 2026"
+    },
+    {
+     "address": "1B Robin Lane",
+     "price": 1150000,
+     "date": "6 Aug 2026"
+    }
+   ],
+   "pulse": "266 homes sold across Browns Bay over the past year, at a median of $1,230,000. The middle half sold between $985,000 and $1,550,000, and homes are taking a median 39 days to sell. That is about 1 in 26 homes changing hands.",
+   "stats": {
+    "sales": 266,
+    "median": 1230000,
+    "p25": 985000,
+    "p75": 1550000,
+    "days": 39,
+    "average": 1269783,
+    "turnover": 0.03831
+   },
+   "oa_candidates": [
+    {
+     "address": "29 Squirrel Lane",
+     "beds": 3,
+     "method": "Auction on 2 Sept, 9:30 am",
+     "agency": "Barfoot & Thompson Albany",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322931752.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322952595.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322952607.jpg"
+     ]
+    },
+    {
+     "address": "4 Valdese Rise",
+     "beds": 4,
+     "method": "Auction on 3 Sept, 1:30 pm",
+     "agency": "Bayleys East Coast Bays",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322596962.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322596965.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322596969.jpg"
+     ]
+    },
+    {
+     "address": "141B Browns Bay Road",
+     "beds": 4,
+     "method": "Auction on 3 Sept, 10:00 am",
+     "agency": "Barfoot & Thompson Northcote",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322396107.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322396119.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322396123.jpg"
+     ]
+    }
+   ]
+  },
+  "Campbells Bay": {
+   "slug": "campbells-bay",
+   "email": 3858099,
+   "audience": 8075995,
+   "window": "this week",
+   "window_days": 7,
+   "gate_days": 8,
+   "oldest_days": 5,
+   "intro": "Here is what moved in Campbells Bay this week: what sold, what is on the market, and the news worth knowing about.",
+   "sold_lines": [
+    "One home sold across Campbells Bay this week.",
+    "",
+    "1/98 Park Rise  $1,495,000",
+    "4 bed, sold 13 Aug 2026, 64 days, auction"
+   ],
+   "sold_src": [
+    {
+     "address": "1/98 Park Rise",
+     "price": 1495000,
+     "date": "13 Aug 2026"
+    }
+   ],
+   "pulse": "44 homes sold across Campbells Bay over the past year, at a median of $1,910,000. The middle half sold between $1,510,000 and $2,650,000, and homes are taking a median 46 days to sell. That is about 1 in 37 homes changing hands.",
+   "stats": {
+    "sales": 44,
+    "median": 1910000,
+    "p25": 1510000,
+    "p75": 2650000,
+    "days": 46,
+    "average": 2253773,
+    "turnover": 0.02735
+   },
+   "oa_candidates": [
+    {
+     "address": "2/8 Park Rise",
+     "beds": 4,
+     "method": "Price by negotiation",
+     "agency": "Harcourts Cooper & Co Mairangi Bay",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2320552936.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2320552939.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2320552942.jpg"
+     ]
+    },
+    {
+     "address": "6 Tree Fern Trail",
+     "beds": 3,
+     "method": "Asking price $1,525,000",
+     "agency": "Barfoot & Thompson Albany",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2318772116.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2318771976.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2318771969.jpg"
+     ]
+    },
+    {
+     "address": "15A Red Bluff Rise",
+     "beds": 5,
+     "method": "Price by negotiation",
+     "agency": "Prestige Real Estate International Ltd",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2316573677.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2316573679.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2316573681.jpg"
+     ]
+    }
+   ]
+  },
+  "Castor Bay": {
+   "slug": "castor-bay",
+   "email": 3861192,
+   "audience": 8076015,
+   "window": "the past month",
+   "window_days": 31,
+   "gate_days": 32,
+   "oldest_days": 25,
+   "intro": "Here is what moved in Castor Bay over the past month: what sold, what is on the market, and the news worth knowing about.",
+   "sold_lines": [
+    "One home sold across Castor Bay over the past month.",
+    "",
+    "62 Peter Terrace  $1,770,000",
+    "4 bed, sold 24 Jul 2026, 139 days, private treaty"
+   ],
+   "sold_src": [
+    {
+     "address": "62 Peter Terrace",
+     "price": 1770000,
+     "date": "24 Jul 2026"
+    }
+   ],
+   "pulse": "65 homes sold across Castor Bay over the past year, at a median of $1,640,000. The middle half sold between $1,130,000 and $2,230,000, and homes are taking a median 52 days to sell. That is about 1 in 40 homes changing hands.",
+   "stats": {
+    "sales": 65,
+    "median": 1640000,
+    "p25": 1130000,
+    "p75": 2230000,
+    "days": 52,
+    "average": 1774554,
+    "turnover": 0.02499
+   },
+   "oa_candidates": [
+    {
+     "address": "109A Beach Road",
+     "beds": 4,
+     "method": "Auction on 16 Sept, 9:30 am",
+     "agency": "Barfoot & Thompson Milford",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2324165174.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2324109857.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2324108696.jpg"
+     ]
+    },
+    {
+     "address": "45 Aberdeen Road",
+     "beds": 4,
+     "method": "Auction on 3 Sept, 10:00 am",
+     "agency": "Barfoot & Thompson Glenfield",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322950763.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322744951.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322744970.jpg"
+     ]
+    },
+    {
+     "address": "2A Peter Terrace",
+     "beds": 4,
+     "method": "Deadline sale by 17 Sept",
+     "agency": "Precision Real Estate Limited MREINZ",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322590127.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322590145.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322590130.jpg"
+     ]
+    }
+   ]
+  },
+  "Chatswood": {
+   "slug": "chatswood",
+   "email": 3883320,
+   "audience": 8075989,
+   "window": "the past fortnight",
+   "window_days": 14,
+   "gate_days": 15,
+   "oldest_days": 13,
+   "intro": "Here is what moved in Chatswood over the past fortnight: what sold, what is on the market, and the news worth knowing about.",
+   "sold_lines": [
+    "One home sold across Chatswood over the past fortnight.",
+    "",
+    "37 Chelsea View Drive  $1,250,000",
+    "3 bed, sold 5 Aug 2026, 57 days, private treaty"
+   ],
+   "sold_src": [
+    {
+     "address": "37 Chelsea View Drive",
+     "price": 1250000,
+     "date": "5 Aug 2026"
+    }
+   ],
+   "pulse": "39 homes sold across Chatswood over the past year, at a median of $1,540,000. The middle half sold between $1,290,000 and $1,700,000, and homes are taking a median 40 days to sell. That is about 1 in 35 homes changing hands.",
+   "stats": {
+    "sales": 39,
+    "median": 1540000,
+    "p25": 1290000,
+    "p75": 1700000,
+    "days": 40,
+    "average": 1480462,
+    "turnover": 0.02853
+   },
+   "oa_candidates": [
+    {
+     "address": "14 Heaton Grove",
+     "beds": 4,
+     "method": "Auction on 27 Aug, 10:00 am",
+     "agency": "Barfoot & Thompson Howick",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2321733554.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2321733568.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2321733575.jpg"
+     ]
+    },
+    {
+     "address": "199 Chelsea View Drive",
+     "beds": 4,
+     "method": "Price by negotiation",
+     "agency": "Prestige Real Estate International Ltd",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2321184569.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2321184604.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2321184746.jpg"
+     ]
+    },
+    {
+     "address": "7 Harper Street",
+     "beds": 5,
+     "method": "Price by negotiation",
+     "agency": "Harcourts Golden Links Real Estate Limited",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2317886065.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2317886079.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2318115535.jpg"
+     ]
+    }
+   ]
+  },
+  "Dairy Flat": {
+   "slug": "dairy-flat",
+   "email": 3883321,
+   "audience": 8076011,
+   "window": "the past three months",
+   "window_days": 92,
+   "gate_days": 94,
+   "oldest_days": 75,
+   "intro": "Here is what moved in Dairy Flat over the past three months: what sold, what is on the market, and the news worth knowing about.",
+   "sold_lines": [
+    "One home sold across Dairy Flat over the past three months.",
+    "",
+    "102 Kennedy Road  $2,427,000",
+    "7 bed, sold 4 Jun 2026, 35 days, auction"
+   ],
+   "sold_src": [
+    {
+     "address": "102 Kennedy Road",
+     "price": 2427000,
+     "date": "4 Jun 2026"
+    }
+   ],
+   "pulse": "36 homes sold across Dairy Flat over the past year, at a median of $1,670,000. The middle half sold between $1,210,000 and $2,750,000, and homes are taking a median 130 days to sell. That is about 1 in 55 homes changing hands.",
+   "stats": {
+    "sales": 36,
+    "median": 1670000,
+    "p25": 1210000,
+    "p75": 2750000,
+    "days": 130,
+    "average": 2004208,
+    "turnover": 0.01828
+   },
+   "oa_candidates": [
+    {
+     "address": "1 Runway Rise",
+     "beds": 5,
+     "method": "Price by negotiation",
+     "agency": "Paterson Luxury Limited",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2315873284.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2315873318.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2315873280.jpg"
+     ]
+    },
+    {
+     "address": "246 Blackbridge Road",
+     "beds": 4,
+     "method": "Price by negotiation",
+     "agency": "Bayleys Orewa (Mackys Real Estate Ltd)",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2307773359.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2307773344.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2307773501.jpg"
+     ]
+    },
+    {
+     "address": "126 Foley Quarry Road",
+     "beds": 6,
+     "method": "Price by negotiation",
+     "agency": "Barfoot & Thompson Mairangi Bay",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2304373176.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2304373142.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2304373159.jpg"
+     ]
+    }
+   ]
+  },
+  "Devonport": {
+   "slug": "devonport",
+   "email": 3883220,
+   "audience": 8076012,
+   "window": "this week",
+   "window_days": 7,
+   "gate_days": 8,
+   "oldest_days": 5,
+   "intro": "Here is what moved in Devonport this week: what sold, what is on the market, and the news worth knowing about.",
+   "sold_lines": [
+    "One home sold across Devonport this week.",
+    "",
+    "19 St Aubyn Street  $2,290,000",
+    "4 bed, sold 13 Aug 2026, 31 days, auction"
+   ],
+   "sold_src": [
+    {
+     "address": "19 St Aubyn Street",
+     "price": 2290000,
+     "date": "13 Aug 2026"
+    }
+   ],
+   "pulse": "98 homes sold across Devonport over the past year, at a median of $1,810,000. The middle half sold between $1,290,000 and $2,380,000, and homes are taking a median 50 days to sell. That is about 1 in 41 homes changing hands.",
+   "stats": {
+    "sales": 98,
+    "median": 1810000,
+    "p25": 1290000,
+    "p75": 2380000,
+    "days": 50,
+    "average": 2021038,
+    "turnover": 0.02419
+   },
+   "oa_candidates": [
+    {
+     "address": "42A Old Lake Road",
+     "beds": 4,
+     "method": "Deadline sale by 3 Sept",
+     "agency": "Harcourts Cooper & Co Devonport",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322637632.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322637642.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322637650.jpg"
+     ]
+    },
+    {
+     "address": "49 King Edward Parade",
+     "beds": 3,
+     "method": "For sale by tender, 8 Sept",
+     "agency": "Harcourts Cooper & Co Devonport",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322631224.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322631229.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322631242.jpg"
+     ]
+    },
+    {
+     "address": "7A Abbotsford Terrace",
+     "beds": 3,
+     "method": "For sale by tender, 2 Sept",
+     "agency": "Barfoot & Thompson Devonport",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322453747.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322454043.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322453755.jpg"
+     ]
+    }
+   ]
+  },
+  "Forrest Hill": {
+   "slug": "forrest-hill",
+   "email": 3883221,
+   "audience": 8076003,
+   "window": "this week",
+   "window_days": 7,
+   "gate_days": 8,
+   "oldest_days": 7,
+   "intro": "Here is what moved in Forrest Hill this week: what sold, what is on the market, and the news worth knowing about.",
+   "sold_lines": [
+    "Three homes sold across Forrest Hill this week.",
+    "",
+    "5/26 Morton Avenue  $1,160,000",
+    "4 bed, sold 14 Aug 2026, 203 days, private treaty",
+    "",
+    "3/166 East Coast Road  $855,000",
+    "2 bed, sold 12 Aug 2026, 84 days, private treaty",
+    "",
+    "198D Forrest Hill Road  $990,000",
+    "3 bed, sold 11 Aug 2026, 93 days, private treaty"
+   ],
+   "sold_src": [
+    {
+     "address": "5/26 Morton Avenue",
+     "price": 1160000,
+     "date": "14 Aug 2026"
+    },
+    {
+     "address": "3/166 East Coast Road",
+     "price": 855000,
+     "date": "12 Aug 2026"
+    },
+    {
+     "address": "198D Forrest Hill Road",
+     "price": 990000,
+     "date": "11 Aug 2026"
+    }
+   ],
+   "pulse": "165 homes sold across Forrest Hill over the past year, at a median of $1,300,000. The middle half sold between $1,100,000 and $1,540,000, and homes are taking a median 42 days to sell. That is about 1 in 31 homes changing hands.",
+   "stats": {
+    "sales": 165,
+    "median": 1300000,
+    "p25": 1100000,
+    "p75": 1540000,
+    "days": 42,
+    "average": 1334471,
+    "turnover": 0.03266
+   },
+   "oa_candidates": [
+    {
+     "address": "2/121 Forrest Hill Road",
+     "beds": 4,
+     "method": "Deadline sale by 26 Aug",
+     "agency": "Property Ventures Real Estate Limited",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2323172781.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2323172782.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2323172784.jpg"
+     ]
+    },
+    {
+     "address": "9 Lyttelton Avenue",
+     "beds": 3,
+     "method": "Auction on 3 Sept, 10:00 am",
+     "agency": "Barfoot & Thompson Milford",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322569137.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322569139.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322569140.jpg"
+     ]
+    },
+    {
+     "address": "33B Wairau Road",
+     "beds": 3,
+     "method": "Asking price $955,000",
+     "agency": "Harcourts Cooper & Co Milford",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2321526806.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2321526814.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2321548744.jpg"
+     ]
+    }
+   ]
+  },
+  "Glenfield": {
+   "slug": "glenfield",
+   "email": 3883179,
+   "audience": 8075994,
+   "window": "this week",
+   "window_days": 7,
+   "gate_days": 8,
+   "oldest_days": 7,
+   "intro": "Here is what moved in Glenfield this week: what sold, what is on the market, and the news worth knowing about.",
+   "sold_lines": [
+    "Four homes sold across Glenfield this week.",
+    "",
+    "7/6 Embassy Place  $811,000",
+    "3 bed, sold 14 Aug 2026, private treaty",
+    "",
+    "Lot 1/13 Emirau Place  $925,000",
+    "3 bed, sold 13 Aug 2026, 14 days, private treaty",
+    "",
+    "Lot 3/13 Emirau Place  $851,000",
+    "3 bed, sold 13 Aug 2026, 19 days, private treaty",
+    "",
+    "18 Sunward Rise  $1,020,000",
+    "sold 11 Aug 2026, private treaty"
+   ],
+   "sold_src": [
+    {
+     "address": "7/6 Embassy Place",
+     "price": 811000,
+     "date": "14 Aug 2026"
+    },
+    {
+     "address": "Lot 1/13 Emirau Place",
+     "price": 925000,
+     "date": "13 Aug 2026"
+    },
+    {
+     "address": "Lot 3/13 Emirau Place",
+     "price": 851000,
+     "date": "13 Aug 2026"
+    },
+    {
+     "address": "18 Sunward Rise",
+     "price": 1020000,
+     "date": "11 Aug 2026"
+    }
+   ],
+   "pulse": "319 homes sold across Glenfield over the past year, at a median of $975,000. The middle half sold between $829,000 and $1,180,000, and homes are taking a median 45 days to sell. That is about 1 in 31 homes changing hands.",
+   "stats": {
+    "sales": 319,
+    "median": 975000,
+    "p25": 829000,
+    "p75": 1180000,
+    "days": 45,
+    "average": 1011238,
+    "turnover": 0.03275
+   },
+   "oa_candidates": [
+    {
+     "address": "2/353 Glenfield Road",
+     "beds": 3,
+     "method": "Auction on 9 Sept, 9:30 am",
+     "agency": "Barfoot & Thompson Milford",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2324041979.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2324041981.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2324041984.jpg"
+     ]
+    },
+    {
+     "address": "18A Hogans Road",
+     "beds": 3,
+     "method": "Auction on 3 Sept, 10:00 am",
+     "agency": "Barfoot & Thompson Birkenhead",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322555725.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322555726.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322555728.jpg"
+     ]
+    },
+    {
+     "address": "20 Stanley Road",
+     "beds": 6,
+     "method": "Auction on 4 Sept, 2:00 pm",
+     "agency": "Harcourts Metro",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322436307.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322436218.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322436237.jpg"
+     ]
+    }
+   ]
+  },
+  "Greenhithe": {
+   "slug": "greenhithe",
+   "email": 3883322,
+   "audience": 8076000,
+   "window": "the past fortnight",
+   "window_days": 14,
+   "gate_days": 15,
+   "oldest_days": 12,
+   "intro": "Here is what moved in Greenhithe over the past fortnight: what sold, what is on the market, and the news worth knowing about.",
+   "sold_lines": [
+    "Two homes sold across Greenhithe over the past fortnight.",
+    "",
+    "59 Greenhithe Road  $1,250,000",
+    "3 bed, sold 8 Aug 2026, 43 days, auction",
+    "",
+    "18 Lemon Grove Lane  $1,700,000",
+    "5 bed, sold 6 Aug 2026, 41 days, auction"
+   ],
+   "sold_src": [
+    {
+     "address": "59 Greenhithe Road",
+     "price": 1250000,
+     "date": "8 Aug 2026"
+    },
+    {
+     "address": "18 Lemon Grove Lane",
+     "price": 1700000,
+     "date": "6 Aug 2026"
+    }
+   ],
+   "pulse": "107 homes sold across Greenhithe over the past year, at a median of $1,660,000. The middle half sold between $1,380,000 and $2,050,000, and homes are taking a median 45 days to sell. That is about 1 in 32 homes changing hands.",
+   "stats": {
+    "sales": 107,
+    "median": 1660000,
+    "p25": 1380000,
+    "p75": 2050000,
+    "days": 45,
+    "average": 1901621,
+    "turnover": 0.0312
+   },
+   "oa_candidates": [
+    {
+     "address": "25 Durbin Court",
+     "beds": 4,
+     "method": "Auction on 2 Sept, 9:30 am",
+     "agency": "Barfoot & Thompson Takapuna",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322467863.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322714746.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322903428.jpg"
+     ]
+    },
+    {
+     "address": "4 Kereru Grove",
+     "beds": 4,
+     "method": "Price by negotiation",
+     "agency": "Barfoot & Thompson Browns Bay",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2321374330.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2321374335.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2321374340.jpg"
+     ]
+    },
+    {
+     "address": "81B Rame Road",
+     "beds": 5,
+     "method": "Deadline sale by 26 Aug",
+     "agency": "Bayleys East Coast Bays",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2320274241.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2320274242.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2320274246.jpg"
+     ]
+    }
+   ]
+  },
+  "Hauraki": {
+   "slug": "hauraki",
+   "email": 3883323,
+   "audience": 8075996,
+   "window": "this week",
+   "window_days": 7,
+   "gate_days": 8,
+   "oldest_days": 1,
+   "intro": "Here is what moved in Hauraki this week: what sold, what is on the market, and the news worth knowing about.",
+   "sold_lines": [
+    "One home sold across Hauraki this week.",
+    "",
+    "3/11 Onepoto Road  $900,000",
+    "2 bed, sold 17 Aug 2026, 143 days, private treaty"
+   ],
+   "sold_src": [
+    {
+     "address": "3/11 Onepoto Road",
+     "price": 900000,
+     "date": "17 Aug 2026"
+    }
+   ],
+   "pulse": "78 homes sold across Hauraki over the past year, at a median of $1,600,000. The middle half sold between $1,340,000 and $2,250,000, and homes are taking a median 49 days to sell. That is about 1 in 36 homes changing hands.",
+   "stats": {
+    "sales": 78,
+    "median": 1600000,
+    "p25": 1340000,
+    "p75": 2250000,
+    "days": 49,
+    "average": 2025840,
+    "turnover": 0.02788
+   },
+   "oa_candidates": [
+    {
+     "address": "232 Lake Road",
+     "beds": 3,
+     "method": "For sale by tender, 3 Sept",
+     "agency": "Bayleys Remuera",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2295900259.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322950586.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322950587.jpg"
+     ]
+    },
+    {
+     "address": "1A Hart Road",
+     "beds": 3,
+     "method": "Deadline sale by 3 Sept",
+     "agency": "Premium Real Estate Group Ltd MREINZ",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322988397.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322814281.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322814282.jpg"
+     ]
+    },
+    {
+     "address": "4/15 Northboro Road",
+     "beds": 2,
+     "method": "Auction on 2 Sept, 9:30 am",
+     "agency": "Barfoot & Thompson Mairangi Bay",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322622662.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322622772.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322622924.jpg"
+     ]
+    }
+   ]
+  },
+  "Hillcrest": {
+   "slug": "hillcrest",
+   "email": 3883178,
+   "audience": 8076008,
+   "window": "this week",
+   "window_days": 7,
+   "gate_days": 8,
+   "oldest_days": 6,
+   "intro": "Here is what moved in Hillcrest this week: what sold, what is on the market, and the news worth knowing about.",
+   "sold_lines": [
+    "Two homes sold across Hillcrest this week.",
+    "",
+    "141 Ocean View Road  $1,090,000",
+    "4 bed, sold 14 Aug 2026, 65 days, private treaty",
+    "",
+    "Lot 2/25 Beatrice Avenue  $1,210,000",
+    "4 bed, sold 12 Aug 2026, 103 days, private treaty"
+   ],
+   "sold_src": [
+    {
+     "address": "141 Ocean View Road",
+     "price": 1090000,
+     "date": "14 Aug 2026"
+    },
+    {
+     "address": "Lot 2/25 Beatrice Avenue",
+     "price": 1210000,
+     "date": "12 Aug 2026"
+    }
+   ],
+   "pulse": "172 homes sold across Hillcrest over the past year, at a median of $1,170,000. The middle half sold between $905,000 and $1,430,000, and homes are taking a median 41 days to sell. That is about 1 in 34 homes changing hands.",
+   "stats": {
+    "sales": 172,
+    "median": 1170000,
+    "p25": 905000,
+    "p75": 1430000,
+    "days": 41,
+    "average": 1193464,
+    "turnover": 0.02961
+   },
+   "oa_candidates": [
+    {
+     "address": "257 Glenfield Road",
+     "beds": 3,
+     "method": "Auction on 27 Aug, 10:00 am",
+     "agency": "Barfoot & Thompson Birkenhead",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2321173117.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2321173149.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2321173166.jpg"
+     ]
+    },
+    {
+     "address": "6/112 Coronation Road",
+     "beds": 3,
+     "method": "Asking price $855,000",
+     "agency": "Barfoot & Thompson Northcote",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2243832483.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2243832497.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2243832495.jpg"
+     ]
+    },
+    {
+     "address": "8 Nicholson Place",
+     "beds": 4,
+     "method": "Price by negotiation",
+     "agency": "Barfoot & Thompson Albany",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2318688945.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2318688950.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2318688957.jpg"
+     ]
+    }
+   ]
+  },
+  "Hobsonville": {
+   "slug": "hobsonville",
+   "email": 3883176,
+   "audience": 8076007,
+   "window": "this week",
+   "window_days": 7,
+   "gate_days": 8,
+   "oldest_days": 6,
+   "intro": "Here is what moved in Hobsonville this week: what sold, what is on the market, and the news worth knowing about.",
+   "sold_lines": [
+    "Five homes sold across Hobsonville this week.",
+    "",
+    "10 Flounder Road  $1,120,000",
+    "4 bed, sold 18 Aug 2026, 13 days, private treaty",
+    "",
+    "2A Thomas Rielly Avenue  $990,000",
+    "3 bed, sold 14 Aug 2026, 67 days, private treaty",
+    "",
+    "5 Bannings Way  $1,180,000",
+    "3 bed, sold 13 Aug 2026, 51 days, private treaty",
+    "",
+    "4 Catalina Bay Drive  $1,340,000",
+    "3 bed, sold 13 Aug 2026, 28 days, auction",
+    "",
+    "262 Hobsonville Point Road  $525,000",
+    "1 bed, sold 12 Aug 2026, 72 days, private treaty"
+   ],
+   "sold_src": [
+    {
+     "address": "10 Flounder Road",
+     "price": 1120000,
+     "date": "18 Aug 2026"
+    },
+    {
+     "address": "2A Thomas Rielly Avenue",
+     "price": 990000,
+     "date": "14 Aug 2026"
+    },
+    {
+     "address": "5 Bannings Way",
+     "price": 1180000,
+     "date": "13 Aug 2026"
+    },
+    {
+     "address": "4 Catalina Bay Drive",
+     "price": 1340000,
+     "date": "13 Aug 2026"
+    },
+    {
+     "address": "262 Hobsonville Point Road",
+     "price": 525000,
+     "date": "12 Aug 2026"
+    }
+   ],
+   "pulse": "375 homes sold across Hobsonville over the past year, at a median of $1,010,000. The middle half sold between $833,000 and $1,250,000, and homes are taking a median 51 days to sell. That is about 1 in 21 homes changing hands.",
+   "stats": {
+    "sales": 375,
+    "median": 1010000,
+    "p25": 833000,
+    "p75": 1250000,
+    "days": 51,
+    "average": 1069627,
+    "turnover": 0.04752
+   },
+   "oa_candidates": [
+    {
+     "address": "273B Hobsonville Road",
+     "beds": 3,
+     "method": "Auction on 10 Sept, 12:00 pm",
+     "agency": "Harcourts Cooper & Co Hobsonville",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2324088552.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2324088558.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2324088567.jpg"
+     ]
+    },
+    {
+     "address": "6 Hato Road",
+     "beds": 5,
+     "method": "Deadline sale by 15 Sept",
+     "agency": "Bayleys Northwest",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2323885111.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2323885117.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2323885121.jpg"
+     ]
+    },
+    {
+     "address": "9 Tiller Street",
+     "beds": 4,
+     "method": "Price by negotiation",
+     "agency": "Harcourts Golden Links Real Estate Limited",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2323251876.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2323251886.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2323251923.jpg"
+     ]
+    }
+   ]
+  },
+  "Long Bay": {
+   "slug": "long-bay",
+   "email": 3883224,
+   "audience": 8076006,
+   "window": "this week",
+   "window_days": 7,
+   "gate_days": 8,
+   "oldest_days": 7,
+   "intro": "Here is what moved in Long Bay this week: what sold, what is on the market, and the news worth knowing about.",
+   "sold_lines": [
+    "Two homes sold across Long Bay this week.",
+    "",
+    "169 Te Oneroa Way  $2,610,000",
+    "5 bed, sold 14 Aug 2026, 80 days, private treaty",
+    "",
+    "20 Streamview Way  $2,250,000",
+    "5 bed, sold 11 Aug 2026, 86 days, private treaty"
+   ],
+   "sold_src": [
+    {
+     "address": "169 Te Oneroa Way",
+     "price": 2610000,
+     "date": "14 Aug 2026"
+    },
+    {
+     "address": "20 Streamview Way",
+     "price": 2250000,
+     "date": "11 Aug 2026"
+    }
+   ],
+   "pulse": "134 homes sold across Long Bay over the past year, at a median of $1,760,000. The middle half sold between $1,120,000 and $2,180,000, and homes are taking a median 55 days to sell. That is about 1 in 16 homes changing hands.",
+   "stats": {
+    "sales": 134,
+    "median": 1760000,
+    "p25": 1120000,
+    "p75": 2180000,
+    "days": 55,
+    "average": 1759810,
+    "turnover": 0.06421
+   },
+   "oa_candidates": [
+    {
+     "address": "10B Windlass Street",
+     "beds": 4,
+     "method": "Deadline sale by 20 Aug",
+     "agency": "Bayleys East Coast Bays",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2320456273.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2320456268.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2320456276.jpg"
+     ]
+    },
+    {
+     "address": "5 Kina Place",
+     "beds": 5,
+     "method": "Price by negotiation",
+     "agency": "Barfoot & Thompson Mairangi Bay",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2318717705.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2318717846.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2318717689.jpg"
+     ]
+    },
+    {
+     "address": "14 Streamview Way",
+     "beds": 5,
+     "method": "Price by negotiation",
+     "agency": "Harcourts Cooper & Co Mairangi Bay",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2318070677.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2318070679.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2318070683.jpg"
+     ]
+    }
+   ]
+  },
+  "Mairangi Bay": {
+   "slug": "mairangi-bay",
+   "email": 3882983,
+   "audience": 8076013,
+   "window": "this week",
+   "window_days": 7,
+   "gate_days": 8,
+   "oldest_days": 6,
+   "intro": "Here is what moved in Mairangi Bay this week: what sold, what is on the market, and the news worth knowing about.",
+   "sold_lines": [
+    "Two homes sold across Mairangi Bay this week.",
+    "",
+    "11 Kiri Place  $2,075,000",
+    "4 bed, sold 13 Aug 2026, 349 days, auction",
+    "",
+    "1/49 Hastings Road  $2,237,000",
+    "5 bed, sold 12 Aug 2026, 40 days, auction"
+   ],
+   "sold_src": [
+    {
+     "address": "11 Kiri Place",
+     "price": 2075000,
+     "date": "13 Aug 2026"
+    },
+    {
+     "address": "1/49 Hastings Road",
+     "price": 2237000,
+     "date": "12 Aug 2026"
+    }
+   ],
+   "pulse": "108 homes sold across Mairangi Bay over the past year, at a median of $1,660,000. The middle half sold between $1,320,000 and $1,960,000, and homes are taking a median 43 days to sell. That is about 1 in 28 homes changing hands.",
+   "stats": {
+    "sales": 108,
+    "median": 1660000,
+    "p25": 1320000,
+    "p75": 1960000,
+    "days": 43,
+    "average": 1760915,
+    "turnover": 0.03593
+   },
+   "oa_candidates": [
+    {
+     "address": "66 Newhaven Terrace",
+     "beds": 4,
+     "method": "Auction on 10 Sept, 10:00 am",
+     "agency": "Barfoot & Thompson Browns Bay",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2323903653.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2323903680.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2323903690.jpg"
+     ]
+    },
+    {
+     "address": "1a Agathis Avenue",
+     "beds": 5,
+     "method": "Auction on 3 Sept, 12:00 pm",
+     "agency": "Harcourts Cooper & Co Milford",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322644056.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322644065.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322644069.jpg"
+     ]
+    },
+    {
+     "address": "327 East Coast Road",
+     "beds": 4,
+     "method": "Auction on 9 Sept, 9:30 am",
+     "agency": "Barfoot & Thompson Meadowbank",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322612392.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322612410.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2323388431.jpg"
+     ]
+    }
+   ]
+  },
+  "Milford": {
+   "slug": "milford",
+   "email": 3861187,
+   "audience": 8076009,
+   "window": "the past month",
+   "window_days": 31,
+   "gate_days": 32,
+   "oldest_days": 27,
+   "intro": "Here is what moved in Milford over the past month: what sold, what is on the market, and the news worth knowing about.",
+   "sold_lines": [
+    "Six homes sold across Milford over the past month.",
+    "",
+    "8A Stanley Avenue  $1,580,000",
+    "4 bed, sold 3 Aug 2026, 131 days, private treaty",
+    "",
+    "12C Gordon Avenue  $1,300,000",
+    "4 bed, sold 30 Jul 2026, 120 days, private treaty",
+    "",
+    "3/78 Nile Road  $1,014,000",
+    "2 bed, sold 29 Jul 2026, 38 days, private treaty",
+    "",
+    "3/68 Nile Road  $850,000",
+    "2 bed, sold 28 Jul 2026, 106 days, private treaty",
+    "",
+    "1/58 Corunna Road  $1,150,000",
+    "2 bed, sold 23 Jul 2026, 36 days, auction",
+    "",
+    "63 Milford Road  $3,945,000",
+    "3 bed, sold 22 Jul 2026, 50 days, private treaty"
+   ],
+   "sold_src": [
+    {
+     "address": "8A Stanley Avenue",
+     "price": 1580000,
+     "date": "3 Aug 2026"
+    },
+    {
+     "address": "12C Gordon Avenue",
+     "price": 1300000,
+     "date": "30 Jul 2026"
+    },
+    {
+     "address": "3/78 Nile Road",
+     "price": 1014000,
+     "date": "29 Jul 2026"
+    },
+    {
+     "address": "3/68 Nile Road",
+     "price": 850000,
+     "date": "28 Jul 2026"
+    },
+    {
+     "address": "1/58 Corunna Road",
+     "price": 1150000,
+     "date": "23 Jul 2026"
+    },
+    {
+     "address": "63 Milford Road",
+     "price": 3945000,
+     "date": "22 Jul 2026"
+    }
+   ],
+   "pulse": "115 homes sold across Milford over the past year, at a median of $1,470,000. The middle half sold between $1,150,000 and $2,050,000, and homes are taking a median 46 days to sell. That is about 1 in 51 homes changing hands.",
+   "stats": {
+    "sales": 115,
+    "median": 1470000,
+    "p25": 1150000,
+    "p75": 2050000,
+    "days": 46,
+    "average": 1850139,
+    "turnover": 0.01969
+   },
+   "oa_candidates": [
+    {
+     "address": "6C Seaview Road",
+     "beds": 5,
+     "method": "Price by negotiation",
+     "agency": "Barfoot & Thompson Albany",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2324111595.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2324111615.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2324111291.jpg"
+     ]
+    },
+    {
+     "address": "2/9 Alma Road",
+     "beds": 3,
+     "method": "Auction on 9 Sept, 9:30 am",
+     "agency": "Barfoot & Thompson Milford",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2324012967.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2324012998.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2324013023.jpg"
+     ]
+    },
+    {
+     "address": "75 Forrest Hill Road",
+     "beds": 3,
+     "method": "Auction on 9 Sept, 9:30 am",
+     "agency": "Barfoot & Thompson Milford",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2324013721.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2324013725.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2324013733.jpg"
+     ]
+    }
+   ]
+  },
+  "Murrays Bay": {
+   "slug": "murrays-bay",
+   "email": 3883191,
+   "audience": 8076017,
+   "window": "the past month",
+   "window_days": 31,
+   "gate_days": 32,
+   "oldest_days": 27,
+   "intro": "Here is what moved in Murrays Bay over the past month: what sold, what is on the market, and the news worth knowing about.",
+   "sold_lines": [
+    "Four homes sold across Murrays Bay over the past month.",
+    "",
+    "9 Saddleback Rise  $1,455,000",
+    "4 bed, sold 29 Jul 2026, 40 days, private treaty",
+    "",
+    "2/1 Montana Avenue  $1,438,000",
+    "4 bed, sold 29 Jul 2026, 140 days, private treaty",
+    "",
+    "23A Penguin Drive  $1,023,000",
+    "5 bed, sold 23 Jul 2026, 37 days, auction",
+    "",
+    "454B Beach Road  $1,570,000",
+    "5 bed, sold 22 Jul 2026, 65 days, private treaty"
+   ],
+   "sold_src": [
+    {
+     "address": "9 Saddleback Rise",
+     "price": 1455000,
+     "date": "29 Jul 2026"
+    },
+    {
+     "address": "2/1 Montana Avenue",
+     "price": 1438000,
+     "date": "29 Jul 2026"
+    },
+    {
+     "address": "23A Penguin Drive",
+     "price": 1023000,
+     "date": "23 Jul 2026"
+    },
+    {
+     "address": "454B Beach Road",
+     "price": 1570000,
+     "date": "22 Jul 2026"
+    }
+   ],
+   "pulse": "85 homes sold across Murrays Bay over the past year, at a median of $1,580,000. The middle half sold between $1,330,000 and $1,850,000, and homes are taking a median 40 days to sell. That is about 1 in 27 homes changing hands.",
+   "stats": {
+    "sales": 85,
+    "median": 1580000,
+    "p25": 1330000,
+    "p75": 1850000,
+    "days": 40,
+    "average": 1763881,
+    "turnover": 0.03743
+   },
+   "oa_candidates": [
+    {
+     "address": "18 Folkestone Street",
+     "beds": 6,
+     "method": "Auction on 10 Sept, 12:00 pm",
+     "agency": "Harcourts Cooper & Co Takapuna",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2323858816.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2323858818.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2323858819.jpg"
+     ]
+    },
+    {
+     "address": "11A Saddleback Rise",
+     "beds": 3,
+     "method": "Deadline sale by 27 Aug",
+     "agency": "Prestige Real Estate International Ltd",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2321976604.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2321976613.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2321976616.jpg"
+     ]
+    },
+    {
+     "address": "Lot2/9 Macnay Way",
+     "beds": 4,
+     "method": "Price by negotiation",
+     "agency": "Barfoot & Thompson Albany",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2321720137.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2321720144.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2321720147.jpg"
+     ]
+    }
+   ]
+  },
+  "Northcote": {
+   "slug": "northcote",
+   "email": 3883193,
+   "audience": 8075998,
+   "window": "this week",
+   "window_days": 7,
+   "gate_days": 8,
+   "oldest_days": 1,
+   "intro": "Here is what moved in Northcote this week: what sold, what is on the market, and the news worth knowing about.",
+   "sold_lines": [
+    "One home sold across Northcote this week.",
+    "",
+    "21E Arahia Street  $1,420,000",
+    "3 bed, sold 17 Aug 2026, 25 days, private treaty"
+   ],
+   "sold_src": [
+    {
+     "address": "21E Arahia Street",
+     "price": 1420000,
+     "date": "17 Aug 2026"
+    }
+   ],
+   "pulse": "143 homes sold across Northcote over the past year, at a median of $980,000. The middle half sold between $790,000 and $1,300,000, and homes are taking a median 44 days to sell. That is about 1 in 41 homes changing hands.",
+   "stats": {
+    "sales": 143,
+    "median": 980000,
+    "p25": 790000,
+    "p75": 1300000,
+    "days": 44,
+    "average": 1067345,
+    "turnover": 0.02428
+   },
+   "oa_candidates": [
+    {
+     "address": "106/38C Fraser Avenue",
+     "beds": 3,
+     "method": "Deadline sale by 14 Sept",
+     "agency": "Barfoot & Thompson Mairangi Bay",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2323865741.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2323865753.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2323865760.jpg"
+     ]
+    },
+    {
+     "address": "4/70 Raleigh Road",
+     "beds": 4,
+     "method": "Auction on 28 Aug, 10:00 am",
+     "agency": "Barfoot & Thompson Manurewa",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2320654520.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2320654521.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2321191558.jpg"
+     ]
+    },
+    {
+     "address": "22 Tarahanga Street",
+     "beds": 5,
+     "method": "Auction on 19 Aug, 10:00 am",
+     "agency": "Bayleys Remuera",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2319297994.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2319297986.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2319298001.jpg"
+     ]
+    }
+   ]
+  },
+  "Northcross": {
+   "slug": "northcross",
+   "email": 3883324,
+   "audience": 8076018,
+   "window": "this week",
+   "window_days": 7,
+   "gate_days": 8,
+   "oldest_days": 4,
+   "intro": "Here is what moved in Northcross this week: what sold, what is on the market, and the news worth knowing about.",
+   "sold_lines": [
+    "One home sold across Northcross this week.",
+    "",
+    "1/26 Nor'east Drive  $1,092,000",
+    "4 bed, sold 14 Aug 2026, 53 days, auction"
+   ],
+   "sold_src": [
+    {
+     "address": "1/26 Nor'east Drive",
+     "price": 1092000,
+     "date": "14 Aug 2026"
+    }
+   ],
+   "pulse": "57 homes sold across Northcross over the past year, at a median of $1,200,000. The middle half sold between $940,000 and $1,430,000, and homes are taking a median 36 days to sell. That is about 1 in 33 homes changing hands.",
+   "stats": {
+    "sales": 57,
+    "median": 1200000,
+    "p25": 940000,
+    "p75": 1430000,
+    "days": 36,
+    "average": 1256495,
+    "turnover": 0.03053
+   },
+   "oa_candidates": [
+    {
+     "address": "20A Barker Rise",
+     "beds": 4,
+     "method": "Price by negotiation",
+     "agency": "Barfoot & Thompson Albany",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2319926177.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2319926185.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2319926193.jpg"
+     ]
+    },
+    {
+     "address": "4/20 Barker Rise",
+     "beds": 4,
+     "method": "Price by negotiation",
+     "agency": "Harcourts Cooper & Co Milford",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2317679823.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2317679819.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2317679818.jpg"
+     ]
+    },
+    {
+     "address": "7 Pharlap Drive",
+     "beds": 3,
+     "method": "Price by negotiation",
+     "agency": "Harcourts Cooper & Co Browns Bay",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2228899842.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2228899807.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2228899811.jpg"
+     ]
+    }
+   ]
+  },
+  "Oteha": {
+   "slug": "oteha",
+   "email": 3883325,
+   "audience": 8076005,
+   "window": "this week",
+   "window_days": 7,
+   "gate_days": 8,
+   "oldest_days": 1,
+   "intro": "Here is what moved in Oteha this week: what sold, what is on the market, and the news worth knowing about.",
+   "sold_lines": [
+    "One home sold across Oteha this week.",
+    "",
+    "4/35 Fields Parade  $625,000",
+    "3 bed, sold 17 Aug 2026, 56 days, private treaty"
+   ],
+   "sold_src": [
+    {
+     "address": "4/35 Fields Parade",
+     "price": 625000,
+     "date": "17 Aug 2026"
+    }
+   ],
+   "pulse": "70 homes sold across Oteha over the past year, at a median of $1,130,000. The middle half sold between $650,000 and $1,550,000, and homes are taking a median 36 days to sell. That is about 1 in 30 homes changing hands.",
+   "stats": {
+    "sales": 70,
+    "median": 1130000,
+    "p25": 650000,
+    "p75": 1550000,
+    "days": 36,
+    "average": 1232359,
+    "turnover": 0.0338
+   },
+   "oa_candidates": [
+    {
+     "address": "8/9 Fields Parade",
+     "beds": 1,
+     "method": "Deadline sale by 27 Aug",
+     "agency": "Harcourts Cooper & Co Browns Bay",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2323032763.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2323032766.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2323032770.jpg"
+     ]
+    },
+    {
+     "address": "1/34 Fields Parade",
+     "beds": 3,
+     "method": "Asking price $699,000",
+     "agency": "Barfoot & Thompson Milford",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322486143.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322486161.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322486173.jpg"
+     ]
+    },
+    {
+     "address": "11/70 Fernhill Way",
+     "beds": 2,
+     "method": "Auction on 22 Aug, 3:00 pm",
+     "agency": "Barfoot & Thompson Browns Bay",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2320358554.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2320358527.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2320358562.jpg"
+     ]
+    }
+   ]
+  },
+  "Pāremoremo": {
+   "slug": "paremoremo",
+   "email": 3883326,
+   "audience": 8076016,
+   "window": "the past fortnight",
+   "window_days": 14,
+   "gate_days": 15,
+   "oldest_days": 12,
+   "intro": "Here is what moved in Pāremoremo over the past fortnight: what sold, what is on the market, and the news worth knowing about.",
+   "sold_lines": [
+    "One home sold across Pāremoremo over the past fortnight.",
+    "",
+    "42 Ngarahana Avenue  $1,350,000",
+    "4 bed, sold 6 Aug 2026, 41 days, private treaty"
+   ],
+   "sold_src": [
+    {
+     "address": "42 Ngarahana Avenue",
+     "price": 1350000,
+     "date": "6 Aug 2026"
+    }
+   ],
+   "pulse": "9 homes sold across Pāremoremo over the past year, at a median of $1,630,000. The middle half sold between $950,000 and $1,920,000, and homes are taking a median 50 days to sell. That is about 1 in 78 homes changing hands.",
+   "stats": {
+    "sales": 9,
+    "median": 1630000,
+    "p25": 950000,
+    "p75": 1920000,
+    "days": 50,
+    "average": 1565244,
+    "turnover": 0.01288
+   },
+   "oa_candidates": [
+    {
+     "address": "5b Chatham Ave",
+     "beds": 3,
+     "method": "Asking price $968,688",
+     "agency": "G.J. Gardner Homes",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2320172087.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2320172093.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2320172082.jpg"
+     ]
+    },
+    {
+     "address": "143 Attwood Road",
+     "beds": 3,
+     "method": "Price by negotiation",
+     "agency": "Barfoot & Thompson Coatesville",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2319487885.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2319487895.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2319487901.jpg"
+     ]
+    },
+    {
+     "address": "5a Chatham Ave",
+     "beds": 2,
+     "method": "Asking price $869,869",
+     "agency": "G.J. Gardner Homes",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2319342574.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2310227855.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2260613480.jpg"
+     ]
+    }
+   ]
+  },
+  "Rosedale": {
+   "slug": "rosedale",
+   "email": 3883327,
+   "audience": 8076014,
+   "window": "the past fortnight",
+   "window_days": 14,
+   "gate_days": 15,
+   "oldest_days": 8,
+   "intro": "Here is what moved in Rosedale over the past fortnight: what sold, what is on the market, and the news worth knowing about.",
+   "sold_lines": [
+    "One home sold across Rosedale over the past fortnight.",
+    "",
+    "103/46 Rosedale Road  $455,000",
+    "1 bed, sold 10 Aug 2026, 54 days, private treaty"
+   ],
+   "sold_src": [
+    {
+     "address": "103/46 Rosedale Road",
+     "price": 455000,
+     "date": "10 Aug 2026"
+    }
+   ],
+   "pulse": "7 homes sold across Rosedale over the past year, at a median of $1,390,000. The middle half sold between $740,000 and $1,500,000, and homes are taking a median 20 days to sell. That is about 1 in 641 homes changing hands.",
+   "stats": {
+    "sales": 7,
+    "median": 1390000,
+    "p25": 740000,
+    "p75": 1500000,
+    "days": 20,
+    "average": 1208571,
+    "turnover": 0.00156
+   },
+   "oa_candidates": [
+    {
+     "address": "403/46 Rosedale Road",
+     "beds": 1,
+     "method": "Price by negotiation",
+     "agency": "Barfoot & Thompson Albany",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2320722185.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2320722191.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2320722193.jpg"
+     ]
+    },
+    {
+     "address": "239I Rosedale Road",
+     "beds": 2,
+     "method": "Asking price $450,000",
+     "agency": "Harcourts Infinite",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2283554909.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2283554940.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2283554948.jpg"
+     ]
+    },
+    {
+     "address": "G10/46 Rosedale Road",
+     "beds": 2,
+     "method": "Asking price $715,000",
+     "agency": "Mars Realty Group Limited",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2319464660.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2319464662.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2319464664.jpg"
+     ]
+    }
+   ]
+  },
+  "Rothesay Bay": {
+   "slug": "rothesay-bay",
+   "email": 3883192,
+   "audience": 8075990,
+   "window": "this week",
+   "window_days": 7,
+   "gate_days": 8,
+   "oldest_days": 1,
+   "intro": "Here is what moved in Rothesay Bay this week: what sold, what is on the market, and the news worth knowing about.",
+   "sold_lines": [
+    "One home sold across Rothesay Bay this week.",
+    "",
+    "2A Knights Close  $1,600,000",
+    "4 bed, sold 17 Aug 2026, 29 days, private treaty"
+   ],
+   "sold_src": [
+    {
+     "address": "2A Knights Close",
+     "price": 1600000,
+     "date": "17 Aug 2026"
+    }
+   ],
+   "pulse": "92 homes sold across Rothesay Bay over the past year, at a median of $1,390,000. The middle half sold between $1,010,000 and $1,740,000, and homes are taking a median 42 days to sell. That is about 1 in 21 homes changing hands.",
+   "stats": {
+    "sales": 92,
+    "median": 1390000,
+    "p25": 1010000,
+    "p75": 1740000,
+    "days": 42,
+    "average": 1492933,
+    "turnover": 0.04868
+   },
+   "oa_candidates": [
+    {
+     "address": "29B Braemar Road",
+     "beds": 4,
+     "method": "Price by negotiation",
+     "agency": "Barfoot & Thompson Albany",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2324035280.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2324035288.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2324035307.jpg"
+     ]
+    },
+    {
+     "address": "3/18 Knights Road",
+     "beds": 2,
+     "method": "Auction on 3 Sept, 10:00 am",
+     "agency": "Barfoot & Thompson Takapuna",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322991159.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322991164.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322991169.jpg"
+     ]
+    },
+    {
+     "address": "29A Braemar Road",
+     "beds": 4,
+     "method": "Deadline sale by 28 Aug",
+     "agency": "Barfoot & Thompson Albany",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2321756356.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2321756392.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2321756430.jpg"
+     ]
+    }
+   ]
+  },
+  "Sunnynook": {
+   "slug": "sunnynook",
+   "email": 3883180,
+   "audience": 8075988,
+   "window": "this week",
+   "window_days": 7,
+   "gate_days": 8,
+   "oldest_days": 7,
+   "intro": "Here is what moved in Sunnynook this week: what sold, what is on the market, and the news worth knowing about.",
+   "sold_lines": [
+    "Three homes sold across Sunnynook this week.",
+    "",
+    "72F Sycamore Dr  $1,035,000",
+    "3 bed, sold 14 Aug 2026, 54 days, private treaty",
+    "",
+    "5/46 Cockayne Crescent  $1,300,000",
+    "sold 12 Aug 2026, 1 days, private treaty",
+    "",
+    "4/21 Tonkin Dr  $1,320,000",
+    "4 bed, sold 11 Aug 2026, 9 days, private treaty"
+   ],
+   "sold_src": [
+    {
+     "address": "72F Sycamore Dr",
+     "price": 1035000,
+     "date": "14 Aug 2026"
+    },
+    {
+     "address": "5/46 Cockayne Crescent",
+     "price": 1300000,
+     "date": "12 Aug 2026"
+    },
+    {
+     "address": "4/21 Tonkin Dr",
+     "price": 1320000,
+     "date": "11 Aug 2026"
+    }
+   ],
+   "pulse": "107 homes sold across Sunnynook over the past year, at a median of $1,240,000. The middle half sold between $1,050,000 and $1,370,000, and homes are taking a median 37 days to sell. That is about 1 in 23 homes changing hands.",
+   "stats": {
+    "sales": 107,
+    "median": 1240000,
+    "p25": 1050000,
+    "p75": 1370000,
+    "days": 37,
+    "average": 1229204,
+    "turnover": 0.04268
+   },
+   "oa_candidates": [
+    {
+     "address": "1/279 Sunset Road",
+     "beds": 3,
+     "method": "Auction on 3 Sept, 10:00 am",
+     "agency": "Barfoot & Thompson Northcote",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322968809.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322968820.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322968837.jpg"
+     ]
+    },
+    {
+     "address": "5 Kapiti Place",
+     "beds": 3,
+     "method": "Price by negotiation",
+     "agency": "Barfoot & Thompson Mairangi Bay",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2321909664.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2321909696.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2321909711.jpg"
+     ]
+    },
+    {
+     "address": "Lot 1, 2, 3/32 Lavery Place",
+     "beds": 4,
+     "method": "Deadline sale by 27 Aug",
+     "agency": "Barfoot & Thompson Torbay",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2321769112.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2321769119.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2321769138.jpg"
+     ]
+    }
+   ]
+  },
+  "Takapuna": {
+   "slug": "takapuna",
+   "email": 3883190,
+   "audience": 8076010,
+   "window": "this week",
+   "window_days": 7,
+   "gate_days": 8,
+   "oldest_days": 4,
+   "intro": "Here is what moved in Takapuna this week: what sold, what is on the market, and the news worth knowing about.",
+   "sold_lines": [
+    "Two homes sold across Takapuna this week.",
+    "",
+    "Lot6/11 The Terrace  $2,000,000",
+    "sold 17 Aug 2026, private treaty",
+    "",
+    "4E/175 Hurstmere Road  $1,390,000",
+    "2 bed, sold 14 Aug 2026, 443 days, private treaty"
+   ],
+   "sold_src": [
+    {
+     "address": "Lot6/11 The Terrace",
+     "price": 2000000,
+     "date": "17 Aug 2026"
+    },
+    {
+     "address": "4E/175 Hurstmere Road",
+     "price": 1390000,
+     "date": "14 Aug 2026"
+    }
+   ],
+   "pulse": "152 homes sold across Takapuna over the past year, at a median of $1,660,000. The middle half sold between $1,160,000 and $2,340,000, and homes are taking a median 67 days to sell. That is about 1 in 47 homes changing hands.",
+   "stats": {
+    "sales": 152,
+    "median": 1660000,
+    "p25": 1160000,
+    "p75": 2340000,
+    "days": 67,
+    "average": 2140524,
+    "turnover": 0.02136
+   },
+   "oa_candidates": [
+    {
+     "address": "1/41 Anzac Street",
+     "beds": 2,
+     "method": "Auction on 9 Sept, 9:30 am",
+     "agency": "Barfoot & Thompson Mt Eden",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2323881941.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2323882000.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2324016617.jpg"
+     ]
+    },
+    {
+     "address": "4/1 Napier Avenue",
+     "beds": 2,
+     "method": "Asking price $1,649,000",
+     "agency": "New Zealand Sotheby's International Realty North",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2291534711.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322750226.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2291534706.jpg"
+     ]
+    },
+    {
+     "address": "914/9-17 Byron Avenue",
+     "beds": 1,
+     "method": "Deadline sale by 20 Aug",
+     "agency": "Barfoot & Thompson Browns Bay",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322649552.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322649568.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322649576.jpg"
+     ]
+    }
+   ]
+  },
+  "Torbay": {
+   "slug": "torbay",
+   "email": 3883177,
+   "audience": 8075992,
+   "window": "this week",
+   "window_days": 7,
+   "gate_days": 8,
+   "oldest_days": 7,
+   "intro": "Here is what moved in Torbay this week: what sold, what is on the market, and the news worth knowing about.",
+   "sold_lines": [
+    "Three homes sold across Torbay this week.",
+    "",
+    "14B Gerontius Glade  $1,040,000",
+    "4 bed, sold 14 Aug 2026, 18 days, private treaty",
+    "",
+    "Lot 1/14 Gerontius Glade  $1,070,000",
+    "4 bed, sold 13 Aug 2026, private treaty",
+    "",
+    "2 Corric Hill  $1,245,000",
+    "4 bed, sold 11 Aug 2026, 11 days, private treaty"
+   ],
+   "sold_src": [
+    {
+     "address": "14B Gerontius Glade",
+     "price": 1040000,
+     "date": "14 Aug 2026"
+    },
+    {
+     "address": "Lot 1/14 Gerontius Glade",
+     "price": 1070000,
+     "date": "13 Aug 2026"
+    },
+    {
+     "address": "2 Corric Hill",
+     "price": 1245000,
+     "date": "11 Aug 2026"
+    }
+   ],
+   "pulse": "259 homes sold across Torbay over the past year, at a median of $1,150,000. The middle half sold between $936,000 and $1,340,000, and homes are taking a median 45 days to sell. That is about 1 in 28 homes changing hands.",
+   "stats": {
+    "sales": 259,
+    "median": 1150000,
+    "p25": 936000,
+    "p75": 1340000,
+    "days": 45,
+    "average": 1205258,
+    "turnover": 0.03615
+   },
+   "oa_candidates": []
+  },
+  "Tōtara Vale": {
+   "slug": "totara-vale",
+   "email": 3883328,
+   "audience": 8076001,
+   "window": "this week",
+   "window_days": 7,
+   "gate_days": 8,
+   "oldest_days": 5,
+   "intro": "Here is what moved in Tōtara Vale this week: what sold, what is on the market, and the news worth knowing about.",
+   "sold_lines": [
+    "Two homes sold across Tōtara Vale this week.",
+    "",
+    "113 Sunset Road  $1,115,000",
+    "4 bed, sold 15 Aug 2026, 110 days, private treaty",
+    "",
+    "115 Athena Drive  $1,210,000",
+    "5 bed, sold 13 Aug 2026, 36 days, auction"
+   ],
+   "sold_src": [
+    {
+     "address": "113 Sunset Road",
+     "price": 1115000,
+     "date": "15 Aug 2026"
+    },
+    {
+     "address": "115 Athena Drive",
+     "price": 1210000,
+     "date": "13 Aug 2026"
+    }
+   ],
+   "pulse": "106 homes sold across Tōtara Vale over the past year, at a median of $965,000. The middle half sold between $875,000 and $1,110,000, and homes are taking a median 36 days to sell. That is about 1 in 32 homes changing hands.",
+   "stats": {
+    "sales": 106,
+    "median": 965000,
+    "p25": 875000,
+    "p75": 1110000,
+    "days": 36,
+    "average": 986504,
+    "turnover": 0.03126
+   },
+   "oa_candidates": [
+    {
+     "address": "20 Ellice Road",
+     "beds": 3,
+     "method": "Deadline sale by 1 Sept",
+     "agency": "Harcourts Cooper & Co North Shore Central",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322753140.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322753154.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322753161.jpg"
+     ]
+    },
+    {
+     "address": "12 Tetrarch Place",
+     "beds": 5,
+     "method": "Auction on 20 Aug, 12:00 pm",
+     "agency": "Harcourts Cooper & Co Birkenhead",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2320468992.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2320468994.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2320468996.jpg"
+     ]
+    },
+    {
+     "address": "1/2 Cheval Drive",
+     "beds": 2,
+     "method": "Price by negotiation",
+     "agency": "Barfoot & Thompson Beach Haven",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2319352061.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2319352007.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2319352065.jpg"
+     ]
+    }
+   ]
+  },
+  "Waiake": {
+   "slug": "waiake",
+   "email": 3883329,
+   "audience": 8076022,
+   "window": "the past three months",
+   "window_days": 92,
+   "gate_days": 94,
+   "oldest_days": 68,
+   "intro": "Here is what moved in Waiake over the past three months: what sold, what is on the market, and the news worth knowing about.",
+   "sold_lines": [
+    "Three homes sold across Waiake over the past three months.",
+    "",
+    "66A Hebron Road  $980,000",
+    "3 bed, sold 8 Jul 2026, 287 days, private treaty",
+    "",
+    "11 Sharon Road  $2,480,000",
+    "5 bed, sold 26 Jun 2026, 37 days, private treaty",
+    "",
+    "1/85 Deep Creek Road  $905,000",
+    "4 bed, sold 11 Jun 2026, 95 days, private treaty"
+   ],
+   "sold_src": [
+    {
+     "address": "66A Hebron Road",
+     "price": 980000,
+     "date": "8 Jul 2026"
+    },
+    {
+     "address": "11 Sharon Road",
+     "price": 2480000,
+     "date": "26 Jun 2026"
+    },
+    {
+     "address": "1/85 Deep Creek Road",
+     "price": 905000,
+     "date": "11 Jun 2026"
+    }
+   ],
+   "pulse": "31 homes sold across Waiake over the past year, at a median of $1,320,000. The middle half sold between $965,000 and $1,630,000, and homes are taking a median 52 days to sell. That is about 1 in 29 homes changing hands.",
+   "stats": {
+    "sales": 31,
+    "median": 1320000,
+    "p25": 965000,
+    "p75": 1630000,
+    "days": 52,
+    "average": 1380254,
+    "turnover": 0.03437
+   },
+   "oa_candidates": [
+    {
+     "address": "50 Hebron Road",
+     "beds": 3,
+     "method": "Price by negotiation",
+     "agency": "Harcourts Cooper & Co Birkenhead",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2320340679.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2313298965.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2313298968.jpg"
+     ]
+    },
+    {
+     "address": "59 Hebron Road",
+     "beds": 4,
+     "method": "Deadline sale by 2 Sept",
+     "agency": "Barfoot & Thompson Browns Bay",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2306339716.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2319507837.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2306339720.jpg"
+     ]
+    }
+   ]
+  },
+  "Windsor Park": {
+   "slug": "windsor-park",
+   "email": 3883330,
+   "audience": 8076019,
+   "window": "the past fortnight",
+   "window_days": 14,
+   "gate_days": 15,
+   "oldest_days": 13,
+   "intro": "Here is what moved in Windsor Park over the past fortnight: what sold, what is on the market, and the news worth knowing about.",
+   "sold_lines": [
+    "One home sold across Windsor Park over the past fortnight.",
+    "",
+    "3 Milenio Crescent  $1,190,000",
+    "sold 5 Aug 2026, 1 days, private treaty"
+   ],
+   "sold_src": [
+    {
+     "address": "3 Milenio Crescent",
+     "price": 1190000,
+     "date": "5 Aug 2026"
+    }
+   ],
+   "pulse": "24 homes sold across Windsor Park over the past year, at a median of $1,290,000. The middle half sold between $1,020,000 and $1,420,000, and homes are taking a median 49 days to sell. That is about 1 in 58 homes changing hands.",
+   "stats": {
+    "sales": 24,
+    "median": 1290000,
+    "p25": 1020000,
+    "p75": 1420000,
+    "days": 49,
+    "average": 1310275,
+    "turnover": 0.01727
+   },
+   "oa_candidates": [
+    {
+     "address": "2/32 Centorian Drive",
+     "beds": 3,
+     "method": "Enquiries over $1,200,000",
+     "agency": "Bayleys East Coast Bays",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2316784666.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2316724610.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2316724613.jpg"
+     ]
+    },
+    {
+     "address": "31 Cricklade Terrace",
+     "beds": 4,
+     "method": "Price by negotiation",
+     "agency": "Barfoot & Thompson Browns Bay",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2315829089.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2315829132.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2315829101.jpg"
+     ]
+    },
+    {
+     "address": "436A East Coast Road",
+     "beds": 5,
+     "method": "Asking price $1,939,000",
+     "agency": "Barfoot & Thompson Glenfield",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2313133466.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2313133494.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2313133477.jpg"
+     ]
+    }
+   ]
+  }
+ },
+ "macro": {
+  "ocr": 2.5,
+  "mortgage": 4.99,
+  "cpi": 4.1,
+  "hpi": -0.9,
+  "clearance": 48.0,
+  "as_at_text": "as at 17 August 2026"
+ },
+ "version": 2
+}
