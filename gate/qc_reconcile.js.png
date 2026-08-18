@@ -257,6 +257,24 @@
             ' - verify they are real events, not restated statistics');
         }
       }
+
+      // NEWS MUST NOT REPEAT THE SOLD LIST (Harrison, 17 Aug).
+      // Torbay V2 led its news with the same two Gerontius Glade sales already listed
+      // in "Recently sold" a few panels above. Both were accurate and both satisfied
+      // the events-not-statistics rule, but the reader gets the same two sales twice
+      // in one scroll, which reads as thin rather than thorough. News covers what the
+      // sold list does NOT: consents, council decisions, a street pattern, an agency
+      // move, a development. If the only news is the week's sales, say less.
+      if (src.sold && src.sold.length) {
+        const newsA = addr(copy);
+        const repeated = src.sold
+          .map(x => x.address)
+          .filter(a => { const k = addr(a); return k.length >= 8 && newsA.indexOf(k) >= 0; });
+        if (repeated.length)
+          errors.push('NEWS repeats the sold list: ' + repeated.join(', ') +
+            ' - news must cover what the sold section does not');
+      }
+
       info.newsChecked = true;
     }
 
