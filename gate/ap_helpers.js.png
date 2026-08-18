@@ -1,0 +1,78 @@
+/* ============================================================================
+   ap_helpers.js — ActivePipe browser helpers for the weekly suburb run.
+
+   WHY THIS EXISTS (token cost + reliability, measured 15–16 Aug)
+   Every in-page call re-sent its own boilerplate: the fetch wrapper, the JSON
+   parse, the panel sort, the verify loop. Across one send that was thousands of
+   duplicated tokens, and each retype was a chance to omit something that mattered
+   — which is exactly how the category-less PUT and the unverified writes happened.
+
+   Load ONCE per session:
+     eval(await (await fetch(RAW_URL)).text())      // or paste this file once
+     sessionStorage.__ap = <this file as a string>
+   Then every later call is one line:
+     eval(sessionStorage.__ap); await AP.get(3883177)
+
+   Encodes three rules that cost real money to learn:
+     1. PUT needs communicationcategory_id EXPLICITLY - the GET omits it and the
+        PUT 422s with {"error":"Category not defined"}. AP.put() copies it across.
+     2. A write's STATUS MEANS NOTHING. A 403 and two 500s all applied; a 201 and a
+        run of 200s wrote nothing. AP.put() re-reads and verifies, always.
+     3. Batch work in small groups. The CDP bridge times out at 45s, and a 29-item
+        loop of read+write+verify blew it. AP.batch() chunks and reports partials.
+   ========================================================================== */
+window.AP = (function () {
+  const BASE = 'https://api.activepipe.com';
+  const H = { Accept: 'application/json' };
+  const JH = { 'Content-Type': 'application/json', Accept: 'application/json' };
+
+  const get = async (id) =>
+    (await fetch(BASE + '/communications/' + id, { credentials: 'include', headers: H })).json();
+
+  const campaign = async (id) =>
+    (await fetch(BASE + '/campaigns/' + id, { credentials: 'include', headers: H })).json();
+
+  /* Sorted panels, the shape every check wants. */
+  const panels = (o) => (o.email.panelcontents || []).slice().sort((a, b) => a.position - b.position);
+
+  const parse = (v) => { try { return typeof v === 'string' ? JSON.parse(v) : v; } catch (e) { return null; } };
+  const text = (p) => ['textOne', 'textTwo', 'textThree']
+    .map(k => { const c = parse(p.contents && p.contents[k]); return c && c.blocks ? c.blocks.map(b => b.text).join('\n') : ''; })
+    .filter(Boolean).join('\n');
+
+  /* Full-object PUT + mandatory re-read. `verify(freshObject)` returns true when the
+     change actually landed; without it you are trusting a status code, and this
+     project has been burned by that in both directions. */
+  async function put(o, verify) {
+    o.communicationcategory_id = (o.communicationcategory && o.communicationcategory.id) || o.communicationcategory_id;
+    if (!o.communicationcategory_id) return { ok: false, why: 'no communicationcategory_id - PUT would 422' };
+    const r = await fetch(BASE + '/communications/' + o.id, {
+      method: 'PUT', credentials: 'include', headers: JH, body: JSON.stringify(o)
+    });
+    const status = r.status;
+    await new Promise(s => setTimeout(s, 350));
+    const fresh = await get(o.id);                      // never trust `status`
+    const ok = verify ? !!verify(fresh) : true;
+    return { ok, status, verified: ok, id: o.id };
+  }
+
+  /* Chunked map so a 34-item pass cannot blow the 45s CDP timeout. Returns
+     partials plus `done` so a timed-out run can resume instead of restarting. */
+  async function batch(items, fn, size) {
+    size = size || 6;
+    const out = [], failed = [];
+    for (let i = 0; i < items.length; i += size) {
+      for (const it of items.slice(i, i + size)) {
+        try { out.push(await fn(it)); } catch (e) { failed.push({ it, e: String(e).slice(0, 80) }); }
+      }
+    }
+    return { done: out.length, out, failed };
+  }
+
+  /* Compact TSV out. Tool output truncates around ~1.2k chars and a truncated
+     result costs a whole extra round trip; 17 rows fits comfortably. */
+  const tsv = (rows, cols) => rows.map(r => cols.map(c => r[c] === undefined ? '-' : r[c]).join('\t')).join('\n');
+
+  return { BASE, get, campaign, panels, parse, text, put, batch, tsv };
+})();
+'AP helpers loaded';

@@ -1,0 +1,104 @@
+/* ============================================================================
+   qc_run.js — ONE entrypoint for the whole weekly gate.
+   ----------------------------------------------------------------------------
+   WHY: the Wednesday task previously had to hand-orchestrate three tools —
+   qcAll, then qcReconcile per suburb, then qcFingerprints, then assemble a
+   report. Every one of those steps was a chance to forget an argument, and a
+   forgotten argument does not fail loudly, it silently downgrades a check to a
+   warning. `spec`, `expect` and `prev` have each already been that trap once.
+
+   qcRun takes the whole run in one object and refuses to proceed if the inputs
+   that make checks real are missing. It also fetches each communication ONCE and
+   hands the same object to both gates — a 34-suburb run made 68 GETs before this.
+
+   USAGE (logged-in ActivePipe tab; load qc_check.js + qc_reconcile.js first):
+     const report = await qcRun({
+       run_date: '2026-08-19',
+       spec: { header_banner_id, footer_banner_id, tiles_img_id, hpi_img_id },
+       prev: <last run's qc-fingerprints.json .suburbs>,
+       suburbs: [
+         { name:'Torbay', id:3883177, expect:{...}, sources:{sold,grid,stats,macro} },
+         ...
+       ]
+     });
+     report.tsv        // one compact line per suburb, fits a single tool result
+     report.blocking   // [] when the run may proceed
+     report.fingerprints
+   ========================================================================== */
+(function (root) {
+
+  const REQUIRED_SPEC = ['header_banner_id', 'footer_banner_id', 'tiles_img_id', 'hpi_img_id'];
+
+  async function qcRun(cfg) {
+    cfg = cfg || {};
+    const blocking = [];
+
+    // ---- input gate. A missing input is a BROKEN RUN, not a soft warning. ----
+    if (!cfg.run_date) blocking.push('run_date missing - economic staleness cannot be checked');
+    if (!cfg.suburbs || !cfg.suburbs.length) blocking.push('no suburbs supplied');
+    const spec = Object.assign({}, cfg.spec || {});
+    REQUIRED_SPEC.forEach(k => { if (!spec[k]) blocking.push('spec.' + k + ' missing'); });
+    if (!cfg.prev) blocking.push('prev fingerprints missing - staleness vs last week cannot be checked');
+    (cfg.suburbs || []).forEach(s => {
+      if (!s.expect) blocking.push(s.name + ': no `expect` (data.json) - dropped sections unprovable');
+      if (!s.sources) blocking.push(s.name + ': no `sources` - figures unverifiable against source');
+    });
+    if (blocking.length) {
+      return { ok: false, blocking, tsv: '', rows: [], fingerprints: {}, 
+               summary: 'RUN BLOCKED - ' + blocking.length + ' missing input(s). Nothing was checked.' };
+    }
+
+    spec.run_date = cfg.run_date;
+    spec.shared_img_ids = REQUIRED_SPEC.map(k => spec[k]);
+
+    const AP = root.AP;
+    const rows = [], fingerprints = {}, objs = {};
+
+    // ---- fetch ONCE per suburb, hand the same object to both gates ----------
+    for (const s of cfg.suburbs) {
+      try {
+        objs[s.name] = AP ? await AP.get(s.id)
+          : await (await fetch('https://api.activepipe.com/communications/' + s.id,
+              { credentials: 'include', headers: { Accept: 'application/json' } })).json();
+      } catch (e) { objs[s.name] = null; }
+    }
+
+    // ---- structural gate (qcAll needs ids or objects; give it objects) ------
+    const pairs = cfg.suburbs.map(s => [objs[s.name] || s.id, s.name, s.expect]);
+    const structural = await root.qcAll(pairs, spec, cfg.prev);
+
+    // ---- reconciliation gate, same objects ---------------------------------
+    for (const s of cfg.suburbs) {
+      const st = structural.find(x => x.suburb === s.name) || { errors: [], warns: [], info: {} };
+      let rec = { errors: ['reconcile did not run'], warns: [], info: {} };
+      try { rec = await root.qcReconcile(objs[s.name] || s.id, s.name, s.sources); } catch (e) {
+        rec = { errors: ['reconcile threw: ' + String(e).slice(0, 80)], warns: [], info: {} };
+      }
+      if (st.info && st.info.fingerprint) fingerprints[s.name] = st.info.fingerprint;
+      rows.push({
+        suburb: s.name, id: s.id,
+        struct: (st.errors || []).length, recon: (rec.errors || []).length,
+        warns: ((st.warns || []).length + (rec.warns || []).length),
+        window: (st.info && st.info.soldWindow) || '-',
+        oldest: (st.info && st.info.oldestSaleDays) !== undefined ? st.info.oldestSaleDays : '-',
+        dropped: ((st.info && st.info.dropped) || []).join('+') || '-',
+        errors: (st.errors || []).concat(rec.errors || [])
+      });
+    }
+
+    const failed = rows.filter(r => r.struct || r.recon);
+    const cols = ['suburb', 'id', 'struct', 'recon', 'warns', 'window', 'oldest', 'dropped'];
+    return {
+      ok: failed.length === 0,
+      blocking: [],
+      rows, fingerprints,
+      tsv: rows.map(r => cols.map(c => r[c]).join('\t')).join('\n'),
+      failures: failed.map(r => r.suburb + ': ' + r.errors.slice(0, 3).join(' ;; ')),
+      summary: failed.length
+        ? failed.length + ' of ' + rows.length + ' FAILED - nothing may be sent'
+        : rows.length + '/' + rows.length + ' passed both gates'
+    };
+  }
+
+  root.qcRun = qcRun;
+})(typeof window !== 'undefined' ? window : globalThis);
