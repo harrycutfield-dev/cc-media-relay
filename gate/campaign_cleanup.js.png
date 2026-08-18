@@ -1,0 +1,169 @@
+/* ============================================================================
+   campaign_cleanup.js — retire spent weekly-suburb campaigns.
+
+   WHY: the 34 EMAILS are permanent and updated in place, but a `finished`
+   ActivePipe campaign cannot be reactivated, so a fresh set of 34 is created
+   every week. Left alone that is ~1,700 campaign objects a year.
+
+   THIS DELETES THINGS AND DELETION IS IRREVERSIBLE. Every rail below exists
+   because the cost of a wrong delete is unrecoverable, and this project has
+   already seen a "successful" write that did nothing and a failed one that
+   applied. So: plan first, execute only on an explicit confirm, delete one and
+   verify it before touching the rest, and never exceed the cap.
+
+   SIX RAILS — a campaign is deletable ONLY if ALL hold:
+     1. name matches "Weekly Suburb Update - <Suburb> - <D Mon YYYY>" exactly
+     2. the <Suburb> is one of the 34 in suburb-emails.json
+     3. status === 'finished'          (never draft/running/scheduled/paused)
+     4. its send date is older than `keepWeeks`
+     5. it references a communication id in suburb-emails.json — and if that
+        cannot be READ, it is refused rather than deleted
+     6. the run deletes at most `cap` campaigns (a bug cannot empty the account)
+
+   NEVER deletes: the 34 communications, any audience, any campaign outside the
+   naming pattern, or anything still live. It only removes the spent wrapper.
+
+   USAGE (logged-in ActivePipe tab):
+     const plan = await cleanupPlan({ keepWeeks: 6, emails: <suburb-emails.json> });
+     plan.tsv                                          // review what WOULD go
+     await cleanupExecute(plan, { confirm: true });    // only after reviewing
+   ========================================================================== */
+(function (root) {
+
+  const BASE = 'https://api.activepipe.com';
+  const H = { Accept: 'application/json' };
+  const NAME_RE = /^Weekly Suburb Update - (.+) - (\d{1,2}) ([A-Za-z]{3}) (\d{4})$/;
+  const MON = { jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11 };
+  const fold = (s) => String(s == null ? '' : s).normalize('NFD').replace(/[̀-ͯ]/g, '');
+
+  const jget = async (u) => (await fetch(u, { credentials: 'include', headers: H })).json();
+
+  async function allCampaigns() {
+    // paginate defensively - never assume one page is the whole account
+    const out = [];
+    for (let page = 1; page <= 40; page++) {
+      let batch;
+      try { batch = await jget(BASE + '/campaigns?page=' + page); } catch (e) { break; }
+      if (!Array.isArray(batch) || !batch.length) break;
+      out.push.apply(out, batch);
+      if (batch.length < 20) break;
+    }
+    return out;
+  }
+
+  /* Pull communication ids off a campaign object, whatever shape it arrives in. */
+  function readCommIds(c) {
+    if (!c) return [];
+    const acts = c.actions || c.campaign_actions || c.campaignactions || [];
+    return acts
+      .map(a => a && (a.communication_id ||
+        (a.communication && (a.communication.id || a.communication)) ||
+        (a.data && a.data.communication_id)))
+      .filter(Boolean);
+  }
+
+  /* Build the delete list. Pure selection — deletes nothing. */
+  async function cleanupPlan(cfg) {
+    cfg = cfg || {};
+    const keepWeeks = cfg.keepWeeks === undefined ? 6 : cfg.keepWeeks;
+    const cap = cfg.cap === undefined ? 100 : cfg.cap;
+    const nowMs = cfg.nowMs || Date.now();
+    const emails = cfg.emails && cfg.emails.suburbs ? cfg.emails.suburbs : cfg.emails;
+    if (!emails) return { fatal: 'suburb-emails.json not supplied - refusing to plan without the id whitelist' };
+
+    const knownSuburb = {}, knownComm = {};
+    Object.keys(emails).forEach(s => {
+      knownSuburb[fold(s).toLowerCase()] = 1;
+      knownComm[emails[s].email] = 1;
+    });
+
+    const list = cfg.campaigns || await allCampaigns();
+    const deletable = [], kept = [], refused = [];
+
+    for (const c of list) {
+      const m = NAME_RE.exec(c.name || '');
+      if (!m) continue;                                                    // rail 1 — not ours
+      const suburb = m[1];
+      const why = [];
+      if (!knownSuburb[fold(suburb).toLowerCase()]) why.push('unknown suburb');   // rail 2
+      if (c.status !== 'finished') why.push('status=' + c.status);               // rail 3
+
+      const mo = MON[String(m[3]).toLowerCase()];
+      const dt = mo === undefined ? null : new Date(+m[4], mo, +m[2]);
+      const ageWeeks = dt ? (nowMs - dt.getTime()) / 604800000 : null;
+      if (ageWeeks === null) why.push('unparseable date');
+      else if (ageWeeks < keepWeeks) why.push('only ' + ageWeeks.toFixed(1) + 'w old');  // rail 4
+
+      // rail 5 — must point at one of the 34 known communications.
+      // MEASURED 17 Aug against the live account: GET /campaigns (the LIST) does NOT
+      // return actions. The previous version read them off the list row, got [], and
+      // skipped the check — a rail that inspected nothing, which is the exact failure
+      // mode that let the Browns Bay intro ship. The DETAIL endpoint does carry them,
+      // so fetch per candidate and FAIL CLOSED when it still cannot be read. Never
+      // delete something whose target could not be confirmed.
+      let commIds = readCommIds(c);
+      if (!commIds.length && !cfg.campaigns) {
+        try { commIds = readCommIds(await jget(BASE + '/campaigns/' + c.id)); } catch (e) { commIds = []; }
+      }
+      if (!commIds.length) why.push('cannot read target communication - refusing to delete unverified');
+      else if (!commIds.some(i => knownComm[i])) why.push('references unknown communication ' + commIds.join('/'));
+
+      const row = { id: c.id, name: c.name, suburb, status: c.status,
+                    ageWeeks: ageWeeks === null ? '-' : +ageWeeks.toFixed(1), why: why.join('; ') };
+      if (why.length) (why.some(w => /status=|only /.test(w)) ? kept : refused).push(row);
+      else deletable.push(row);
+    }
+
+    deletable.sort((a, b) => b.ageWeeks - a.ageWeeks);                     // oldest first
+    const overCap = deletable.length > cap;                                 // rail 6
+    const take = deletable.slice(0, cap);
+
+    return {
+      keepWeeks, cap, scanned: list.length,
+      deletable: take, kept, refused, overCap,
+      tsv: take.map(r => [r.id, r.suburb, r.status, r.ageWeeks + 'w', r.name].join('\t')).join('\n'),
+      summary: take.length + ' deletable (kept ' + kept.length + ' too recent/active, refused ' +
+               refused.length + ' unverifiable)' + (overCap ? ' — CAPPED at ' + cap : '')
+    };
+  }
+
+  /* Execute. Deletes the FIRST one and verifies it is really gone before doing
+     any others — a delete that silently no-ops would otherwise loop and report
+     success. Aborts the whole run on the first unverified delete. */
+  async function cleanupExecute(plan, opts) {
+    opts = opts || {};
+    if (!plan || !plan.deletable) return { ok: false, why: 'no plan' };
+    if (plan.fatal) return { ok: false, why: plan.fatal };
+    if (!opts.confirm) return { ok: false, why: 'DRY RUN - pass {confirm:true} to actually delete', would: plan.deletable.length };
+
+    const gone = [], failed = [];
+    for (let i = 0; i < plan.deletable.length; i++) {
+      const r = plan.deletable[i];
+      let status = null;
+      try {
+        const res = await fetch(BASE + '/campaigns/' + r.id, { method: 'DELETE', credentials: 'include', headers: H });
+        status = res.status;
+      } catch (e) { status = 'ERR'; }
+      await new Promise(s => setTimeout(s, 250));
+      let verified = false;
+      try {
+        const chk = await fetch(BASE + '/campaigns/' + r.id, { credentials: 'include', headers: H });
+        verified = chk.status === 404;
+      } catch (e) { verified = false; }
+
+      if (verified) { gone.push(r.id); continue; }
+      failed.push({ id: r.id, status });
+      if (i === 0) return {
+        ok: false,
+        why: 'FIRST DELETE DID NOT VERIFY (status ' + status + ') - aborting before touching ' +
+             'anything else. The API may not support DELETE; retire them from the UI instead.',
+        gone, failed
+      };
+    }
+    return { ok: failed.length === 0, gone: gone.length, goneIds: gone, failed };
+  }
+
+  root.cleanupPlan = cleanupPlan;
+  root.cleanupExecute = cleanupExecute;
+  root._cleanup = { NAME_RE, fold, readCommIds };
+})(typeof window !== 'undefined' ? window : globalThis);
