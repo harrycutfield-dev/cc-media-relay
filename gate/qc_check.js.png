@@ -562,7 +562,11 @@ async function qcCheck(idOrObj, suburb, spec, expect, prev) {
       });
     });
     // attribution mandatory
-    const oaText = pc.filter(p => p.panel_id === 6 && /Marketed by/i.test(_text(p)));
+    // SCOPE TO THE SECTION. This counted "Marketed by" across the WHOLE email, so on
+    // 17 Aug a news line reading "being marketed by deadline sale" was counted as a
+    // third attribution and failed a correct email. Attribution belongs to the
+    // other-agency section, so only look inside it.
+    const oaText = oaSec.panels.filter(p => p.panel_id === 6 && /Marketed by/i.test(_text(p)));
     // attribution is mandatory - one "Marketed by" per listing, no more, no fewer
     if (oaText.length !== p11.length)
       errors.push('other-agency: ' + p11.length + ' listing(s) but ' + oaText.length +

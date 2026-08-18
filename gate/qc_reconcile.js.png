@@ -204,6 +204,63 @@
       warns.push('no `macro` source supplied - economic figures UNVERIFIED');
     }
 
+    // ---- 5. NEWS must not contradict the email's OWN figures ---------------
+    // FOUND 17 Aug on Torbay. The news section read "Ray White is marketing 9 homes
+    // in Torbay" while the grid directly below showed 4, "against a Torbay median of
+    // 56 days" while the pulse said 45, and cited a sold address no longer in the
+    // sold list. Three statements contradicting fresh data sitting inches away.
+    //
+    // Nothing caught it: news has no source file so reconciliation skipped it, and
+    // the freshness check could not fire because the fingerprint baseline predated
+    // an algorithm change. It is the same shape as every defect that has actually
+    // shipped - internally plausible, externally wrong.
+    //
+    // THE RULE (locked 17 Aug): news carries EVENTS, not STATISTICS. Any figure it
+    // restates must match the email's own numbers exactly, because a reader sees
+    // both in one scroll.
+    const newsSec = secs.find(s => s.key === 'news');
+    if (newsSec) {
+      const copy = newsSec.panels.map(text).join('\n');
+      const gridPanel2 = pc.find(p => p.panel_id === 17);
+      const gridCount = gridPanel2 ? ((gridPanel2.contents && gridPanel2.contents.propertyListings) || []).length : 0;
+
+      // "marketing 9 homes" / "9 listings" must equal what the grid actually shows
+      let m;
+      const homesRe = /\b(\d{1,3})\s+(?:homes?|listings?|properties)\b/gi;
+      while ((m = homesRe.exec(copy))) {
+        const n = parseInt(m[1], 10);
+        if (gridPanel2 && n !== gridCount)
+          errors.push('NEWS says "' + m[0].trim() + '" but the grid shows ' + gridCount + ' - news must not contradict the email');
+      }
+
+      // "median of 56 days" must equal the pulse's days-to-sell
+      if (src.stats && src.stats.days != null) {
+        const d = Math.round(src.stats.days);
+        const daysRe = /\b(\d{1,3})\s*days?\b/gi;
+        while ((m = daysRe.exec(copy))) {
+          const n = parseInt(m[1], 10);
+          // a days-on-market figure for ONE property is fine; a stated MEDIAN is not
+          if (/median/i.test(copy.slice(Math.max(0, m.index - 40), m.index + 12)) && n !== d)
+            errors.push('NEWS states a median of ' + n + ' days but the stats file says ' + d);
+        }
+      }
+
+      // any money figure in news must trace to a sold price or a percentile
+      if (src.sold || src.stats) {
+        const allowed = []
+          .concat((src.sold || []).map(x => money(x.price)))
+          .concat(src.stats ? [src.stats.median, src.stats.p25, src.stats.p75, src.stats.average].map(money) : [])
+          .filter(Boolean);
+        if (allowed.length) {
+          const bad = unsourcedMoney(copy, allowed, 0.01);
+          if (bad.length) warns.push('NEWS cites figures not in this run\'s data: ' + bad.join(', ') +
+            ' - verify they are real events, not restated statistics');
+        }
+      }
+      info.newsChecked = true;
+    }
+
+
     return {
       id, suburb,
       status: errors.length ? 'FAIL' : (warns.length ? 'PASS-with-warnings' : 'PASS'),
