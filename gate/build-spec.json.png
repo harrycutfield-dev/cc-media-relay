@@ -2345,7 +2345,41 @@
     "average": 1205258,
     "turnover": 0.03615
    },
-   "oa_candidates": []
+   "oa_candidates": [
+    {
+     "address": "10B Acacia Road",
+     "beds": 4,
+     "method": "Auction on 3 Sept, 10:00 am",
+     "agency": "Barfoot & Thompson Browns Bay",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2323157223.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2323157232.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2323157235.jpg"
+     ]
+    },
+    {
+     "address": "29 Auld Street",
+     "beds": 4,
+     "method": "Price by negotiation",
+     "agency": "Barfoot & Thompson Ponsonby",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322721640.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322721652.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322721657.jpg"
+     ]
+    },
+    {
+     "address": "8 Summit Drive",
+     "beds": 4,
+     "method": "Auction on 2 Sept, 9:30 am",
+     "agency": "Barfoot & Thompson Albany",
+     "photos": [
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322623576.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322623284.jpg",
+      "https://trademe.tmcdn.co.nz/photoserver/full/2322623394.jpg"
+     ]
+    }
+   ]
   },
   "Tōtara Vale": {
    "slug": "totara-vale",
