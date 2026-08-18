@@ -315,7 +315,11 @@
 
     /* ---- naming + write */
     o.name = 'V' + root.__SPEC.version + ' - ' + suburb + ' Suburb Update';
-    o.email.subject = 'HARRISON CUTFIELD | THE LATEST ' + fold(suburb).toUpperCase() + ' NEWS';
+    // MACRONS ARE CANONICAL: Pāremoremo and Tōtara Vale keep theirs in the subject
+    // too. De-macronising here would misspell a te reo place name to the whole
+    // audience - and qc_check 2 builds its expectation from the unfolded name, so
+    // it fails the build rather than letting it through.
+    o.email.subject = 'HARRISON CUTFIELD | THE LATEST ' + suburb.toUpperCase() + ' NEWS';
     out.forEach((p, i) => { p.position = i; });
     o.email.panelcontents = out;
 
