@@ -400,8 +400,12 @@ async function qcCheck(idOrObj, suburb, spec, expect, prev) {
         const after = t.slice(m.index + sf.length, m.index + sf.length + 40);
         const before = t.slice(Math.max(0, m.index - 40), m.index);
         const where = s + ' in "' + cur + '" @pos' + p.position;
-        if (new RegExp('^\\s+' + STREET + '\\b', 'i').test(after)) excused.push(where + ' [street]');
-        else if (new RegExp(AGENCY + '\\s*$', 'i').test(before)) excused.push(where + ' [agency branch]');
+        // "Oteha Valley Road", "Browns Bay Road": allow up to two qualifier words
+        // between the suburb name and the road type before calling it a street.
+        if (new RegExp('^\\s+(?:[A-Za-z]+\\s+){0,2}' + STREET + '\\b', 'i').test(after)) excused.push(where + ' [street]');
+        // Branch names arrive both as "Barfoot & Thompson Milford" and as
+        // "Harcourts Cooper & Co - Milford" - allow the separator.
+        else if (new RegExp(AGENCY + '\\s*(?:[-\u2013\u2014]\\s*)?$', 'i').test(before)) excused.push(where + ' [agency branch]');
         // Official bodies read "Devonport Takapuna Local Board" - the qualifier sits
         // BETWEEN the suburb name and "Local Board", so allow a couple of words.
         else if (/^[\s\w-]{0,24}\b(Local Board|Ward|Ki Uta Ki Tai)\b/i.test(after)) excused.push(where + ' [official body]');
