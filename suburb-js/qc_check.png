@@ -428,6 +428,37 @@ async function qcCheck(idOrObj, suburb, spec, expect, prev) {
     errors.push('INTRO does not name ' + suburb + ': "' + introText.replace(/\s+/g, ' ').trim().slice(0, 90) + '"');
   }
 
+  // ---- 5c. the greeting is a MERGE FIELD, in italics ----------------------
+  // Shipped once as literal text: every reader was greeted "Hi First Name,". The text
+  // reads identically whether or not the entity is attached, so nothing but this check
+  // can tell the difference. Entity spans offset 3..13; italic spans the whole line.
+  let greetPanel = null;
+  for (const p of pc.slice(0, firstOpener)) {
+    const cs = p.contents && p.contents.textOne;
+    if (cs && cs.blocks && cs.blocks[0] && (cs.blocks[0].text || '').trim() === 'Hi First Name,') {
+      greetPanel = { b: cs.blocks[0], map: cs.entityMap || {} };
+      break;
+    }
+  }
+  if (!greetPanel) {
+    errors.push('greeting line "Hi First Name," not found before the first heading');
+  } else {
+    const b = greetPanel.b;
+    const er = (b.entityRanges || []).find(r => r.offset === 3 && r.length === 10);
+    const ent = er ? greetPanel.map[String(er.key)] : null;
+    if (!er) errors.push('GREETING IS LITERAL TEXT - no merge entity at offset 3; every reader sees "First Name"');
+    else if (!ent || (ent.data || {}).placeholder !== 'contact.firstname')
+      errors.push('greeting entity is not contact.firstname: ' + JSON.stringify((ent || {}).data));
+    if (!(b.inlineStyleRanges || []).some(r => r.style === 'ITALIC' && r.offset === 0 && r.length === 14))
+      errors.push('greeting is not italic across the full line');
+  }
+
+  // ---- 5d. other-agency copy must NEVER name the competing agency ---------
+  // Harrison, 19 Aug 2026: the section shows the property, not who is selling it.
+  const mkt = [];
+  pc.forEach(p => { if (/(^|\n)\s*Marketed by /.test(_text(p))) mkt.push('@pos' + p.position); });
+  if (mkt.length) errors.push('"Marketed by" line present (agency must not be named): ' + mkt.join(', '));
+
   // ---- 6. banned / placeholder text --------------------------------------
   const hits = spec.banned_text.filter(b => body.indexOf(b) >= 0);
   if (hits.length) errors.push('placeholder/leak text: ' + hits.join(', '));
@@ -565,16 +596,13 @@ async function qcCheck(idOrObj, suburb, spec, expect, prev) {
         if (!im || !im.src || !im.key || !im.secret) errors.push('other-agency photo ' + (i + 1) + '.' + k + ' incomplete');
       });
     });
-    // attribution mandatory
-    // SCOPE TO THE SECTION. This counted "Marketed by" across the WHOLE email, so on
-    // 17 Aug a news line reading "being marketed by deadline sale" was counted as a
-    // third attribution and failed a correct email. Attribution belongs to the
-    // other-agency section, so only look inside it.
-    const oaText = oaSec.panels.filter(p => p.panel_id === 6 && /Marketed by/i.test(_text(p)));
-    // attribution is mandatory - one "Marketed by" per listing, no more, no fewer
+    // Every photo panel needs its copy block. This used to count "Marketed by" lines,
+    // but the agency is no longer named (check 5d), so that count is now always zero.
+    // Count non-empty text panels in the section instead - same half-removed invariant.
+    const oaText = oaSec.panels.filter(p => p.panel_id === 6 && _text(p).trim());
     if (oaText.length !== p11.length)
       errors.push('other-agency: ' + p11.length + ' listing(s) but ' + oaText.length +
-        ' "Marketed by" line(s) - attribution is mandatory on every one');
+        ' copy block(s) - a listing was half-removed');
   } else {
     warns.push('NO other-agency section');
   }
