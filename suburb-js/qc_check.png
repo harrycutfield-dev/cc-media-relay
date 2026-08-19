@@ -459,6 +459,50 @@ async function qcCheck(idOrObj, suburb, spec, expect, prev) {
   pc.forEach(p => { if (/(^|\n)\s*Marketed by /.test(_text(p))) mkt.push('@pos' + p.position); });
   if (mkt.length) errors.push('"Marketed by" line present (agency must not be named): ' + mkt.join(', '));
 
+  // ---- 5e. the Ray White grid must render a STREET ADDRESS and a CTA ------
+  // Two defects that shipped together on 19 Aug, both from the same cause: the builder
+  // trimmed each listing to eight fields before storing it. The panel renders addresses
+  // with addressFormat "split", which needs streetnumber/streetname - without them the
+  // tile silently prints the SUBURB twice and no street. The REQUEST AN INSPECTION link
+  // needs the listing's source ids to build its target and vanished for the same reason.
+  // Neither failure is visible in the stored copy: the address string is still in the
+  // record, it just never reaches the tile. So check the fields, not the text.
+  const gridPanel = pc.find(p => p.panel_id === 17);
+  if (gridPanel) {
+    const dl = (gridPanel.options || {}).detailsLayout || [];
+    if (dl.indexOf('inspection-request') < 0)
+      errors.push('grid detailsLayout has no "inspection-request" - the REQUEST AN INSPECTION button is missing (got ' + JSON.stringify(dl) + ')');
+    if (dl.indexOf('address') < 0)
+      errors.push('grid detailsLayout has no "address"');
+    (gridPanel.contents.propertyListings || []).forEach((l, i) => {
+      if (!l.streetnumber || !l.streetname)
+        errors.push('grid listing ' + (i + 1) + ' (' + (l.address || '?') +
+          ') has no streetnumber/streetname - the tile will print the suburb, not the street');
+      if (l.status && l.status !== 'current')
+        errors.push('grid listing ' + (l.address || '?') + ' is "' + l.status + '", not current');
+    });
+  }
+
+  // ---- 5f. the grid must carry EVERY live listing in the suburb -----------
+  // The count is the whole point of this check. Two builder rules - an even-count trim
+  // and a two-listing minimum - between them hid 37 of 95 live listings in one run, and
+  // nothing failed, because every listing that WAS shown was correct. Only a comparison
+  // against the live feed can see an omission. spec.live_grid maps suburb -> array of
+  // current listing ids; without it this check cannot run and says so rather than passing.
+  if (!spec.live_grid) {
+    warns.push('no spec.live_grid - CANNOT verify the grid holds every live listing');
+  } else {
+    const live = spec.live_grid[suburb] || [];
+    const shown = gridPanel ? (gridPanel.contents.propertyListings || []).map(l => l.id) : [];
+    const missing = live.filter(id => shown.indexOf(id) < 0);
+    const extra = shown.filter(id => live.indexOf(id) < 0);
+    if (missing.length)
+      errors.push('grid MISSING ' + missing.length + ' live listing(s) of ' + live.length +
+        ' (ids ' + missing.join(', ') + ')');
+    if (extra.length)
+      errors.push('grid has ' + extra.length + ' listing(s) NOT in the live feed (ids ' + extra.join(', ') + ')');
+  }
+
   // ---- 6. banned / placeholder text --------------------------------------
   const hits = spec.banned_text.filter(b => body.indexOf(b) >= 0);
   if (hits.length) errors.push('placeholder/leak text: ' + hits.join(', '));
@@ -562,8 +606,16 @@ async function qcCheck(idOrObj, suburb, spec, expect, prev) {
     const op = grid.options || {};
     const listings = (grid.contents && grid.contents.propertyListings) || [];
     if (op.feed !== false) errors.push('grid feed !== false');
-    if ('detailsLayout' in op) errors.push('grid has detailsLayout (kills REQUEST AN INSPECTION)');
-    if (op.itemCount % 2 !== 0) errors.push('grid itemCount ODD (' + op.itemCount + ') — orphans a row');
+    // WAS: "if ('detailsLayout' in op) -> error", on the belief that any override killed
+    // the REQUEST AN INSPECTION button. Half true, and the wrong half was load-bearing: an
+    // override that OMITS inspection-request does kill it, but DELETING the field does not
+    // fall back to the theme default (which has it) - it falls back to the PANEL default,
+    // ["address","price-amenities"], which has no button either. So the check enforced the
+    // bug and the builder dutifully deleted the field every run. Check 5e now asserts the
+    // layout is present and contains inspection-request. Harrison, 19 Aug 2026.
+    // An odd count used to be an error, on the theory that a half-empty final row looked
+    // unfinished. That rule, with the >=2 threshold, hid 37 of 95 live listings in one run.
+    // Completeness beats tidiness (Harrison, 19 Aug 2026) - the grid now shows every listing.
     if (listings.length !== op.itemCount) errors.push('grid itemCount ' + op.itemCount + ' != listings ' + listings.length);
     const wrongCity = listings.filter(p => _fold((p.city || '')).toLowerCase() !== _fold(suburb).toLowerCase());
     if (wrongCity.length) errors.push('grid has ' + wrongCity.length + ' listing(s) NOT in ' + suburb);
