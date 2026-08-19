@@ -222,15 +222,22 @@
     if (newsSec) {
       const copy = newsSec.panels.map(text).join('\n');
       const gridPanel2 = pc.find(p => p.panel_id === 17);
-      const gridCount = gridPanel2 ? ((gridPanel2.contents && gridPanel2.contents.propertyListings) || []).length : 0;
+      // Count the FEATURE panel too. On an odd listing count the dearest home is promoted
+      // out of the grid into panel 19, so "Ray White is marketing 5 homes" is correct while
+      // the grid alone holds 4. Counting the grid on its own failed six correct emails.
+      const featPanels2 = pc.filter(p => p.panel_id === 19);
+      const nIn = p => ((p.contents && p.contents.propertyListings) || []).length;
+      const shownCount = (gridPanel2 ? nIn(gridPanel2) : 0) +
+        featPanels2.reduce((a, p) => a + nIn(p), 0);
 
-      // "marketing 9 homes" / "9 listings" must equal what the grid actually shows
+      // "marketing 9 homes" / "9 listings" must equal what the email actually shows
       let m;
       const homesRe = /\b(\d{1,3})\s+(?:homes?|listings?|properties)\b/gi;
       while ((m = homesRe.exec(copy))) {
         const n = parseInt(m[1], 10);
-        if (gridPanel2 && n !== gridCount)
-          errors.push('NEWS says "' + m[0].trim() + '" but the grid shows ' + gridCount + ' - news must not contradict the email');
+        if ((gridPanel2 || featPanels2.length) && n !== shownCount)
+          errors.push('NEWS says "' + m[0].trim() + '" but the email shows ' + shownCount +
+            ' Ray White listing(s) - news must not contradict the email');
       }
 
       // "median of 56 days" must equal the pulse's days-to-sell
