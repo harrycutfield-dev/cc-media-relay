@@ -483,6 +483,49 @@ async function qcCheck(idOrObj, suburb, spec, expect, prev) {
     });
   }
 
+  // ---- 5g. FEATURE + GRID split (Harrison, 19 Aug 2026) -------------------
+  // The two-up grid only looks right with an even number of tiles, so an odd listing
+  // is promoted to a Feature panel rather than hidden. Every failure mode below was
+  // seen live on 19 Aug: the featured home left in the grid as well (shown twice, in
+  // 8 suburbs), two Feature panels stacked (Takapuna showed one home three times),
+  // the grid still odd, a cheaper home featured over a dearer one, and the Feature
+  // panel with no detailsLayout and therefore no REQUEST AN INSPECTION button.
+  const featPanels = pc.filter(p => p.panel_id === 19);
+  const featList = featPanels.length ? (featPanels[0].contents.propertyListings || []) : [];
+  const gridList = gridPanel ? (gridPanel.contents.propertyListings || []) : [];
+  const total = featList.length + gridList.length;
+
+  if (featPanels.length > 1)
+    errors.push(featPanels.length + ' Feature panels - exactly one, or the same home shows twice');
+  if (featList.length > 1)
+    errors.push('Feature panel holds ' + featList.length + ' listings - it takes exactly one');
+
+  if (total === 1 && !featList.length)
+    errors.push('a single Ray White listing must use the Feature panel, not the grid');
+  if (total > 1 && total % 2 === 0 && featList.length)
+    errors.push('even listing count (' + total + ') must be all grid, no Feature');
+  if (total > 1 && total % 2 !== 0 && !featList.length)
+    errors.push('odd listing count (' + total + ') needs the dearest listing in a Feature panel');
+  if (gridList.length % 2 !== 0)
+    errors.push('grid holds ' + gridList.length + ' listings - must be even; promote one to the Feature');
+
+  if (featList.length) {
+    const f = featList[0];
+    if (gridList.some(x => x.id === f.id))
+      errors.push('featured listing ' + (f.address || f.id) + ' is ALSO in the grid - it renders twice');
+    // ties are fine: the feature only has to be at least as dear as everything in the grid
+    const dearer = gridList.filter(x => (+x.price || 0) > (+f.price || 0));
+    if (dearer.length)
+      errors.push('featured listing is not the dearest - ' + (dearer[0].address || dearer[0].id) +
+        ' at ' + dearer[0].price + ' beats ' + (f.address || f.id) + ' at ' + f.price);
+    if (!f.streetnumber || !f.streetname)
+      errors.push('featured listing has no streetnumber/streetname - the tile will print the suburb');
+    const fdl = (featPanels[0].options || {}).detailsLayout || [];
+    if (fdl.indexOf('inspection-request') < 0)
+      errors.push('Feature panel has no "inspection-request" - no REQUEST AN INSPECTION button (got ' +
+        JSON.stringify(fdl) + ')');
+  }
+
   // ---- 5f. the grid must carry EVERY live listing in the suburb -----------
   // The count is the whole point of this check. Two builder rules - an even-count trim
   // and a two-listing minimum - between them hid 37 of 95 live listings in one run, and
@@ -493,7 +536,9 @@ async function qcCheck(idOrObj, suburb, spec, expect, prev) {
     warns.push('no spec.live_grid - CANNOT verify the grid holds every live listing');
   } else {
     const live = spec.live_grid[suburb] || [];
-    const shown = gridPanel ? (gridPanel.contents.propertyListings || []).map(l => l.id) : [];
+    // Feature AND grid together are "shown" - the dearest listing lives in the Feature
+    // panel on odd counts, and counting only the grid would fail every odd suburb.
+    const shown = gridList.map(l => l.id).concat(featList.map(l => l.id));
     const missing = live.filter(id => shown.indexOf(id) < 0);
     const extra = shown.filter(id => live.indexOf(id) < 0);
     if (missing.length)
