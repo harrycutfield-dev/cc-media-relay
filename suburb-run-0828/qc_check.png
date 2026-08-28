@@ -548,6 +548,7 @@ async function qcCheck(idOrObj, suburb, spec, expect, prev) {
       errors.push('grid has ' + extra.length + ' listing(s) NOT in the live feed (ids ' + extra.join(', ') + ')');
   }
 
+
   // ---- 6. banned / placeholder text --------------------------------------
   const hits = spec.banned_text.filter(b => body.indexOf(b) >= 0);
   if (hits.length) errors.push('placeholder/leak text: ' + hits.join(', '));
@@ -704,6 +705,31 @@ async function qcCheck(idOrObj, suburb, spec, expect, prev) {
     warns.push('NO other-agency section');
   }
   info.otherAgency = oaSec ? p11.length : 0;
+
+  // ---- 5h. other-agency CTA button must name the listing beside it -------
+  // On 28 Aug all 34 emails carried a button naming LAST WEEK's property, because the
+  // rebuild refreshed the copy and photos and never touched options.buttonText. Nothing
+  // failed: the button is not text content, so no check looked at it. A stale button is
+  // worse than a stale price - it sends the enquiry about a home that is not on the page.
+  if (oaSec) {
+    const segTexts = oaSec.panels.filter(p => p.panel_id === 6 && _text(p).trim());
+    const segBtns = oaSec.panels.filter(p => p.panel_id === 3);
+    if (segBtns.length !== segTexts.length)
+      errors.push('other-agency: ' + segTexts.length + ' listing(s) but ' + segBtns.length +
+        ' CTA button(s)');
+    segBtns.forEach((b, i) => {
+      const op = b.options || {};
+      const addr = (_text(segTexts[i] || {}) || '').split('\n')[0].trim();
+      const want = 'ENQUIRE ABOUT ' + addr.toUpperCase();
+      const got = String(op.buttonText || '').replace(/\s+/g, ' ').trim();
+      if (!addr) return;
+      if (got !== want.replace(/\s+/g, ' ').trim())
+        errors.push('CTA button ' + (i + 1) + ' says "' + got + '" but the listing beside it is "' +
+          addr + '" - STALE BUTTON');
+      if (!/^https:\/\/harrisoncutfield\.co\.nz\/book\.html$/.test(String(op.buttonLink || '')))
+        errors.push('CTA button ' + (i + 1) + ' link is "' + op.buttonLink + '", expected the booking page');
+    });
+  }
 
   // ---- 13. CTA buttons ----------------------------------------------------
   const val = pc.filter(p => p.panel_id === 3 && /VALUATION/i.test((p.options && p.options.buttonText) || ''));
