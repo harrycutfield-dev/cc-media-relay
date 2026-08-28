@@ -1,0 +1,299 @@
+/* ============================================================================
+   qc_reconcile.js — SOURCE RECONCILIATION. The layer that makes the email
+   CORRECT, not merely well-formed.
+   ----------------------------------------------------------------------------
+   qc_check.js proves structure: right suburb, right sections, nothing stale,
+   nothing duplicated, nothing empty. Every one of its checks passes on an email
+   whose numbers are simply WRONG — a price mistyped from REINZ, a median that
+   does not match the stats file, a grid listing that sold yesterday, an invented
+   days-to-sell. Those are the defects a reader would actually act on, and no
+   amount of structural checking can see them.
+
+   This reconciles the built email back against the run's OWN source files, and
+   fails closed on the one rule that matters:
+
+       EVERY FIGURE IN SUBURB-SCOPED COPY MUST TRACE TO A SOURCE VALUE.
+
+   An unsourced number is treated as fabrication until proven otherwise. That is
+   deliberately harsher than "looks plausible" - plausible is exactly how a wrong
+   number survives review.
+
+   USAGE (in a logged-in ActivePipe tab, after the build):
+     const rec = await qcReconcile(commId, 'Torbay', {
+       sold:  runData.sold,        // [{address, price, date, beds, days, method}]
+       grid:  liveFeedListings,    // [{address, displayprice}] from /properties
+       stats: reinzSuburbStats,    // {sales, median, p25, p75, days, turnover}
+       macro: macroIndicators      // {ocr, mortgage, cpi, hpi, clearance}
+     });
+   ========================================================================== */
+
+(function (root) {
+
+  const parse = (v) => { try { return typeof v === 'string' ? JSON.parse(v) : v; } catch (e) { return null; } };
+  const text = (p) => ['textOne', 'textTwo', 'textThree']
+    .map(k => { const c = parse(p.contents && p.contents[k]); return c && c.blocks ? c.blocks.map(b => b.text).join('\n') : ''; })
+    .filter(Boolean).join('\n');
+  const fold = (s) => String(s == null ? '' : s).normalize('NFD').replace(/[̀-ͯ]/g, '');
+
+  /* Normalise a money string/number to a plain integer: "$1,245,000" -> 1245000 */
+  const money = (v) => {
+    if (v === null || v === undefined) return null;
+    const n = String(v).replace(/[^0-9]/g, '');
+    return n ? parseInt(n, 10) : null;
+  };
+  /* Addresses vary in punctuation and case between REINZ, Trade Me and the email.
+     Compare on a squashed form: lowercase, alphanumerics only. */
+  const addr = (a) => fold(String(a || '')).toLowerCase().replace(/[^a-z0-9]/g, '');
+
+  /* ------------------------------------------------------------------------
+     The core rule. Pull every money figure out of the given copy and require
+     each to appear in the allowed set. `tolerance` lets a rounded restatement
+     through ("median $1.26m" for 1,260,000) without letting a wrong number pass.
+  ------------------------------------------------------------------------ */
+  function unsourcedMoney(copy, allowed, tolerancePct) {
+    const tol = tolerancePct === undefined ? 0.005 : tolerancePct;
+    const out = [];
+    const seen = {};
+    // $1,245,000  and  $1.26m / $1.26 m
+    const re = /\$\s?([\d,]+(?:\.\d+)?)\s?(m|million)?/gi;
+    let m;
+    while ((m = re.exec(copy))) {
+      let n = parseFloat(String(m[1]).replace(/,/g, ''));
+      if (m[2]) n = n * 1000000;
+      n = Math.round(n);
+      if (n < 1000) continue;                       // not a property figure
+      if (seen[n]) continue; seen[n] = 1;
+      const ok = allowed.some(a => a && Math.abs(a - n) <= Math.max(1, a * tol));
+      if (!ok) out.push('$' + n.toLocaleString());
+    }
+    return out;
+  }
+
+  function sectionsOf(pc) {
+    // mirrors qc_check.js's resolver closely enough for reconciliation scope
+    const openers = [];
+    pc.forEach((p, i) => {
+      let label = null;
+      if (p.panel_id === 5) {
+        const c = parse(p.contents && p.contents.textOne);
+        label = c && c.blocks ? c.blocks.map(b => b.text).join('').trim() : '';
+      } else if (p.panel_id === 6) {
+        const c = parse(p.contents && p.contents.textOne);
+        const b = (c && c.blocks) || [];
+        const hi = b.findIndex(x => x.type === 'header-two' && (x.text || '').trim());
+        if (hi >= 0) label = b.slice(0, hi).map(x => x.text).join(' ') + ' ' + b[hi].text;
+      }
+      if (label) openers.push({ label: label.trim(), start: i });
+    });
+    openers.forEach((o, n) => { o.end = n + 1 < openers.length ? openers[n + 1].start : pc.length; });
+    openers.forEach(o => {
+      o.panels = pc.slice(o.start, o.end);
+      if (o.panels.some(p => p.panel_id === 17)) o.key = 'grid';
+      else if (o.panels.some(p => p.panel_id === 11)) o.key = 'other_agency';
+      else if (/recently sold|changed hands/i.test(o.label)) o.key = 'sold';
+      else if (/market right now|where prices sit/i.test(o.label)) o.key = 'pulse';
+      else if (/north shore headlines/i.test(o.label)) o.key = 'ns_headlines';
+      else if (/economic update|rates, prices/i.test(o.label)) o.key = 'economic';
+      else if (/news around/i.test(o.label)) o.key = 'news';
+    });
+    return openers;
+  }
+
+  /* `idOrObj` accepts an id OR an already-fetched communication object. Passing the
+     object halves the GETs on a 34-suburb run - see qc_run.js, which fetches once
+     and hands the same object to both gates. */
+  async function qcReconcile(idOrObj, suburb, src, fetchImpl) {
+    let o;
+    if (idOrObj && typeof idOrObj === 'object' && idOrObj.email) {
+      o = idOrObj;
+    } else {
+      const f = fetchImpl || (typeof fetch !== 'undefined' ? fetch : null);
+      const r = await f('https://api.activepipe.com/communications/' + idOrObj, { credentials: 'include', headers: { Accept: 'application/json' } });
+      o = await r.json();
+    }
+    const id = o.id || idOrObj;
+    const pc = (o.email.panelcontents || []).slice().sort((a, b) => a.position - b.position);
+    const secs = sectionsOf(pc);
+    const errors = [], warns = [], info = {};
+    src = src || {};
+
+    // ---- 1. SOLD LIST reconciles to the REINZ pull --------------------------
+    const soldSec = secs.find(s => s.key === 'sold');
+    if (soldSec && src.sold) {
+      const copy = soldSec.panels.map(text).join('\n');
+      const srcPrices = src.sold.map(x => money(x.price)).filter(Boolean);
+      const bad = unsourcedMoney(copy, srcPrices, 0);          // sold prices must be EXACT
+      if (bad.length) errors.push('SOLD price(s) not in the REINZ pull: ' + bad.join(', '));
+
+      // every address shown must exist in the source, and vice versa
+      const srcAddr = src.sold.map(x => addr(x.address));
+      const shown = [];
+      src.sold.forEach(x => { if (addr(x.address) && copy && addr(copy).indexOf(addr(x.address)) >= 0) shown.push(x.address); });
+      info.soldShown = shown.length;
+      info.soldAvailable = src.sold.length;
+      // a listed address the source does not know about is the dangerous direction
+      const lines = copy.split('\n').filter(l => /\$\s?[\d,]{6,}/.test(l));
+      lines.forEach(l => {
+        const a = addr(l.replace(/\$\s?[\d,]+/g, ''));
+        if (!a) return;
+        const known = srcAddr.some(s => s && (a.indexOf(s) >= 0 || s.indexOf(a) >= 0));
+        if (!known) errors.push('SOLD line has no matching source record: "' + l.trim().slice(0, 52) + '"');
+      });
+      // dates shown must exist in the source too
+      const srcDates = src.sold.map(x => String(x.date || '').trim()).filter(Boolean);
+      (copy.match(/\b\d{1,2}\s+[A-Za-z]{3}[a-z]*\s+\d{4}\b/g) || []).forEach(d => {
+        const norm = d.replace(/([A-Za-z]{3})[a-z]*/, '$1');
+        if (srcDates.length && !srcDates.some(s => s.replace(/([A-Za-z]{3})[a-z]*/, '$1') === norm))
+          errors.push('SOLD date not in the source pull: ' + d);
+      });
+    } else if (soldSec && !src.sold) {
+      warns.push('no `sold` source supplied - sold figures UNVERIFIED against REINZ');
+    }
+
+    // ---- 2. GRID reconciles to the LIVE office feed -------------------------
+    const gridPanel = pc.find(p => p.panel_id === 17);
+    if (gridPanel && src.grid) {
+      const listed = (gridPanel.contents && gridPanel.contents.propertyListings) || [];
+      const live = src.grid.map(x => addr(x.address));
+      listed.forEach(l => {
+        if (live.indexOf(addr(l.address)) < 0)
+          errors.push('GRID listing not in the live feed (sold or withdrawn?): ' + l.address);
+      });
+      // and the price shown must be the price the feed currently carries
+      listed.forEach(l => {
+        const hit = src.grid.find(x => addr(x.address) === addr(l.address));
+        if (hit && String(hit.displayprice || '') !== String(l.displayprice || ''))
+          errors.push('GRID price drifted for ' + l.address + ': email "' + l.displayprice + '" vs feed "' + hit.displayprice + '"');
+      });
+      info.gridChecked = listed.length;
+    } else if (gridPanel && !src.grid) {
+      warns.push('no `grid` source supplied - office listings UNVERIFIED against the live feed');
+    }
+
+    // ---- 3. PULSE reconciles to the REINZ suburb stats ----------------------
+    const pulseSec = secs.find(s => s.key === 'pulse');
+    if (pulseSec && src.stats) {
+      const copy = pulseSec.panels.map(text).join('\n');
+      const allowed = [src.stats.median, src.stats.p25, src.stats.p75, src.stats.average].map(money).filter(Boolean);
+      const bad = unsourcedMoney(copy, allowed, 0.01);        // 1% for rounded restatement
+      if (bad.length) errors.push('PULSE figure(s) not in reinz-suburb-stats: ' + bad.join(', '));
+      // sales count and days-to-sell must match too
+      const nums = (copy.match(/\b(\d{1,3})\s*(?:sales|homes sold|days)\b/gi) || []);
+      nums.forEach(n => {
+        const v = parseInt(n, 10);
+        const okv = [src.stats.sales, Math.round(src.stats.days || -1)].indexOf(v) >= 0;
+        if (!okv) warns.push('PULSE count/days "' + n.trim() + '" does not match the stats file (sales=' +
+          src.stats.sales + ', days=' + Math.round(src.stats.days || 0) + ')');
+      });
+    } else if (pulseSec && !src.stats) {
+      warns.push('no `stats` source supplied - market pulse UNVERIFIED');
+    }
+
+    // ---- 4. ECONOMIC figures reconcile to the macro files -------------------
+    const econSec = secs.find(s => s.key === 'economic');
+    if (econSec && src.macro) {
+      const copy = econSec.panels.map(text).join('\n');
+      const allowedPct = [src.macro.ocr, src.macro.mortgage, src.macro.cpi, src.macro.hpi, src.macro.clearance]
+        .filter(v => v !== undefined && v !== null).map(Number);
+      (copy.match(/\b\d{1,2}(?:\.\d{1,2})?\s?%/g) || []).forEach(p => {
+        const v = parseFloat(p);
+        if (!allowedPct.some(a => Math.abs(a - v) < 0.051))
+          errors.push('ECONOMIC figure not in the macro sources: ' + p);
+      });
+    } else if (econSec && !src.macro) {
+      warns.push('no `macro` source supplied - economic figures UNVERIFIED');
+    }
+
+    // ---- 5. NEWS must not contradict the email's OWN figures ---------------
+    // FOUND 17 Aug on Torbay. The news section read "Ray White is marketing 9 homes
+    // in Torbay" while the grid directly below showed 4, "against a Torbay median of
+    // 56 days" while the pulse said 45, and cited a sold address no longer in the
+    // sold list. Three statements contradicting fresh data sitting inches away.
+    //
+    // Nothing caught it: news has no source file so reconciliation skipped it, and
+    // the freshness check could not fire because the fingerprint baseline predated
+    // an algorithm change. It is the same shape as every defect that has actually
+    // shipped - internally plausible, externally wrong.
+    //
+    // THE RULE (locked 17 Aug): news carries EVENTS, not STATISTICS. Any figure it
+    // restates must match the email's own numbers exactly, because a reader sees
+    // both in one scroll.
+    const newsSec = secs.find(s => s.key === 'news');
+    if (newsSec) {
+      const copy = newsSec.panels.map(text).join('\n');
+      const gridPanel2 = pc.find(p => p.panel_id === 17);
+      // Count the FEATURE panel too. On an odd listing count the dearest home is promoted
+      // out of the grid into panel 19, so "Ray White is marketing 5 homes" is correct while
+      // the grid alone holds 4. Counting the grid on its own failed six correct emails.
+      const featPanels2 = pc.filter(p => p.panel_id === 19);
+      const nIn = p => ((p.contents && p.contents.propertyListings) || []).length;
+      const shownCount = (gridPanel2 ? nIn(gridPanel2) : 0) +
+        featPanels2.reduce((a, p) => a + nIn(p), 0);
+
+      // "marketing 9 homes" / "9 listings" must equal what the email actually shows
+      let m;
+      const homesRe = /\b(\d{1,3})\s+(?:homes?|listings?|properties)\b/gi;
+      while ((m = homesRe.exec(copy))) {
+        const n = parseInt(m[1], 10);
+        if ((gridPanel2 || featPanels2.length) && n !== shownCount)
+          errors.push('NEWS says "' + m[0].trim() + '" but the email shows ' + shownCount +
+            ' Ray White listing(s) - news must not contradict the email');
+      }
+
+      // "median of 56 days" must equal the pulse's days-to-sell
+      if (src.stats && src.stats.days != null) {
+        const d = Math.round(src.stats.days);
+        const daysRe = /\b(\d{1,3})\s*days?\b/gi;
+        while ((m = daysRe.exec(copy))) {
+          const n = parseInt(m[1], 10);
+          // a days-on-market figure for ONE property is fine; a stated MEDIAN is not
+          if (/median/i.test(copy.slice(Math.max(0, m.index - 40), m.index + 12)) && n !== d)
+            errors.push('NEWS states a median of ' + n + ' days but the stats file says ' + d);
+        }
+      }
+
+      // any money figure in news must trace to a sold price or a percentile
+      if (src.sold || src.stats) {
+        const allowed = []
+          .concat((src.sold || []).map(x => money(x.price)))
+          .concat(src.stats ? [src.stats.median, src.stats.p25, src.stats.p75, src.stats.average].map(money) : [])
+          .filter(Boolean);
+        if (allowed.length) {
+          const bad = unsourcedMoney(copy, allowed, 0.01);
+          if (bad.length) warns.push('NEWS cites figures not in this run\'s data: ' + bad.join(', ') +
+            ' - verify they are real events, not restated statistics');
+        }
+      }
+
+      // NEWS MUST NOT REPEAT THE SOLD LIST (Harrison, 17 Aug).
+      // Torbay V2 led its news with the same two Gerontius Glade sales already listed
+      // in "Recently sold" a few panels above. Both were accurate and both satisfied
+      // the events-not-statistics rule, but the reader gets the same two sales twice
+      // in one scroll, which reads as thin rather than thorough. News covers what the
+      // sold list does NOT: consents, council decisions, a street pattern, an agency
+      // move, a development. If the only news is the week's sales, say less.
+      if (src.sold && src.sold.length) {
+        const newsA = addr(copy);
+        const repeated = src.sold
+          .map(x => x.address)
+          .filter(a => { const k = addr(a); return k.length >= 8 && newsA.indexOf(k) >= 0; });
+        if (repeated.length)
+          errors.push('NEWS repeats the sold list: ' + repeated.join(', ') +
+            ' - news must cover what the sold section does not');
+      }
+
+      info.newsChecked = true;
+    }
+
+
+    return {
+      id, suburb,
+      status: errors.length ? 'FAIL' : (warns.length ? 'PASS-with-warnings' : 'PASS'),
+      errors, warns, info
+    };
+  }
+
+  root.qcReconcile = qcReconcile;
+  root._recon = { money, addr, unsourcedMoney, sectionsOf };
+
+})(typeof window !== 'undefined' ? window : globalThis);
