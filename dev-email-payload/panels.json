@@ -1,0 +1,2984 @@
+[
+ {
+  "panel_id": 30,
+  "options": {
+   "feed": false,
+   "padding": 10
+  },
+  "contents": {
+   "textOne": {
+    "blocks": [
+     {
+      "key": "d0001",
+      "text": "View this email in your browser",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [
+       {
+        "offset": 0,
+        "length": 31,
+        "key": 0
+       }
+      ],
+      "data": {
+       "textAlign": "left"
+      }
+     }
+    ],
+    "entityMap": {
+     "0": {
+      "type": "ENTITY",
+      "mutability": "MUTABLE",
+      "data": {
+       "data": {
+        "url": "activepipe-view-online"
+       }
+      }
+     }
+    }
+   }
+  },
+  "position": 0,
+  "groupkey": null,
+  "query": null,
+  "restrictions": null
+ },
+ {
+  "panel_id": 9,
+  "options": {
+   "imageOneLink": null,
+   "imageTwoLink": null,
+   "imageThreeLink": null,
+   "columnCount": 1,
+   "columnSplit": "50-50",
+   "padding": 0,
+   "backgroundColor": "#F7F5F1",
+   "inset": 0,
+   "insetColor": null,
+   "edgeBleed": false
+  },
+  "contents": {
+   "imageOne": {
+    "id": 133731907,
+    "src": "https://sp.activepipe.com/image/133731907/CgFBBFYBWgZeAA8LHQRWClVOVg5RWExQUF9QFQJXXVdTUw0MBVpfUw==",
+    "key": "e8c78a69-1026-480a-bafd-0feb27556cfb",
+    "secret": "ad893991fa9205f8ccb6a9a219482185",
+    "width": 1200,
+    "height": 360
+   },
+   "imageTwo": null,
+   "imageThree": null,
+   "imageFour": null
+  },
+  "position": 1,
+  "groupkey": null,
+  "query": null,
+  "restrictions": null
+ },
+ {
+  "panel_id": 6,
+  "options": {
+   "columnCount": 1,
+   "columnSplit": "50-50",
+   "padding": 20,
+   "backgroundColor": "#ffffff",
+   "inset": 0,
+   "insetColor": null,
+   "edgeBleed": false
+  },
+  "contents": {
+   "textOne": {
+    "blocks": [
+     {
+      "key": "d0002",
+      "text": "Hi First Name,",
+      "type": "header-three",
+      "depth": 0,
+      "inlineStyleRanges": [
+       {
+        "offset": 0,
+        "length": 14,
+        "style": "#000000"
+       },
+       {
+        "offset": 0,
+        "length": 14,
+        "style": "ITALIC"
+       }
+      ],
+      "entityRanges": [
+       {
+        "offset": 3,
+        "length": 10,
+        "key": 0
+       }
+      ],
+      "data": {}
+     }
+    ],
+    "entityMap": {
+     "0": {
+      "type": "PLACEHOLDER",
+      "mutability": "IMMUTABLE",
+      "data": {
+       "placeholder": "contact.firstname"
+      }
+     }
+    }
+   },
+   "textTwo": {
+    "blocks": [
+     {
+      "key": "d0003",
+      "text": "",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   },
+   "textThree": {
+    "blocks": [
+     {
+      "key": "d0004",
+      "text": "",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   }
+  },
+  "position": 2,
+  "groupkey": null,
+  "query": null,
+  "restrictions": null
+ },
+ {
+  "panel_id": 6,
+  "options": {
+   "columnCount": 1,
+   "columnSplit": "50-50",
+   "padding": 20,
+   "backgroundColor": "#ffffff",
+   "inset": 0,
+   "insetColor": null,
+   "edgeBleed": false
+  },
+  "contents": {
+   "textOne": {
+    "blocks": [
+     {
+      "key": "d0005",
+      "text": "This is the weekly sweep of every North Shore property that passes a development screen. 222 sites qualified this week from 1,852 in scope across the 34 suburbs I track. 37 are Ray White stock and 173 are other agency stock.",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0006",
+      "text": "A site qualifies one of two ways. Either the zone permits multiple units and the land area clears the floor for that suburb, or the listing copy markets the site to developers outright. Every card says which path it took.",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   },
+   "textTwo": {
+    "blocks": [
+     {
+      "key": "d0007",
+      "text": "",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   },
+   "textThree": {
+    "blocks": [
+     {
+      "key": "d0008",
+      "text": "",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   }
+  },
+  "position": 3,
+  "groupkey": null,
+  "query": null,
+  "restrictions": null
+ },
+ {
+  "panel_id": 6,
+  "options": {
+   "columnCount": 1,
+   "columnSplit": "50-50",
+   "padding": 26,
+   "backgroundColor": "#F7F5F1",
+   "inset": 0,
+   "insetColor": null,
+   "edgeBleed": false
+  },
+  "contents": {
+   "textOne": {
+    "blocks": [
+     {
+      "key": "d0009",
+      "text": "Read this first",
+      "type": "header-two",
+      "depth": 0,
+      "inlineStyleRanges": [
+       {
+        "offset": 0,
+        "length": 15,
+        "style": "#000000"
+       }
+      ],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0010",
+      "text": "Land area is the Trade Me figure. It is not title verified this issue, because the Relab cache was empty for this run.",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0011",
+      "text": "Zones come from the Auckland Council zone layer, resolved from the Trade Me map pin. Only 6 of the 222 carry a zone confirmed by a second source. A marketing pin is not a surveyed title point, so read a single source zone as a lead and not as a fact.",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0012",
+      "text": "The Development Sales Register holds no records yet, so the benchmark line on every card below prints as unavailable. Nothing here is estimated, because nothing is estimated at all.",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   },
+   "textTwo": {
+    "blocks": [
+     {
+      "key": "d0013",
+      "text": "",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   },
+   "textThree": {
+    "blocks": [
+     {
+      "key": "d0014",
+      "text": "",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   }
+  },
+  "position": 4,
+  "groupkey": null,
+  "query": null,
+  "restrictions": null
+ },
+ {
+  "panel_id": 6,
+  "options": {
+   "columnCount": 1,
+   "columnSplit": "50-50",
+   "padding": 26,
+   "backgroundColor": "#F7F5F1",
+   "inset": 0,
+   "insetColor": null,
+   "edgeBleed": false
+  },
+  "contents": {
+   "textOne": {
+    "blocks": [
+     {
+      "key": "d0015",
+      "text": "Ray White development opportunities",
+      "type": "header-two",
+      "depth": 0,
+      "inlineStyleRanges": [
+       {
+        "offset": 0,
+        "length": 35,
+        "style": "#000000"
+       }
+      ],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0016",
+      "text": "37 qualifying sites this week. The six largest by land area are below, urban stock first.",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   },
+   "textTwo": {
+    "blocks": [
+     {
+      "key": "d0017",
+      "text": "",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   },
+   "textThree": {
+    "blocks": [
+     {
+      "key": "d0018",
+      "text": "",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   }
+  },
+  "position": 5,
+  "groupkey": null,
+  "query": null,
+  "restrictions": null
+ },
+ {
+  "panel_id": 6,
+  "options": {
+   "columnCount": 1,
+   "columnSplit": "50-50",
+   "padding": 20,
+   "backgroundColor": "#ffffff",
+   "inset": 0,
+   "insetColor": null,
+   "edgeBleed": false
+  },
+  "contents": {
+   "textOne": {
+    "blocks": [
+     {
+      "key": "d0019",
+      "text": "16, 18 and 20 Browns Bay Road",
+      "type": "header-three",
+      "depth": 0,
+      "inlineStyleRanges": [
+       {
+        "offset": 0,
+        "length": 29,
+        "style": "#000000"
+       }
+      ],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0020",
+      "text": "Rothesay Bay. Ray White Albany.",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0021",
+      "text": "Land 3,233 m2  |  Zone Residential Terrace Housing and Apartment Building Zone  |  Price by negotiation",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0022",
+      "text": "Qualified on the structural path: the zone permits multiple units and the land area clears the floor for this suburb.",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0023",
+      "text": "Zone rests on a single source, the Council layer resolved from the Trade Me map pin. No second source has confirmed it.",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0024",
+      "text": "Benchmark unavailable. The Development Sales Register holds no records, so there is no observed land band for Rothesay Bay to place this site against. No figure is estimated.",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [
+       {
+        "offset": 0,
+        "length": 24,
+        "style": "BOLD"
+       }
+      ],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0025",
+      "text": "View the listing on Trade Me",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [
+       {
+        "offset": 0,
+        "length": 28,
+        "key": 0
+       }
+      ],
+      "data": {}
+     }
+    ],
+    "entityMap": {
+     "0": {
+      "type": "ENTITY",
+      "mutability": "MUTABLE",
+      "data": {
+       "data": {
+        "url": "https://www.trademe.co.nz/a/property/residential/sale/listing/5786644529"
+       }
+      }
+     }
+    }
+   },
+   "textTwo": {
+    "blocks": [
+     {
+      "key": "d0026",
+      "text": "",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   },
+   "textThree": {
+    "blocks": [
+     {
+      "key": "d0027",
+      "text": "",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   }
+  },
+  "position": 6,
+  "groupkey": null,
+  "query": null,
+  "restrictions": null
+ },
+ {
+  "panel_id": 6,
+  "options": {
+   "columnCount": 1,
+   "columnSplit": "50-50",
+   "padding": 20,
+   "backgroundColor": "#ffffff",
+   "inset": 0,
+   "insetColor": null,
+   "edgeBleed": false
+  },
+  "contents": {
+   "textOne": {
+    "blocks": [
+     {
+      "key": "d0028",
+      "text": "489 and 491 East Coast Road",
+      "type": "header-three",
+      "depth": 0,
+      "inlineStyleRanges": [
+       {
+        "offset": 0,
+        "length": 27,
+        "style": "#000000"
+       }
+      ],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0029",
+      "text": "Murrays Bay. Ray White Albany.",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0030",
+      "text": "Land 2,230 m2  |  Zone Residential Mixed Housing Urban Zone  |  Price by negotiation",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0031",
+      "text": "Qualified on the structural path: the zone permits multiple units and the land area clears the floor for this suburb.",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0032",
+      "text": "Zone rests on a single source, the Council layer resolved from the Trade Me map pin. No second source has confirmed it.",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0033",
+      "text": "Benchmark unavailable. The Development Sales Register holds no records, so there is no observed land band for Murrays Bay to place this site against. No figure is estimated.",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [
+       {
+        "offset": 0,
+        "length": 24,
+        "style": "BOLD"
+       }
+      ],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0034",
+      "text": "View the listing on Trade Me",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [
+       {
+        "offset": 0,
+        "length": 28,
+        "key": 0
+       }
+      ],
+      "data": {}
+     }
+    ],
+    "entityMap": {
+     "0": {
+      "type": "ENTITY",
+      "mutability": "MUTABLE",
+      "data": {
+       "data": {
+        "url": "https://www.trademe.co.nz/a/property/residential/sale/listing/5786692656"
+       }
+      }
+     }
+    }
+   },
+   "textTwo": {
+    "blocks": [
+     {
+      "key": "d0035",
+      "text": "",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   },
+   "textThree": {
+    "blocks": [
+     {
+      "key": "d0036",
+      "text": "",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   }
+  },
+  "position": 7,
+  "groupkey": null,
+  "query": null,
+  "restrictions": null
+ },
+ {
+  "panel_id": 6,
+  "options": {
+   "columnCount": 1,
+   "columnSplit": "50-50",
+   "padding": 20,
+   "backgroundColor": "#ffffff",
+   "inset": 0,
+   "insetColor": null,
+   "edgeBleed": false
+  },
+  "contents": {
+   "textOne": {
+    "blocks": [
+     {
+      "key": "d0037",
+      "text": "22 and 24 Beechwood Road",
+      "type": "header-three",
+      "depth": 0,
+      "inlineStyleRanges": [
+       {
+        "offset": 0,
+        "length": 24,
+        "style": "#000000"
+       }
+      ],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0038",
+      "text": "Rothesay Bay. Ray White Albany.",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0039",
+      "text": "Land 2,024 m2  |  Zone Residential Terrace Housing and Apartment Building Zone  |  Price by negotiation",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0040",
+      "text": "Qualified on the structural path: the zone permits multiple units and the land area clears the floor for this suburb.",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0041",
+      "text": "Zone rests on a single source, the Council layer resolved from the Trade Me map pin. No second source has confirmed it.",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0042",
+      "text": "Benchmark unavailable. The Development Sales Register holds no records, so there is no observed land band for Rothesay Bay to place this site against. No figure is estimated.",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [
+       {
+        "offset": 0,
+        "length": 24,
+        "style": "BOLD"
+       }
+      ],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0043",
+      "text": "View the listing on Trade Me",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [
+       {
+        "offset": 0,
+        "length": 28,
+        "key": 0
+       }
+      ],
+      "data": {}
+     }
+    ],
+    "entityMap": {
+     "0": {
+      "type": "ENTITY",
+      "mutability": "MUTABLE",
+      "data": {
+       "data": {
+        "url": "https://www.trademe.co.nz/a/property/residential/sale/listing/5786627047"
+       }
+      }
+     }
+    }
+   },
+   "textTwo": {
+    "blocks": [
+     {
+      "key": "d0044",
+      "text": "",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   },
+   "textThree": {
+    "blocks": [
+     {
+      "key": "d0045",
+      "text": "",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   }
+  },
+  "position": 8,
+  "groupkey": null,
+  "query": null,
+  "restrictions": null
+ },
+ {
+  "panel_id": 6,
+  "options": {
+   "columnCount": 1,
+   "columnSplit": "50-50",
+   "padding": 20,
+   "backgroundColor": "#ffffff",
+   "inset": 0,
+   "insetColor": null,
+   "edgeBleed": false
+  },
+  "contents": {
+   "textOne": {
+    "blocks": [
+     {
+      "key": "d0046",
+      "text": "495 and 495A East Coast Road",
+      "type": "header-three",
+      "depth": 0,
+      "inlineStyleRanges": [
+       {
+        "offset": 0,
+        "length": 28,
+        "style": "#000000"
+       }
+      ],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0047",
+      "text": "Murrays Bay. Ray White Albany.",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0048",
+      "text": "Land 1,568 m2  |  Zone Residential Mixed Housing Urban Zone  |  Price by negotiation",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0049",
+      "text": "Qualified on the structural path: the zone permits multiple units and the land area clears the floor for this suburb.",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0050",
+      "text": "Zone rests on a single source, the Council layer resolved from the Trade Me map pin. No second source has confirmed it.",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0051",
+      "text": "Benchmark unavailable. The Development Sales Register holds no records, so there is no observed land band for Murrays Bay to place this site against. No figure is estimated.",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [
+       {
+        "offset": 0,
+        "length": 24,
+        "style": "BOLD"
+       }
+      ],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0052",
+      "text": "View the listing on Trade Me",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [
+       {
+        "offset": 0,
+        "length": 28,
+        "key": 0
+       }
+      ],
+      "data": {}
+     }
+    ],
+    "entityMap": {
+     "0": {
+      "type": "ENTITY",
+      "mutability": "MUTABLE",
+      "data": {
+       "data": {
+        "url": "https://www.trademe.co.nz/a/property/residential/sale/listing/6077674095"
+       }
+      }
+     }
+    }
+   },
+   "textTwo": {
+    "blocks": [
+     {
+      "key": "d0053",
+      "text": "",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   },
+   "textThree": {
+    "blocks": [
+     {
+      "key": "d0054",
+      "text": "",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   }
+  },
+  "position": 9,
+  "groupkey": null,
+  "query": null,
+  "restrictions": null
+ },
+ {
+  "panel_id": 6,
+  "options": {
+   "columnCount": 1,
+   "columnSplit": "50-50",
+   "padding": 20,
+   "backgroundColor": "#ffffff",
+   "inset": 0,
+   "insetColor": null,
+   "edgeBleed": false
+  },
+  "contents": {
+   "textOne": {
+    "blocks": [
+     {
+      "key": "d0055",
+      "text": "73 and 75 Powrie Street",
+      "type": "header-three",
+      "depth": 0,
+      "inlineStyleRanges": [
+       {
+        "offset": 0,
+        "length": 23,
+        "style": "#000000"
+       }
+      ],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0056",
+      "text": "Glenfield. Ray White Silverdale FM Realty Limited.",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0057",
+      "text": "Land 1,415 m2  |  Zone Residential Mixed Housing Urban Zone  |  Price by negotiation",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0058",
+      "text": "Qualified on the structural path: the zone permits multiple units and the land area clears the floor for this suburb.",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0059",
+      "text": "Zone rests on a single source, the Council layer resolved from the Trade Me map pin. No second source has confirmed it.",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0060",
+      "text": "Benchmark unavailable. The Development Sales Register holds no records, so there is no observed land band for Glenfield to place this site against. No figure is estimated.",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [
+       {
+        "offset": 0,
+        "length": 24,
+        "style": "BOLD"
+       }
+      ],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0061",
+      "text": "View the listing on Trade Me",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [
+       {
+        "offset": 0,
+        "length": 28,
+        "key": 0
+       }
+      ],
+      "data": {}
+     }
+    ],
+    "entityMap": {
+     "0": {
+      "type": "ENTITY",
+      "mutability": "MUTABLE",
+      "data": {
+       "data": {
+        "url": "https://www.trademe.co.nz/a/property/residential/sale/listing/5947930017"
+       }
+      }
+     }
+    }
+   },
+   "textTwo": {
+    "blocks": [
+     {
+      "key": "d0062",
+      "text": "",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   },
+   "textThree": {
+    "blocks": [
+     {
+      "key": "d0063",
+      "text": "",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   }
+  },
+  "position": 10,
+  "groupkey": null,
+  "query": null,
+  "restrictions": null
+ },
+ {
+  "panel_id": 6,
+  "options": {
+   "columnCount": 1,
+   "columnSplit": "50-50",
+   "padding": 20,
+   "backgroundColor": "#ffffff",
+   "inset": 0,
+   "insetColor": null,
+   "edgeBleed": false
+  },
+  "contents": {
+   "textOne": {
+    "blocks": [
+     {
+      "key": "d0064",
+      "text": "2/37 Beach Haven Road",
+      "type": "header-three",
+      "depth": 0,
+      "inlineStyleRanges": [
+       {
+        "offset": 0,
+        "length": 21,
+        "style": "#000000"
+       }
+      ],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0065",
+      "text": "Beach Haven. Ray White Carpenter Realty Ltd.",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0066",
+      "text": "Land 1,410 m2  |  Zone Residential Mixed Housing Suburban Zone  |  Price by negotiation",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0067",
+      "text": "Qualified on the structural path: the zone permits multiple units and the land area clears the floor for this suburb.",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0068",
+      "text": "Zone rests on a single source, the Council layer resolved from the Trade Me map pin. No second source has confirmed it.",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0069",
+      "text": "Benchmark unavailable. The Development Sales Register holds no records, so there is no observed land band for Beach Haven to place this site against. No figure is estimated.",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [
+       {
+        "offset": 0,
+        "length": 24,
+        "style": "BOLD"
+       }
+      ],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0070",
+      "text": "View the listing on Trade Me",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [
+       {
+        "offset": 0,
+        "length": 28,
+        "key": 0
+       }
+      ],
+      "data": {}
+     }
+    ],
+    "entityMap": {
+     "0": {
+      "type": "ENTITY",
+      "mutability": "MUTABLE",
+      "data": {
+       "data": {
+        "url": "https://www.trademe.co.nz/a/property/residential/sale/listing/5621421155"
+       }
+      }
+     }
+    }
+   },
+   "textTwo": {
+    "blocks": [
+     {
+      "key": "d0071",
+      "text": "",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   },
+   "textThree": {
+    "blocks": [
+     {
+      "key": "d0072",
+      "text": "",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   }
+  },
+  "position": 11,
+  "groupkey": null,
+  "query": null,
+  "restrictions": null
+ },
+ {
+  "panel_id": 6,
+  "options": {
+   "columnCount": 1,
+   "columnSplit": "50-50",
+   "padding": 26,
+   "backgroundColor": "#F7F5F1",
+   "inset": 0,
+   "insetColor": null,
+   "edgeBleed": false
+  },
+  "contents": {
+   "textOne": {
+    "blocks": [
+     {
+      "key": "d0073",
+      "text": "Other agency development opportunities",
+      "type": "header-two",
+      "depth": 0,
+      "inlineStyleRanges": [
+       {
+        "offset": 0,
+        "length": 38,
+        "style": "#000000"
+       }
+      ],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0074",
+      "text": "173 qualifying sites this week. The ten largest by land area are below, in the same card format so the two sections compare directly.",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   },
+   "textTwo": {
+    "blocks": [
+     {
+      "key": "d0075",
+      "text": "",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   },
+   "textThree": {
+    "blocks": [
+     {
+      "key": "d0076",
+      "text": "",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   }
+  },
+  "position": 12,
+  "groupkey": null,
+  "query": null,
+  "restrictions": null
+ },
+ {
+  "panel_id": 6,
+  "options": {
+   "columnCount": 1,
+   "columnSplit": "50-50",
+   "padding": 20,
+   "backgroundColor": "#ffffff",
+   "inset": 0,
+   "insetColor": null,
+   "edgeBleed": false
+  },
+  "contents": {
+   "textOne": {
+    "blocks": [
+     {
+      "key": "d0077",
+      "text": "1 Forrest Hill Road and 4 Nile Road",
+      "type": "header-three",
+      "depth": 0,
+      "inlineStyleRanges": [
+       {
+        "offset": 0,
+        "length": 35,
+        "style": "#000000"
+       }
+      ],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0078",
+      "text": "Milford. Bayleys Remuera.",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0079",
+      "text": "Land 5,344 m2  |  Zone Residential Mixed Housing Urban Zone  |  For sale by tender, 4 Sept",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0080",
+      "text": "Qualified on the structural path: the zone permits multiple units and the land area clears the floor for this suburb.",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0081",
+      "text": "Zone rests on a single source, the Council layer resolved from the Trade Me map pin. No second source has confirmed it.",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0082",
+      "text": "Benchmark unavailable. The Development Sales Register holds no records, so there is no observed land band for Milford to place this site against. No figure is estimated.",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [
+       {
+        "offset": 0,
+        "length": 24,
+        "style": "BOLD"
+       }
+      ],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0083",
+      "text": "View the listing on Trade Me",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [
+       {
+        "offset": 0,
+        "length": 28,
+        "key": 0
+       }
+      ],
+      "data": {}
+     }
+    ],
+    "entityMap": {
+     "0": {
+      "type": "ENTITY",
+      "mutability": "MUTABLE",
+      "data": {
+       "data": {
+        "url": "https://www.trademe.co.nz/a/property/residential/sale/listing/6069354321"
+       }
+      }
+     }
+    }
+   },
+   "textTwo": {
+    "blocks": [
+     {
+      "key": "d0084",
+      "text": "",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   },
+   "textThree": {
+    "blocks": [
+     {
+      "key": "d0085",
+      "text": "",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   }
+  },
+  "position": 13,
+  "groupkey": null,
+  "query": null,
+  "restrictions": null
+ },
+ {
+  "panel_id": 6,
+  "options": {
+   "columnCount": 1,
+   "columnSplit": "50-50",
+   "padding": 20,
+   "backgroundColor": "#ffffff",
+   "inset": 0,
+   "insetColor": null,
+   "edgeBleed": false
+  },
+  "contents": {
+   "textOne": {
+    "blocks": [
+     {
+      "key": "d0086",
+      "text": "13 Cresta Avenue",
+      "type": "header-three",
+      "depth": 0,
+      "inlineStyleRanges": [
+       {
+        "offset": 0,
+        "length": 16,
+        "style": "#000000"
+       }
+      ],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0087",
+      "text": "Beach Haven. Barfoot and Thompson Projects.",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0088",
+      "text": "Land 4,896 m2  |  Zone Residential Mixed Housing Urban Zone  |  Price by negotiation",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0089",
+      "text": "Qualified on the structural path: the zone permits multiple units and the land area clears the floor for this suburb.",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0090",
+      "text": "Benchmark unavailable. The Development Sales Register holds no records, so there is no observed land band for Beach Haven to place this site against. No figure is estimated.",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [
+       {
+        "offset": 0,
+        "length": 24,
+        "style": "BOLD"
+       }
+      ],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0091",
+      "text": "View the listing on Trade Me",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [
+       {
+        "offset": 0,
+        "length": 28,
+        "key": 0
+       }
+      ],
+      "data": {}
+     }
+    ],
+    "entityMap": {
+     "0": {
+      "type": "ENTITY",
+      "mutability": "MUTABLE",
+      "data": {
+       "data": {
+        "url": "https://www.trademe.co.nz/a/property/residential/sale/listing/6069556582"
+       }
+      }
+     }
+    }
+   },
+   "textTwo": {
+    "blocks": [
+     {
+      "key": "d0092",
+      "text": "",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   },
+   "textThree": {
+    "blocks": [
+     {
+      "key": "d0093",
+      "text": "",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   }
+  },
+  "position": 14,
+  "groupkey": null,
+  "query": null,
+  "restrictions": null
+ },
+ {
+  "panel_id": 6,
+  "options": {
+   "columnCount": 1,
+   "columnSplit": "50-50",
+   "padding": 20,
+   "backgroundColor": "#ffffff",
+   "inset": 0,
+   "insetColor": null,
+   "edgeBleed": false
+  },
+  "contents": {
+   "textOne": {
+    "blocks": [
+     {
+      "key": "d0094",
+      "text": "103 to 113 Sunnynook Road",
+      "type": "header-three",
+      "depth": 0,
+      "inlineStyleRanges": [
+       {
+        "offset": 0,
+        "length": 25,
+        "style": "#000000"
+       }
+      ],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0095",
+      "text": "Forrest Hill. Bayleys Real Estate St Heliers.",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0096",
+      "text": "Land 3,672 m2  |  Zone Residential Terrace Housing and Apartment Building Zone  |  Asking price $1,295,000",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0097",
+      "text": "Qualified on the structural path: the zone permits multiple units and the land area clears the floor for this suburb.",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0098",
+      "text": "Zone rests on a single source, the Council layer resolved from the Trade Me map pin. No second source has confirmed it.",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0099",
+      "text": "Benchmark unavailable. The Development Sales Register holds no records, so there is no observed land band for Forrest Hill to place this site against. No figure is estimated.",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [
+       {
+        "offset": 0,
+        "length": 24,
+        "style": "BOLD"
+       }
+      ],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0100",
+      "text": "View the listing on Trade Me",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [
+       {
+        "offset": 0,
+        "length": 28,
+        "key": 0
+       }
+      ],
+      "data": {}
+     }
+    ],
+    "entityMap": {
+     "0": {
+      "type": "ENTITY",
+      "mutability": "MUTABLE",
+      "data": {
+       "data": {
+        "url": "https://www.trademe.co.nz/a/property/residential/sale/listing/5924252792"
+       }
+      }
+     }
+    }
+   },
+   "textTwo": {
+    "blocks": [
+     {
+      "key": "d0101",
+      "text": "",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   },
+   "textThree": {
+    "blocks": [
+     {
+      "key": "d0102",
+      "text": "",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   }
+  },
+  "position": 15,
+  "groupkey": null,
+  "query": null,
+  "restrictions": null
+ },
+ {
+  "panel_id": 6,
+  "options": {
+   "columnCount": 1,
+   "columnSplit": "50-50",
+   "padding": 20,
+   "backgroundColor": "#ffffff",
+   "inset": 0,
+   "insetColor": null,
+   "edgeBleed": false
+  },
+  "contents": {
+   "textOne": {
+    "blocks": [
+     {
+      "key": "d0103",
+      "text": "28 Hobby Avenue",
+      "type": "header-three",
+      "depth": 0,
+      "inlineStyleRanges": [
+       {
+        "offset": 0,
+        "length": 15,
+        "style": "#000000"
+       }
+      ],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0104",
+      "text": "Birkdale. Harcourts Mt Albert.",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0105",
+      "text": "Land 2,946 m2  |  Zone Residential Mixed Housing Suburban Zone  |  Price by negotiation",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0106",
+      "text": "Qualified on the structural path: the zone permits multiple units and the land area clears the floor for this suburb.",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0107",
+      "text": "Zone rests on a single source, the Council layer resolved from the Trade Me map pin. No second source has confirmed it.",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0108",
+      "text": "Benchmark unavailable. The Development Sales Register holds no records, so there is no observed land band for Birkdale to place this site against. No figure is estimated.",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [
+       {
+        "offset": 0,
+        "length": 24,
+        "style": "BOLD"
+       }
+      ],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0109",
+      "text": "View the listing on Trade Me",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [
+       {
+        "offset": 0,
+        "length": 28,
+        "key": 0
+       }
+      ],
+      "data": {}
+     }
+    ],
+    "entityMap": {
+     "0": {
+      "type": "ENTITY",
+      "mutability": "MUTABLE",
+      "data": {
+       "data": {
+        "url": "https://www.trademe.co.nz/a/property/residential/sale/listing/5399687672"
+       }
+      }
+     }
+    }
+   },
+   "textTwo": {
+    "blocks": [
+     {
+      "key": "d0110",
+      "text": "",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   },
+   "textThree": {
+    "blocks": [
+     {
+      "key": "d0111",
+      "text": "",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   }
+  },
+  "position": 16,
+  "groupkey": null,
+  "query": null,
+  "restrictions": null
+ },
+ {
+  "panel_id": 6,
+  "options": {
+   "columnCount": 1,
+   "columnSplit": "50-50",
+   "padding": 20,
+   "backgroundColor": "#ffffff",
+   "inset": 0,
+   "insetColor": null,
+   "edgeBleed": false
+  },
+  "contents": {
+   "textOne": {
+    "blocks": [
+     {
+      "key": "d0112",
+      "text": "25 and 27 Kauri Glen Road",
+      "type": "header-three",
+      "depth": 0,
+      "inlineStyleRanges": [
+       {
+        "offset": 0,
+        "length": 25,
+        "style": "#000000"
+       }
+      ],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0113",
+      "text": "Northcote. Barfoot and Thompson Birkenhead.",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0114",
+      "text": "Land 2,564 m2  |  Zone Residential Mixed Housing Suburban Zone  |  Asking price $1,995,000",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0115",
+      "text": "Qualified on the structural path: the zone permits multiple units and the land area clears the floor for this suburb.",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0116",
+      "text": "Zone rests on a single source, the Council layer resolved from the Trade Me map pin. No second source has confirmed it.",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0117",
+      "text": "Benchmark unavailable. The Development Sales Register holds no records, so there is no observed land band for Northcote to place this site against. No figure is estimated.",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [
+       {
+        "offset": 0,
+        "length": 24,
+        "style": "BOLD"
+       }
+      ],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0118",
+      "text": "View the listing on Trade Me",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [
+       {
+        "offset": 0,
+        "length": 28,
+        "key": 0
+       }
+      ],
+      "data": {}
+     }
+    ],
+    "entityMap": {
+     "0": {
+      "type": "ENTITY",
+      "mutability": "MUTABLE",
+      "data": {
+       "data": {
+        "url": "https://www.trademe.co.nz/a/property/residential/sale/listing/5859326627"
+       }
+      }
+     }
+    }
+   },
+   "textTwo": {
+    "blocks": [
+     {
+      "key": "d0119",
+      "text": "",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   },
+   "textThree": {
+    "blocks": [
+     {
+      "key": "d0120",
+      "text": "",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   }
+  },
+  "position": 17,
+  "groupkey": null,
+  "query": null,
+  "restrictions": null
+ },
+ {
+  "panel_id": 6,
+  "options": {
+   "columnCount": 1,
+   "columnSplit": "50-50",
+   "padding": 20,
+   "backgroundColor": "#ffffff",
+   "inset": 0,
+   "insetColor": null,
+   "edgeBleed": false
+  },
+  "contents": {
+   "textOne": {
+    "blocks": [
+     {
+      "key": "d0121",
+      "text": "10 St Peters Street",
+      "type": "header-three",
+      "depth": 0,
+      "inlineStyleRanges": [
+       {
+        "offset": 0,
+        "length": 19,
+        "style": "#000000"
+       }
+      ],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0122",
+      "text": "Northcote. Barfoot and Thompson Browns Bay.",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0123",
+      "text": "Land 2,453 m2  |  Zone Residential Mixed Housing Suburban Zone  |  Price by negotiation",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0124",
+      "text": "Qualified on the structural path: the zone permits multiple units and the land area clears the floor for this suburb.",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0125",
+      "text": "Zone rests on a single source, the Council layer resolved from the Trade Me map pin. No second source has confirmed it.",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0126",
+      "text": "Benchmark unavailable. The Development Sales Register holds no records, so there is no observed land band for Northcote to place this site against. No figure is estimated.",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [
+       {
+        "offset": 0,
+        "length": 24,
+        "style": "BOLD"
+       }
+      ],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0127",
+      "text": "View the listing on Trade Me",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [
+       {
+        "offset": 0,
+        "length": 28,
+        "key": 0
+       }
+      ],
+      "data": {}
+     }
+    ],
+    "entityMap": {
+     "0": {
+      "type": "ENTITY",
+      "mutability": "MUTABLE",
+      "data": {
+       "data": {
+        "url": "https://www.trademe.co.nz/a/property/residential/sale/listing/5801918320"
+       }
+      }
+     }
+    }
+   },
+   "textTwo": {
+    "blocks": [
+     {
+      "key": "d0128",
+      "text": "",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   },
+   "textThree": {
+    "blocks": [
+     {
+      "key": "d0129",
+      "text": "",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   }
+  },
+  "position": 18,
+  "groupkey": null,
+  "query": null,
+  "restrictions": null
+ },
+ {
+  "panel_id": 6,
+  "options": {
+   "columnCount": 1,
+   "columnSplit": "50-50",
+   "padding": 20,
+   "backgroundColor": "#ffffff",
+   "inset": 0,
+   "insetColor": null,
+   "edgeBleed": false
+  },
+  "contents": {
+   "textOne": {
+    "blocks": [
+     {
+      "key": "d0130",
+      "text": "3/35 Kitchener Road",
+      "type": "header-three",
+      "depth": 0,
+      "inlineStyleRanges": [
+       {
+        "offset": 0,
+        "length": 19,
+        "style": "#000000"
+       }
+      ],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0131",
+      "text": "Takapuna. Harcourts Cooper and Co Milford.",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0132",
+      "text": "Land 2,147 m2  |  Zone Residential Mixed Housing Suburban Zone  |  Deadline sale by 3 Sept",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0133",
+      "text": "Qualified on the structural path: the zone permits multiple units and the land area clears the floor for this suburb.",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0134",
+      "text": "Zone rests on a single source, the Council layer resolved from the Trade Me map pin. No second source has confirmed it.",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0135",
+      "text": "Benchmark unavailable. The Development Sales Register holds no records, so there is no observed land band for Takapuna to place this site against. No figure is estimated.",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [
+       {
+        "offset": 0,
+        "length": 24,
+        "style": "BOLD"
+       }
+      ],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0136",
+      "text": "View the listing on Trade Me",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [
+       {
+        "offset": 0,
+        "length": 28,
+        "key": 0
+       }
+      ],
+      "data": {}
+     }
+    ],
+    "entityMap": {
+     "0": {
+      "type": "ENTITY",
+      "mutability": "MUTABLE",
+      "data": {
+       "data": {
+        "url": "https://www.trademe.co.nz/a/property/residential/sale/listing/5990526096"
+       }
+      }
+     }
+    }
+   },
+   "textTwo": {
+    "blocks": [
+     {
+      "key": "d0137",
+      "text": "",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   },
+   "textThree": {
+    "blocks": [
+     {
+      "key": "d0138",
+      "text": "",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   }
+  },
+  "position": 19,
+  "groupkey": null,
+  "query": null,
+  "restrictions": null
+ },
+ {
+  "panel_id": 6,
+  "options": {
+   "columnCount": 1,
+   "columnSplit": "50-50",
+   "padding": 20,
+   "backgroundColor": "#ffffff",
+   "inset": 0,
+   "insetColor": null,
+   "edgeBleed": false
+  },
+  "contents": {
+   "textOne": {
+    "blocks": [
+     {
+      "key": "d0139",
+      "text": "8 St Peters Street",
+      "type": "header-three",
+      "depth": 0,
+      "inlineStyleRanges": [
+       {
+        "offset": 0,
+        "length": 18,
+        "style": "#000000"
+       }
+      ],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0140",
+      "text": "Northcote. Barfoot and Thompson Browns Bay.",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0141",
+      "text": "Land 2,106 m2  |  Zone Residential Mixed Housing Suburban Zone  |  Price by negotiation",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0142",
+      "text": "Qualified on the structural path: the zone permits multiple units and the land area clears the floor for this suburb.",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0143",
+      "text": "Zone rests on a single source, the Council layer resolved from the Trade Me map pin. No second source has confirmed it.",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0144",
+      "text": "Benchmark unavailable. The Development Sales Register holds no records, so there is no observed land band for Northcote to place this site against. No figure is estimated.",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [
+       {
+        "offset": 0,
+        "length": 24,
+        "style": "BOLD"
+       }
+      ],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0145",
+      "text": "View the listing on Trade Me",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [
+       {
+        "offset": 0,
+        "length": 28,
+        "key": 0
+       }
+      ],
+      "data": {}
+     }
+    ],
+    "entityMap": {
+     "0": {
+      "type": "ENTITY",
+      "mutability": "MUTABLE",
+      "data": {
+       "data": {
+        "url": "https://www.trademe.co.nz/a/property/residential/sale/listing/5801917708"
+       }
+      }
+     }
+    }
+   },
+   "textTwo": {
+    "blocks": [
+     {
+      "key": "d0146",
+      "text": "",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   },
+   "textThree": {
+    "blocks": [
+     {
+      "key": "d0147",
+      "text": "",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   }
+  },
+  "position": 20,
+  "groupkey": null,
+  "query": null,
+  "restrictions": null
+ },
+ {
+  "panel_id": 6,
+  "options": {
+   "columnCount": 1,
+   "columnSplit": "50-50",
+   "padding": 20,
+   "backgroundColor": "#ffffff",
+   "inset": 0,
+   "insetColor": null,
+   "edgeBleed": false
+  },
+  "contents": {
+   "textOne": {
+    "blocks": [
+     {
+      "key": "d0148",
+      "text": "63, 65 and 67 Anzac Street",
+      "type": "header-three",
+      "depth": 0,
+      "inlineStyleRanges": [
+       {
+        "offset": 0,
+        "length": 26,
+        "style": "#000000"
+       }
+      ],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0149",
+      "text": "Takapuna. Harcourts Infinite.",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0150",
+      "text": "Land 1,992 m2  |  Zone Residential Terrace Housing and Apartment Building Zone  |  Asking price $7,900,000",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0151",
+      "text": "Qualified on the structural path: the zone permits multiple units and the land area clears the floor for this suburb.",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0152",
+      "text": "Zone rests on a single source, the Council layer resolved from the Trade Me map pin. No second source has confirmed it.",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0153",
+      "text": "Benchmark unavailable. The Development Sales Register holds no records, so there is no observed land band for Takapuna to place this site against. No figure is estimated.",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [
+       {
+        "offset": 0,
+        "length": 24,
+        "style": "BOLD"
+       }
+      ],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0154",
+      "text": "View the listing on Trade Me",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [
+       {
+        "offset": 0,
+        "length": 28,
+        "key": 0
+       }
+      ],
+      "data": {}
+     }
+    ],
+    "entityMap": {
+     "0": {
+      "type": "ENTITY",
+      "mutability": "MUTABLE",
+      "data": {
+       "data": {
+        "url": "https://www.trademe.co.nz/a/property/residential/sale/listing/5895113721"
+       }
+      }
+     }
+    }
+   },
+   "textTwo": {
+    "blocks": [
+     {
+      "key": "d0155",
+      "text": "",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   },
+   "textThree": {
+    "blocks": [
+     {
+      "key": "d0156",
+      "text": "",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   }
+  },
+  "position": 21,
+  "groupkey": null,
+  "query": null,
+  "restrictions": null
+ },
+ {
+  "panel_id": 6,
+  "options": {
+   "columnCount": 1,
+   "columnSplit": "50-50",
+   "padding": 20,
+   "backgroundColor": "#ffffff",
+   "inset": 0,
+   "insetColor": null,
+   "edgeBleed": false
+  },
+  "contents": {
+   "textOne": {
+    "blocks": [
+     {
+      "key": "d0157",
+      "text": "104 and 106 Sycamore Drive",
+      "type": "header-three",
+      "depth": 0,
+      "inlineStyleRanges": [
+       {
+        "offset": 0,
+        "length": 26,
+        "style": "#000000"
+       }
+      ],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0158",
+      "text": "Sunnynook. Barfoot and Thompson Torbay.",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0159",
+      "text": "Land 1,913 m2  |  Zone Residential Mixed Housing Urban Zone  |  Price by negotiation",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0160",
+      "text": "Qualified on the structural path: the zone permits multiple units and the land area clears the floor for this suburb.",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0161",
+      "text": "Zone rests on a single source, the Council layer resolved from the Trade Me map pin. No second source has confirmed it.",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0162",
+      "text": "Benchmark unavailable. The Development Sales Register holds no records, so there is no observed land band for Sunnynook to place this site against. No figure is estimated.",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [
+       {
+        "offset": 0,
+        "length": 24,
+        "style": "BOLD"
+       }
+      ],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0163",
+      "text": "View the listing on Trade Me",
+      "type": "fine-print",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [
+       {
+        "offset": 0,
+        "length": 28,
+        "key": 0
+       }
+      ],
+      "data": {}
+     }
+    ],
+    "entityMap": {
+     "0": {
+      "type": "ENTITY",
+      "mutability": "MUTABLE",
+      "data": {
+       "data": {
+        "url": "https://www.trademe.co.nz/a/property/residential/sale/listing/5852034693"
+       }
+      }
+     }
+    }
+   },
+   "textTwo": {
+    "blocks": [
+     {
+      "key": "d0164",
+      "text": "",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   },
+   "textThree": {
+    "blocks": [
+     {
+      "key": "d0165",
+      "text": "",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   }
+  },
+  "position": 22,
+  "groupkey": null,
+  "query": null,
+  "restrictions": null
+ },
+ {
+  "panel_id": 6,
+  "options": {
+   "columnCount": 1,
+   "columnSplit": "50-50",
+   "padding": 26,
+   "backgroundColor": "#F7F5F1",
+   "inset": 0,
+   "insetColor": null,
+   "edgeBleed": false
+  },
+  "contents": {
+   "textOne": {
+    "blocks": [
+     {
+      "key": "d0166",
+      "text": "What is not in this issue",
+      "type": "header-two",
+      "depth": 0,
+      "inlineStyleRanges": [
+       {
+        "offset": 0,
+        "length": 25,
+        "style": "#000000"
+       }
+      ],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0167",
+      "text": "Six sections of the standard brief are held back this week rather than filled with estimates.",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0168",
+      "text": "This week in numbers, land value benchmarks by suburb, recent development site sales, exit market and active buyers all rest on the Development Sales Register, which holds no records yet.",
+      "type": "unordered-list-item",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0169",
+      "text": "Planning and zoning needs two weekly snapshots of the Council zone layer to produce a diff. Only one snapshot exists, so the first real diff is possible next week.",
+      "type": "unordered-list-item",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0170",
+      "text": "Each returns automatically the week its data exists.",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   },
+   "textTwo": {
+    "blocks": [
+     {
+      "key": "d0171",
+      "text": "",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   },
+   "textThree": {
+    "blocks": [
+     {
+      "key": "d0172",
+      "text": "",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   }
+  },
+  "position": 23,
+  "groupkey": null,
+  "query": null,
+  "restrictions": null
+ },
+ {
+  "panel_id": 6,
+  "options": {
+   "columnCount": 1,
+   "columnSplit": "50-50",
+   "padding": 26,
+   "backgroundColor": "#F7F5F1",
+   "inset": 0,
+   "insetColor": null,
+   "edgeBleed": false
+  },
+  "contents": {
+   "textOne": {
+    "blocks": [
+     {
+      "key": "d0173",
+      "text": "Two ways to use me",
+      "type": "header-two",
+      "depth": 0,
+      "inlineStyleRanges": [
+       {
+        "offset": 0,
+        "length": 18,
+        "style": "#000000"
+       }
+      ],
+      "entityRanges": [],
+      "data": {}
+     },
+     {
+      "key": "d0174",
+      "text": "I keep an off market register of North Shore development sites that never reach a portal. I also run feasibility and land value on a site you already hold or are about to bid on.",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   },
+   "textTwo": {
+    "blocks": [
+     {
+      "key": "d0175",
+      "text": "",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   },
+   "textThree": {
+    "blocks": [
+     {
+      "key": "d0176",
+      "text": "",
+      "type": "unstyled",
+      "depth": 0,
+      "inlineStyleRanges": [],
+      "entityRanges": [],
+      "data": {}
+     }
+    ],
+    "entityMap": {}
+   }
+  },
+  "position": 24,
+  "groupkey": null,
+  "query": null,
+  "restrictions": null
+ },
+ {
+  "panel_id": 3,
+  "options": {
+   "buttonText": "JOIN THE OFF MARKET SITE REGISTER",
+   "buttonLink": "https://harrisoncutfield.co.nz/book.html",
+   "padding": 16,
+   "alignment": "center",
+   "backgroundColor": "#F7F5F1",
+   "edgeBleed": false,
+   "buttonStyle": "btn2",
+   "feed": false
+  },
+  "contents": {},
+  "position": 25,
+  "groupkey": null,
+  "query": null,
+  "restrictions": null
+ },
+ {
+  "panel_id": 3,
+  "options": {
+   "buttonText": "REQUEST A DEVELOPMENT APPRAISAL",
+   "buttonLink": "https://harrisoncutfield.co.nz/book.html",
+   "padding": 16,
+   "alignment": "center",
+   "backgroundColor": "#F7F5F1",
+   "edgeBleed": false,
+   "buttonStyle": "btn2",
+   "feed": false
+  },
+  "contents": {},
+  "position": 26,
+  "groupkey": null,
+  "query": null,
+  "restrictions": null
+ },
+ {
+  "panel_id": 9,
+  "options": {
+   "imageOneLink": null,
+   "imageTwoLink": null,
+   "imageThreeLink": null,
+   "columnCount": 1,
+   "columnSplit": "50-50",
+   "padding": 0,
+   "backgroundColor": "#F7F5F1",
+   "inset": 0,
+   "insetColor": null,
+   "edgeBleed": false
+  },
+  "contents": {
+   "imageOne": {
+    "id": 133731908,
+    "src": "https://sp.activepipe.com/image/133731908/WgNOCAVQDARRXwFSHlUCCFAZAlMOUh4KUVsAS1YNAVdXVAIDAV1cAg==",
+    "key": "344b598d-f486-4c87-92b3-7963f25679dd",
+    "secret": "1f756d8fdf963360f4606e33c93fa47d",
+    "width": 1200,
+    "height": 360
+   },
+   "imageTwo": null,
+   "imageThree": null,
+   "imageFour": null
+  },
+  "position": 27,
+  "groupkey": null,
+  "query": null,
+  "restrictions": null
+ }
+]
