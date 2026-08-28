@@ -57,7 +57,12 @@ const QC_SPEC = {
   quiet_heading: 'Other agencies listings',   // header-three #8a8a8a italic on #ffffff
   banned_text: [
     'Stapleford', 'Anytown', 'digital appraisal', 'Lorem ipsum',
-    '{{', '}}', 'undefined', 'NaN', '$0', 'null'
+    '{{', '}}', 'undefined', 'NaN', '$0', 'null',
+    // FRAMING BANS (Harrison, 28 Aug 2026): we are always the agents to sell with.
+    'Ray White is marketing',                          // first person: "We are currently marketing"
+    'No auction or deadline',                          // never dismissive about auctions
+    'marketed by negotiation rather than a set date',  // undersold competing stock AND was often false
+    'buyers here have time to do their homework'       // deflates urgency; never ship it
   ]
 };
 
