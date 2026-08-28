@@ -160,7 +160,8 @@ function qcSections(pc) {
     const text = s.panels.map(_text).join('\n');
     // structure wins over wording - a grid panel makes it the grid section whatever
     // the headline says, and an editorial headline never has to be parsed for it
-    if (s.panels.some(p => p.panel_id === 17)) { s.key = 'grid'; return; }
+    if (s.panels.some(p => p.panel_id === 17 && (p.options || {}).feed === false)) { s.key = 'grid'; return; }
+    if (s.panels.some(p => p.panel_id === 17)) { s.key = 'my_listings'; return; }   // agent-feed grid, 29 Aug
     if (s.panels.some(p => p.panel_id === 11)) { s.key = 'other_agency'; return; }
     const hit = SECTION_SIGNATURES.find(sg => sg.re.test(s.label));
     if (hit) { s.key = hit.key; return; }
@@ -354,7 +355,7 @@ async function qcCheck(idOrObj, suburb, spec, expect, prev) {
   // ...and the INVERSE: structural content that resolved to no section at all.
   // Caught on Albany Heights 15 Aug - other-agency listings rendered with no
   // heading above them, so they read as part of the market section.
-  if (pc.some(p => p.panel_id === 17) && keys.indexOf('grid') < 0)
+  if (pc.some(p => p.panel_id === 17 && (p.options || {}).feed === false) && keys.indexOf('grid') < 0)
     errors.push('property grid panel present but no grid section resolved (missing heading?)');
   if (pc.some(p => p.panel_id === 11) && keys.indexOf('other_agency') < 0)
     errors.push('other-agency photo panels present but no other-agency section resolved');
@@ -472,7 +473,7 @@ async function qcCheck(idOrObj, suburb, spec, expect, prev) {
   // needs the listing's source ids to build its target and vanished for the same reason.
   // Neither failure is visible in the stored copy: the address string is still in the
   // record, it just never reaches the tile. So check the fields, not the text.
-  const gridPanel = pc.find(p => p.panel_id === 17);
+  const gridPanel = pc.find(p => p.panel_id === 17 && (p.options || {}).feed === false);
   if (gridPanel) {
     const dl = (gridPanel.options || {}).detailsLayout || [];
     if (dl.indexOf('inspection-request') < 0)
@@ -652,7 +653,15 @@ async function qcCheck(idOrObj, suburb, spec, expect, prev) {
   }
 
   // ---- 11. property grid --------------------------------------------------
-  const grid = pc.find(p => p.panel_id === 17);
+  // MANUAL grid only. Since 29 Aug every email also carries the "My other listings for
+  // sale" AGENT-FEED grid (Harrison's design): a second panel 17 with feed:true and
+  // feedAgentListings:true that ActivePipe populates itself. It is exempt from every
+  // manual-grid check below, and anything else feed-driven is still an error.
+  const grid = pc.find(p => p.panel_id === 17 && (p.options || {}).feed === false);
+  pc.filter(p => p.panel_id === 17 && (p.options || {}).feed !== false).forEach(p => {
+    if ((p.options || {}).feedAgentListings !== true)
+      errors.push('feed-driven grid at pos ' + p.position + ' is not the agent-listings feed');
+  });
   if (grid) {
     const op = grid.options || {};
     const listings = (grid.contents && grid.contents.propertyListings) || [];

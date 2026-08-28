@@ -88,7 +88,8 @@
     openers.forEach((o, n) => { o.end = n + 1 < openers.length ? openers[n + 1].start : pc.length; });
     openers.forEach(o => {
       o.panels = pc.slice(o.start, o.end);
-      if (o.panels.some(p => p.panel_id === 17)) o.key = 'grid';
+      if (o.panels.some(p => p.panel_id === 17 && (p.options || {}).feed === false)) o.key = 'grid';
+      else if (o.panels.some(p => p.panel_id === 17)) o.key = 'my_listings';   // agent-feed grid, exempt
       else if (o.panels.some(p => p.panel_id === 11)) o.key = 'other_agency';
       else if (/recently sold|changed hands/i.test(o.label)) o.key = 'sold';
       else if (/market right now|where prices sit/i.test(o.label)) o.key = 'pulse';
@@ -151,7 +152,7 @@
     }
 
     // ---- 2. GRID reconciles to the LIVE office feed -------------------------
-    const gridPanel = pc.find(p => p.panel_id === 17);
+    const gridPanel = pc.find(p => p.panel_id === 17 && (p.options || {}).feed === false);
     if (gridPanel && src.grid) {
       const listed = (gridPanel.contents && gridPanel.contents.propertyListings) || [];
       const live = src.grid.map(x => addr(x.address));
@@ -221,7 +222,7 @@
     const newsSec = secs.find(s => s.key === 'news');
     if (newsSec) {
       const copy = newsSec.panels.map(text).join('\n');
-      const gridPanel2 = pc.find(p => p.panel_id === 17);
+      const gridPanel2 = pc.find(p => p.panel_id === 17 && (p.options || {}).feed === false);
       // Count the FEATURE panel too. On an odd listing count the dearest home is promoted
       // out of the grid into panel 19, so "Ray White is marketing 5 homes" is correct while
       // the grid alone holds 4. Counting the grid on its own failed six correct emails.
