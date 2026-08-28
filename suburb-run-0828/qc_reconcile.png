@@ -230,9 +230,13 @@
       const shownCount = (gridPanel2 ? nIn(gridPanel2) : 0) +
         featPanels2.reduce((a, p) => a + nIn(p), 0);
 
-      // "marketing 9 homes" / "9 listings" must equal what the email actually shows
+      // "marketing 9 homes" / "9 listings" must equal what the email actually shows.
+      // SCOPED to an actual claim about OUR stock. It used to match any "<N> homes",
+      // which on 28 Aug flagged the new selling-now paragraph ("40 homes sold in
+      // Bayswater over the past year") as a listing-count contradiction on 11 suburbs.
+      // A sold-volume sentence is not a claim about how much we have listed.
       let m;
-      const homesRe = /\b(\d{1,3})\s+(?:homes?|listings?|properties)\b/gi;
+      const homesRe = /(?:marketing|listing|we have|on the market with us)\s+(\d{1,3})\s+(?:homes?|listings?|properties)\b/gi;
       while ((m = homesRe.exec(copy))) {
         const n = parseInt(m[1], 10);
         if ((gridPanel2 || featPanels2.length) && n !== shownCount)
