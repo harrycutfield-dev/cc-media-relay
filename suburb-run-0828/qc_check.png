@@ -314,7 +314,7 @@ async function qcCheck(idOrObj, suburb, spec, expect, prev) {
   info.sections = sections.map(s => (s.key || '?') + ':' + s.label.slice(0, 38));
 
   // locked relative order; 'cta' appears twice (top and tail)
-  const ORDER = ['sold', 'cta', 'news', 'ns_headlines', 'economic', 'pulse', 'grid', 'other_agency', 'cta'];
+  const ORDER = ['sold', 'cta', 'news', 'ns_headlines', 'economic', 'pulse', 'grid', 'other_agency', 'cta', 'my_listings'];  // my_listings = agent-feed section, closes the email (Harrison, 29 Aug)
   const MANDATORY = ['sold', 'news', 'ns_headlines', 'economic'];
   MANDATORY.forEach(k => {
     if (keys.indexOf(k) < 0) errors.push('MISSING mandatory section: ' + k);
