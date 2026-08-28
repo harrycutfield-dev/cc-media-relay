@@ -261,6 +261,9 @@
         const allowed = []
           .concat((src.sold || []).map(x => money(x.price)))
           .concat(src.stats ? [src.stats.median, src.stats.p25, src.stats.p75, src.stats.average].map(money) : [])
+          // the news may restate OUR advertised listing prices ("Advertised prices range
+          // from $X to $Y", 28 Aug) - they are the email's own numbers, shown in the grid
+          .concat((src.grid || []).map(x => money(x.displayprice)))
           .filter(Boolean);
         if (allowed.length) {
           const bad = unsourcedMoney(copy, allowed, 0.01);

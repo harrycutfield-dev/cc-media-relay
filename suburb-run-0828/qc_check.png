@@ -726,8 +726,23 @@ async function qcCheck(idOrObj, suburb, spec, expect, prev) {
       if (got !== want.replace(/\s+/g, ' ').trim())
         errors.push('CTA button ' + (i + 1) + ' says "' + got + '" but the listing beside it is "' +
           addr + '" - STALE BUTTON');
-      if (!/^https:\/\/harrisoncutfield\.co\.nz\/book\.html$/.test(String(op.buttonLink || '')))
-        errors.push('CTA button ' + (i + 1) + ' link is "' + op.buttonLink + '", expected the booking page');
+      // The link must be the VIEWING flow with the address carried through. Bare book.html
+      // lands on the appraisal page with an empty address box - shipped that way on 28 Aug
+      // even though ?intent=viewing was built for this email on 30 Jul. The addr param must
+      // match the listing beside the button, or the reader enquires about the wrong home.
+      const L = String(op.buttonLink || '');
+      if (!/^https:\/\/harrisoncutfield\.co\.nz\/book\.html\?/.test(L) || !/intent=viewing/.test(L))
+        errors.push('CTA button ' + (i + 1) + ' link is not the viewing flow: "' + L.slice(0, 70) + '"');
+      else {
+        const am = L.match(/[?&]addr=([^&]+)/);
+        const linkAddr = am ? decodeURIComponent(am[1].replace(/\+/g, ' ')) : '';
+        if (!am) errors.push('CTA button ' + (i + 1) + ' link carries no addr= param');
+        else if (addr && linkAddr.toLowerCase().indexOf(addr.toLowerCase()) !== 0)
+          errors.push('CTA button ' + (i + 1) + ' link addr "' + linkAddr.slice(0, 40) +
+            '" does not match the listing beside it ("' + addr + '")');
+        if (!/src=suburb-email/.test(L))
+          errors.push('CTA button ' + (i + 1) + ' link missing src=suburb-email');
+      }
     });
   }
 
