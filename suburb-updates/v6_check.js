@@ -117,12 +117,21 @@
           });
         });
         // 13 SOLD-BY-ME: Harrison's sales only, no prices rendered
-        const sg = pc.find(p => p.panel_id === 17 && !(p.options || {}).feed && ((p.contents || {}).propertyListings || []).length && ((p.contents || {}).propertyListings || []).every(r => r.status === 'sold'));
-        if (!sg) E.push('JUST SOLD grid missing');
+        // Dynamic alert placement can SPLIT the sold tiles across two grids — union them all.
+        const sgs = pc.filter(p => p.panel_id === 17 && !(p.options || {}).feed
+          && ((p.contents || {}).propertyListings || []).length
+          && ((p.contents || {}).propertyListings || []).every(r => r.status === 'sold'));
+        if (!sgs.length) E.push('JUST SOLD grid missing');
         else {
-          if (JSON.stringify((sg.options || {}).detailsLayout) !== JSON.stringify(['amenities', 'address'])) E.push('JUST SOLD layout shows price or button');
-          ((sg.contents || {}).propertyListings || []).forEach(r => { if (!JSON.stringify(r.extendeddata || '').includes(V.AGID)) E.push('JUST SOLD contains a sale that is not Harrison\'s'); });
-          ctx.sold.forEach(r => { if (!((sg.contents || {}).propertyListings || []).some(x => fold(x.displayaddress) === fold(r.displayaddress))) E.push('MY SALE MISSING: ' + r.displayaddress); });
+          const shownSold = [];
+          sgs.forEach(sg => {
+            if (JSON.stringify((sg.options || {}).detailsLayout) !== JSON.stringify(['amenities', 'address'])) E.push('JUST SOLD layout shows price or button');
+            ((sg.contents || {}).propertyListings || []).forEach(r => {
+              shownSold.push(r);
+              if (!JSON.stringify(r.extendeddata || '').includes(V.AGID)) E.push('JUST SOLD contains a sale that is not Harrison\'s');
+            });
+          });
+          ctx.sold.forEach(r => { if (!shownSold.some(x => fold(x.displayaddress) === fold(r.displayaddress))) E.push('MY SALE MISSING: ' + r.displayaddress); });
         }
         // 14 CAMPAIGN WIRING
         if (maps.CAMP && maps.CAMP[sub]) {
