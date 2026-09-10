@@ -29,6 +29,15 @@
   };
 
   // ---- window phrasing: never "this recent weeks" ----
+  // REINZ location resolution — see failure shape 12. Suburb type AND ", Auckland" AND prefix;
+  // bare single candidates (Dairy Flat) accepted only when they are the ONLY suburb match.
+  function pickReinzLocation(candidates, query) {
+    const cands = (candidates || []).filter(l => l.location_type === 'suburb');
+    const q = fold(query.normalize('NFD').replace(/[̀-ͯ]/g, ''));
+    const akl = cands.filter(l => /,\s*Auckland/i.test(l.label) && fold(l.label).startsWith(q));
+    return akl[0] || (cands.length === 1 ? cands[0] : null);   // null => FAIL, never guess
+  }
+
   const winPhrase = label => { const w = (label || '').replace('past ', ''); return w === 'recent weeks' ? 'over recent weeks' : 'this ' + w; };
 
   // ---- INTRO: season -> activity + THIS suburb's own standout -> reframe media -> transition.
@@ -137,5 +146,5 @@
     blk('About twenty seconds, and it means these emails stay useful instead of arriving about a street you no longer live on.')];
 
   window.V6 = { API, AGID, APPRAISAL, SENTINEL, PREFS, MASTER, fold, J, normImgs, clone, blk,
-    winPhrase, introFor, LOCAL, COST, TARGET, estimate, REPLY_BLOCKS, PREFS_BLOCKS };
+    winPhrase, introFor, LOCAL, pickReinzLocation, COST, TARGET, estimate, REPLY_BLOCKS, PREFS_BLOCKS };
 })();
