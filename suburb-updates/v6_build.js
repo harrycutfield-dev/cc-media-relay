@@ -145,6 +145,127 @@
     blk('Moved home, bought, sold, or simply changed what you are watching for? Update your preferences and I will send you the right suburb, the right price range and the right updates.'), blk(''),
     blk('About twenty seconds, and it means these emails stay useful instead of arriving about a street you no longer live on.')];
 
+  // ---- PARTS: build every panel for one suburb from the master ----
+  function parts(master, sub, bd, ctx, joke, auctionLines) {
+    const mpc = master.panelcontents;
+    const txt = p => (((p.contents || {}).textOne || {}).blocks || []).map(b => b.text);
+    const find = pred => mpc.find(pred);
+    const brkBtn = find(p => p.panel_id === 3 && (p.options || {}).buttonLink === SENTINEL);
+    const brkHead = mpc.slice(0, mpc.indexOf(brkBtn)).reverse().find(p => p.panel_id === 5);
+    const appr = mpc.filter(p => p.panel_id === 3 && (p.options || {}).buttonLink === APPRAISAL);
+    const M = {
+      pre: mpc[0], banner: mpc.find(p => p.panel_id === 9), div: mpc.find(p => p.panel_id === 2),
+      stat: mpc.find(p => p.panel_id === 8), appr, brkHead, brkBtn,
+      prefBtn: find(p => p.panel_id === 3 && (p.options || {}).buttonLink === PREFS),
+      headSub: find(p => p.panel_id === 5 && /PROPERTIES FOR SALE/i.test(txt(p).join(' '))),
+      headSold: find(p => p.panel_id === 5 && /JUST SOLD/i.test(txt(p).join(' '))),
+      headFeed: find(p => p.panel_id === 5 && /MORE OF MY RECENT/i.test(txt(p).join(' '))),
+      feature: mpc.find(p => p.panel_id === 19) || window.__FEATREF,
+      gridSub: mpc.find(p => p.panel_id === 17 && !(p.options || {}).feed && ((p.contents || {}).propertyListings || []).some(r => r.status === 'current')),
+      gridSold: mpc.find(p => p.panel_id === 17 && !(p.options || {}).feed && ((p.contents || {}).propertyListings || []).length && ((p.contents || {}).propertyListings || []).every(r => r.status === 'sold')),
+      gridFeed: mpc.find(p => p.panel_id === 17 && (p.options || {}).feed),
+      written: find(p => p.panel_id === 6 && txt(p).some(t => /Hi First Name/.test(t))),
+      textPanel: find(p => p.panel_id === 6 && txt(p).some(t => /WHAT YOUR HOME IS WORTH/.test(t))),
+      closing: find(p => p.panel_id === 6 && txt(p).some(t => /dad joke/i.test(t))),
+      footImg: mpc.filter(p => p.panel_id === 9).slice(-1)[0],
+      chrome: mpc.filter(p => [16, 28].includes(p.panel_id)).concat([mpc[mpc.length - 1]]) };
+    const live = ctx.current.filter(r => fold(r.city) === fold(sub)).map(r => normImgs(J(r)));
+    const cnt = bd.lines.length, wp = winPhrase(bd.label);
+    // written A: greeting + intro + 30 second + what sold
+    const g = blk('Hi First Name,', { h: true, italic: true, er: [{ offset: 3, length: 10, key: 0 }] });
+    const A = [g, blk('')];
+    introFor(sub, bd).forEach(t => A.push(blk(t)));
+    A.push(blk(''), blk('THE 30 SECOND VERSION', { h: true, bold: true }),
+      blk('Sold ' + wp + ': ' + cnt + ' home' + (cnt === 1 ? '' : 's') + '.'),
+      blk('Median time to sell in ' + sub + ': ' + bd.days + ' days.'));
+    auctionLines.forEach(l => A.push(blk(l)));
+    A.push(blk(''), blk('WHAT SOLD IN ' + sub.toUpperCase(), { h: true, bold: true }));
+    bd.lines.forEach(l => A.push(blk(l)));
+    if (cnt > 1) A.push(blk(''), blk('Same suburb, same window, very different results. Presentation, pricing and campaign choice are what separate them.'));
+    const writtenA = clone(M.written);
+    writtenA.contents = { textOne: { blocks: A, entityMap: { '0': { type: 'PLACEHOLDER', mutability: 'IMMUTABLE', data: { placeholder: 'contact.firstname' } } } } };
+    const mk = arr => { const p = clone(M.textPanel); p.contents = { textOne: { blocks: arr, entityMap: {} } }; return p; };
+    const writtenB = mk([blk('WHAT YOUR HOME IS WORTH TODAY', { h: true, bold: true }),
+      blk('If selling is on your radar, even for next year, a no obligation valuation and strategy session gives you the number, the likely timeframe and a plan built for your home. I come to you, and it takes about 45 minutes.')]);
+    const C = [blk('THE WEEK IN THE ECONOMY', { h: true, bold: true })];
+    (window.__ECON || []).forEach(l => C.push(blk(l.t, { italic: !!l.i })));
+    C.push(blk(''), blk('AROUND ' + sub.toUpperCase() + ' THIS MONTH', { h: true, bold: true }));
+    (LOCAL[sub] || []).forEach(it => { C.push(blk(it.t + '.', { italic: true })); C.push(blk(it.b)); C.push(blk('')); });
+    if (C[C.length - 1].text === '') C.pop();
+    const writtenC = mk(C);
+    const replyP = mk(REPLY_BLOCKS()), prefsP = mk(PREFS_BLOCKS());
+    const stat = clone(M.stat);
+    stat.contents.textOne.blocks = stat.contents.textOne.blocks.map((b, i) => {
+      const nb = J(b); nb.text = i === 0 ? 'MEDIAN TIME TO SELL' : bd.days + ' Days';
+      nb.inlineStyleRanges = (b.inlineStyleRanges || []).map(r => ({ ...r, offset: 0, length: nb.text.length })); return nb; });
+    const pre = clone(M.pre);
+    const vl = pre.contents.textOne.blocks.slice(-1)[0];
+    const hook = cnt + ' home' + (cnt === 1 ? '' : 's') + ' sold in ' + sub + ' ' + wp + ', plus what the latest numbers mean for your value.';
+    pre.contents.textOne.blocks = [{ key: rk(), text: hook, type: vl.type, depth: 0,
+      inlineStyleRanges: [{ offset: 0, length: hook.length, style: '#595959' }], entityRanges: [], data: vl.data || {} }, vl];
+    const headSub = clone(M.headSub);
+    const hb = headSub.contents.textOne.blocks[0];
+    hb.text = 'LATEST ' + sub.toUpperCase() + ' PROPERTIES FOR SALE';
+    hb.inlineStyleRanges = hb.inlineStyleRanges.map(r => ({ ...r, offset: 0, length: hb.text.length }));
+    const gridSold = clone(M.gridSold); gridSold.contents = { propertyListings: ctx.sold.map(r => normImgs(J(r))) };
+    const closing = clone(M.closing);
+    const jb = closing.contents.textOne.blocks.find(b => b.inlineStyleRanges.some(r => r.style === 'BOLD') && b.inlineStyleRanges.some(r => r.style === 'ITALIC'));
+    jb.text = joke; jb.inlineStyleRanges = jb.inlineStyleRanges.map(r => ({ ...r, offset: 0, length: joke.length }));
+    const fast = bd.lines.some(l => /, 1 day\)/.test(l));
+    const word = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight'][cnt] || String(cnt);
+    const subject = fast ? ('Sold in 1 day in ' + sub + '. What that means for you')
+      : (word + ' ' + sub + ' sale' + (cnt === 1 ? '' : 's') + ' and what they mean for you');
+    return { M, live, pre, writtenA, writtenB, writtenC, replyP, prefsP, stat, headSub, gridSold, closing, subject };
+  }
+
+  // ---- ASSEMBLE: order the panels, place the alert block dynamically ----
+  function assemble(master, sub, bd, ctx, joke, auctionLines) {
+    const P = parts(master, sub, bd, ctx, joke, auctionLines), M = P.M, live = P.live, n = live.length;
+    const head = [clone(M.pre), clone(M.banner), clone(M.div), P.writtenA, P.stat,
+      P.writtenB, clone(M.appr[0]), P.writtenC, P.replyP, P.prefsP, clone(M.prefBtn)];
+    head[0] = P.pre;                                  // per-suburb preheader (failure shape 11)
+    const tail = []; let featureP = null, tiles = [];
+    if (n > 0) {
+      const sorted = live.slice().sort((a, b) => (parseFloat(String(b.price || 0).replace(/[^\d.]/g, '')) || 0) - (parseFloat(String(a.price || 0).replace(/[^\d.]/g, '')) || 0));
+      if (n === 1) { featureP = clone(M.feature); featureP.contents = { propertyListings: [live[0]] }; }
+      else if (n % 2 === 1) { featureP = clone(M.feature); featureP.contents = { propertyListings: [sorted[0]] }; tiles = live.filter(r => r.id !== sorted[0].id); }
+      else tiles = live;
+      tail.push(P.headSub, clone(M.div));
+      if (featureP) tail.push(featureP);
+    }
+    const stream = [];
+    tiles.forEach(r => stream.push({ t: 'tile', kind: 'sub', rec: r }));
+    if (n > 0) stream.push({ t: 'panel', p: clone(M.appr[1] || M.appr[0]) });
+    stream.push({ t: 'panel', p: clone(M.headSold) });
+    (P.gridSold.contents.propertyListings || []).forEach(r => stream.push({ t: 'tile', kind: 'sold', rec: r }));
+    stream.push({ t: 'panel', p: clone(M.appr[2] || M.appr[0]) }, { t: 'panel', p: clone(M.headFeed) },
+      { t: 'panel', p: clone(M.gridFeed) }, { t: 'panel', p: clone(M.appr[3] || M.appr[0]) });
+    const mkGrid = (buf, kind) => { if (!buf.length) return null; const g = clone(kind === 'sold' ? P.gridSold : M.gridSub); g.contents = { propertyListings: buf.slice() }; return g; };
+    let out = head.concat(tail), buf = [], bufKind = null, placed = false;
+    let cost = estimate(out);
+    const alertCost = COST.heading + COST.button + COST.divider;
+    const pushBuf = () => { const g = mkGrid(buf, bufKind); if (g) out.push(g); buf = []; };
+    for (let i = 0; i < stream.length; i++) {
+      const it = stream[i];
+      const itCost = it.t === 'tile' ? COST.tile : (it.p.panel_id === 17 ? 4 * COST.tile : COST.button);
+      if (!placed && (cost + alertCost) <= TARGET && (cost + alertCost + itCost) > TARGET) {
+        pushBuf(); out.push(clone(M.brkHead), clone(M.brkBtn), clone(M.div)); cost += alertCost; placed = true;
+      }
+      if (it.t === 'tile') { if (bufKind && bufKind !== it.kind) pushBuf(); bufKind = it.kind; buf.push(it.rec); }
+      else { pushBuf(); out.push(it.p); }
+      cost += itCost;
+    }
+    pushBuf();
+    if (!placed && estimate(out) > 104448) {
+      const si = out.findIndex(p => p.panel_id === 5 && /JUST SOLD/i.test((((p.contents || {}).textOne || {}).blocks || []).map(b => b.text).join('')));
+      if (si > 0) { out.splice(si, 0, clone(M.brkHead), clone(M.brkBtn), clone(M.div)); placed = true; }
+    }
+    out.push(P.closing, clone(M.footImg));
+    M.chrome.forEach(p => out.push(clone(p)));
+    out.forEach((p, i) => p.position = i);
+    return { panelcontents: out, subject: P.subject, alertPlaced: placed };
+  }
+
   window.V6 = { API, AGID, APPRAISAL, SENTINEL, PREFS, MASTER, fold, J, normImgs, clone, blk,
-    winPhrase, introFor, LOCAL, pickReinzLocation, COST, TARGET, estimate, REPLY_BLOCKS, PREFS_BLOCKS };
+    winPhrase, introFor, LOCAL, pickReinzLocation, parts, assemble, COST, TARGET, estimate, REPLY_BLOCKS, PREFS_BLOCKS };
 })();
