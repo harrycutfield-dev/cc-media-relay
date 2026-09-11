@@ -24,6 +24,16 @@
 
         // 1 NAME
         if (opts.namePrefix && c.name !== opts.namePrefix + ' ' + sub + ' update') E.push('name wrong: ' + c.name);
+        // 1b SUBJECT — had NO assertion at all until 11 Sep 2026. A wrong subject is the one
+        // defect every recipient sees before anything else, and nothing was checking it.
+        const expSubj = V.subjectFor(sub, bd);
+        if ((c.email.subject || '') !== expSubj) E.push('subject wrong: "' + c.email.subject + '" expected "' + expSubj + '"');
+        if ((c.email.subject || '').indexOf(sub) < 0) E.push('subject does not name the suburb');
+        if ((c.email.subject || '').length > 78) E.push('subject too long: ' + c.email.subject.length);
+        if (/[–—]/.test(c.email.subject || '')) E.push('dash in subject');
+        store.__subjects = store.__subjects || {};
+        if (store.__subjects[c.email.subject]) E.push('DUPLICATE subject shared with ' + store.__subjects[c.email.subject]);
+        store.__subjects[c.email.subject] = sub;
         // 2 PREHEADER — per suburb, accurate (failure shape 11)
         const pre = txt(pc[0]).join(' ');
         if (pre.indexOf(cnt + ' home' + (cnt === 1 ? '' : 's') + ' sold in ' + sub + ' ' + wp) < 0) E.push('preheader not per-suburb: ' + pre.slice(0, 50));
@@ -48,11 +58,17 @@
         if (opts.ocr && (ALL.match(new RegExp(opts.ocr.replace('.', '\\.'), 'g')) || []).length < 1) E.push('economy figure missing');
         // 5 SUBURB NAMING
         if (ALL.indexOf('WHAT SOLD IN ' + sub.toUpperCase()) < 0) E.push('sold heading wrong suburb');
-        if (ALL.indexOf('AROUND ' + sub.toUpperCase() + ' THIS MONTH') < 0) E.push('community heading wrong suburb');
+        if (ALL.indexOf(V.communityHeading(sub)) < 0) E.push('community heading wrong: expected ' + V.communityHeading(sub));
+        if (!V.DATED.has(sub) && /AROUND [A-ZĀĒĪŌŪ ]+ THIS MONTH/.test(ALL)) E.push('undated suburb promises THIS MONTH');
         if (ALL.indexOf('WHAT YOUR HOME IS WORTH TODAY') < 0) E.push('valuation section missing');
         // 6 COMMUNITY CONTENT GENUINELY LOCAL (hard gate)
-        const local = new RegExp(fold(sub), 'i').test(fold(ALL)) || /Hibiscus and Bays|Devonport-Takapuna|Kaipātiki|Upper Harbour/.test(ALL);
-        if (!local) E.push('COMMUNITY CONTENT NOT LOCAL to ' + sub);
+        // The LEAD item must name THIS suburb in its own text. The old gate accepted the
+        // suburb's local BOARD as a fallback, which passed 21 of 34 emails that were reading
+        // board-wide news under their own suburb's heading (found 11 Sep 2026, failure 13).
+        const lead = (V.LOCAL[sub] || [])[0];
+        if (!lead) E.push('no community content for ' + sub);
+        else if (fold(lead.t + ' ' + lead.b).indexOf(fold(sub)) < 0)
+          E.push('COMMUNITY LEAD DOES NOT NAME ' + sub + ': ' + lead.t.slice(0, 40));
         if (/Plan Change 120|granny flat|out of zone ballots/i.test(ALL)) E.push('generic Auckland-wide filler present');
         (V.LOCAL[sub] || []).forEach(it => { if (ALL.indexOf(it.t) < 0) E.push('community item missing: ' + it.t.slice(0, 28)); });
         // 7 CTA PAIR
