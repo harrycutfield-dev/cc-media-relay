@@ -70,12 +70,41 @@
   // Generated per suburb. Lived here unasserted until 11 Sep 2026: v6_check had no subject
   // group at all, so a wrong subject would have shipped silently. Pulled out so the checker
   // can call the SAME function rather than re-deriving the rule (see failure shape 11).
-  function subjectFor(sub, bd) {
+  // A PHRASING BANK, not a pure function of sale count (failure shape 16, 12 Sep 2026).
+  // The old one-line formula made the subject a pure function of the sale count, so a suburb with
+  // the same count two weeks running got a BYTE-IDENTICAL subject: 14 of 34 repeated on 12 Sep.
+  // It also read "One X sale and what THEY MEAN for you" — plural verb on a singular sale.
+  // opts.prev = the subject actually sent last week. The bank rotates by week and then walks
+  // forward until it finds one that is not last week's, so a repeat is structurally impossible.
+  function subjectFor(sub, bd, opts) {
+    opts = opts || {};
     const cnt = bd.lines.length;
     const fast = bd.lines.some(l => /, 1 day\)/.test(l));
     const word = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight'][cnt] || String(cnt);
-    return fast ? ('Sold in 1 day in ' + sub + '. What that means for you')
-      : (word + ' ' + sub + ' sale' + (cnt === 1 ? '' : 's') + ' and what they mean for you');
+    const wp = winPhrase(bd.label);          // never "this recent weeks"
+    const days = bd.days;
+    let bank;
+    if (fast) bank = [
+      'Sold in 1 day in ' + sub + '. What that means for you',
+      'A ' + sub + ' home sold in a single day',
+      sub + ': sold in one day, and what it signals',
+      'One day on the market in ' + sub];
+    else if (cnt === 1) bank = [
+      'One ' + sub + ' sale and what it means for you',        // singular verb, fixed 12 Sep
+      'One ' + sub + ' sale, and a median of ' + days + ' days',
+      'What the latest ' + sub + ' sale tells us',
+      'The ' + sub + ' result ' + wp];
+    else bank = [
+      word + ' ' + sub + ' sales and what they mean for you',
+      word + ' ' + sub + ' sales, and a median of ' + days + ' days',
+      'What ' + word.toLowerCase() + ' ' + sub + ' sales tell us ' + wp,
+      'The ' + sub + ' results, and what they mean for your home'];
+    const start = ((opts.week || 0) + sub.length) % bank.length;
+    for (let k = 0; k < bank.length; k++) {
+      const c = bank[(start + k) % bank.length];
+      if (c !== opts.prev) return c;
+    }
+    return bank[start];
   }
 
   // ---- LOCAL COMMUNITY CONTENT ----
