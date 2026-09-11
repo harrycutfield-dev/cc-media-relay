@@ -66,6 +66,18 @@
       'Here is what that looked like in ' + sub + ' this week.'];
   }
 
+  // ---- SUBJECT ----
+  // Generated per suburb. Lived here unasserted until 11 Sep 2026: v6_check had no subject
+  // group at all, so a wrong subject would have shipped silently. Pulled out so the checker
+  // can call the SAME function rather than re-deriving the rule (see failure shape 11).
+  function subjectFor(sub, bd) {
+    const cnt = bd.lines.length;
+    const fast = bd.lines.some(l => /, 1 day\)/.test(l));
+    const word = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight'][cnt] || String(cnt);
+    return fast ? ('Sold in 1 day in ' + sub + '. What that means for you')
+      : (word + ' ' + sub + ' sale' + (cnt === 1 ? '' : 's') + ' and what they mean for you');
+  }
+
   // ---- LOCAL COMMUNITY CONTENT ----
   // REBUILD THIS EVERY RUN from: OurAuckland local board feeds, aucklandcouncil.govt.nz board
   // pages, Eventfinda suburb venue pages, local board Facebook. Dated + verifiable only.
@@ -93,25 +105,63 @@
     invest: { t: '$32.7 million is being invested across Upper Harbour this year', b: '$23.6 million for local services and programmes, plus $9.1 million for parks, sports fields, community spaces and pathways.' },
     library: { t: 'A bigger Albany Village Library is being planned', b: 'One of Auckland’s busiest libraries, with the board progressing planning and funding options for a larger facility.' },
     scouts: { t: '$67,465 for a new boatshed for the Tauhinu Sea Scouts in Greenhithe', b: 'A local facilities grant helping one of the area’s long standing community groups.' } };
+  // ---- SUBURB-OWN ITEMS (sourced and verified 11 Sep 2026) ----
+  // Every suburb LEADS with an item that names IT. Board items only ever fill slots 2 and 3,
+  // and only ever that suburb's OWN board. Never another board's news (Castor Bay led with a
+  // Campbells Bay item until 11 Sep — wrong suburb AND wrong board).
+  // DATED marks suburbs whose lead item is current news; only those say "THIS MONTH".
+  // Small suburbs do not generate monthly news — do not promise a cadence the sources cannot
+  // sustain, and NEVER invent an item to fill the slot. See failure shape 13 in SKILL.md.
+  const SUB = {
+    belmont: { t: 'Auckland Transport has put its Lake Road upgrade at the Belmont shops out for feedback', b: 'The plan adds a weekday morning clearway, longer merge lanes and rebuilt pedestrian crossings at the Belmont shops intersection. Consultation ran from 25 May to 21 June and the feedback report now goes to the local board before a final decision.' },
+    sunnynookScouts: { t: 'The Sunnynook Scout Group has been granted a new long term lease', b: 'The group has been part of Sunnynook since 1979, and the new lease gives it long term certainty in the hall.' },
+    sunnynookPark: { t: 'Sunnynook Park is back in full use after three years of work', b: 'Healthy Waters increased floodwater storage across the park, which also fixed the drainage problems at the Sunnynook Community Centre and along Tonkin Drive.' },
+    sunnynookCivic: { t: 'A new civic space beside the Sunnynook Community Centre is in detailed design', b: 'It is part of the longer term plan for how the Sunnynook centre grows.' },
+    hobsonville: { t: 'The Upper Waitematā Marine Centre is finished and the Hobsonville Yacht Club has a permanent home again', b: 'The new base gives the club and local sailors a proper facility on the harbour.' },
+    albanyHeights: { t: 'Lucas Creek Falls sits right on the Albany Heights doorstep', b: 'The Lucas Creek Scenic Reserve is a pocket of coastal broadleaf forest, taraire and puriri with nikau palms, and the tracks through it lead down to the waterfall.' },
+    bayswater: { t: 'Bayswater Marina and the twelve minute ferry are the suburb’s front door', b: 'The marina runs 419 berths and the ferry reaches the city in about twelve minutes, which is a large part of why buyers look here.' },
+    bayview: { t: 'Pest Free Kaipātiki volunteers are working right through the Bayview reserves', b: 'Glendhu Scenic, Bonito, Spinella, Lynn, Leigh and Mānuka reserves together make one of the best urban wildlife corridors on the North Shore.' },
+    castorBay: { t: 'Castor Bay Beach Reserve is the quiet end of the Milford coastal walk', b: 'The reserve has a playground, picnic tables and seating, reached from the beach end of The Esplanade or the walkway between 75 and 77a Beach Road.' },
+    chatswood: { t: 'The Chatswood Reserve tracks have been upgraded', b: 'New bridges, boardwalks and box steps went in to help stop kauri dieback, and the Kauri Point Domain path from the end of Balmain Road still runs down to Fitzpatrick Bay.' },
+    dairyFlat: { t: 'Dairy Flat School is planning new learning spaces', b: 'The school takes Years 1 to 6, and the community hall next door remains the meeting point for the district.' },
+    forrestHill: { t: 'Forrest Hill School has been at the centre of the suburb since 1959', b: 'Around 450 children from Years 1 to 6 go through it, and it anchors the streets around it.' },
+    hauraki: { t: 'Hauraki School has served the suburb since 1954', b: 'About 500 children from a wide range of backgrounds attend the school at 82 Jutland Road.' },
+    murraysBay: { t: 'Murrays Bay Sailing Club still teaches local kids to sail off the beach', b: 'The club runs learn to sail courses for children straight off the reserve, and Murrays Bay School and Intermediate sit just up the hill.' },
+    northcross: { t: 'Northcross Intermediate is one of the largest intermediates in the country', b: 'Close to 1,500 students attend, and the school is again offering Year 7 students a place in its sports class.' },
+    oteha: { t: 'Hooton Reserve and the Oteha Valley Reserve follow the stream through the suburb', b: 'Hooton Reserve at 259 Oteha Valley Road has fitness stations along the path, and the Oteha Valley Reserve bridge opens up the bush walk along the water.' },
+    paremoremo: { t: 'Sanders Reserve in Pāremoremo is one of the biggest outdoor spaces on this side of the harbour', b: 'Sixteen and a half hectares above the Waitematā with 22km of mountain bike trails, a 500m loop for under tens, and separate horse riding and dog walking areas.' },
+    rosedale: { t: 'Rosedale Park is the largest open space on the North Shore', b: 'At 2 Jack Hinton Drive it holds artificial turf fields, a playground, fitness equipment and a free nine hole disc golf course, and it is home to North Harbour Softball and North Harbour Hockey.' },
+    rothesayBay: { t: 'Rothesay Bay Beach Reserve is the heart of the suburb', b: 'A small open reserve at the bottom of Rothesay Bay Road with a playground, picnic spots and straight through access to the beach.' },
+    torbay: { t: 'Torbay Sailing Club hosted Oceanbridge Sail Auckland again this year', b: 'The regatta brings the national fleet onto the water off Torbay, and the village behind it stays the centre of the suburb.' },
+    totaraVale: { t: 'Target Road School has been part of Tōtara Vale since 1967', b: 'The school takes Years 1 to 6, and the Rewi Alley and Tōtaravale reserves give the suburb its green edge.' },
+    waiake: { t: 'Waiake Beach Reserve looks straight out over the bay', b: 'Large open lawn, toilets, picnic tables, barbecues, drinking fountains, mobility parking and a boat and dinghy ramp.' },
+    windsorPark: { t: 'Windsor Park is home to East Coast Bays cricket and rugby', b: 'Both clubs are based at the park, touch rugby runs there through summer, and Windsor Park Baptist on East Coast Road is the other anchor of the suburb.' } };
+
+  const DATED = new Set(['Belmont', 'Sunnynook', 'Hobsonville', 'Long Bay', 'Browns Bay',
+    'Devonport', 'Takapuna', 'Milford', 'Mairangi Bay', 'Campbells Bay', 'Northcote',
+    'Glenfield', 'Greenhithe', 'Hillcrest']);
+  const communityHeading = sub => 'AROUND ' + sub.toUpperCase() + (DATED.has(sub) ? ' THIS MONTH' : '');
+
   const LOCAL = {
-    'Torbay': [HB.market, HB.park, HB.grants], 'Long Bay': [HB.market, HB.park, HB.grants],
-    'Waiake': [HB.market, HB.park, HB.grants], 'Browns Bay': [HB.centre, HB.freyberg, HB.grants],
-    'Rothesay Bay': [HB.centre, HB.freyberg, HB.grants], 'Murrays Bay': [HB.mairangi, HB.centre, HB.grants],
+    'Torbay': [SUB.torbay, HB.market, HB.grants], 'Long Bay': [HB.market, HB.park, HB.grants],
+    'Waiake': [SUB.waiake, HB.market, HB.grants], 'Browns Bay': [HB.centre, HB.freyberg, HB.grants],
+    'Rothesay Bay': [SUB.rothesayBay, HB.centre, HB.grants], 'Murrays Bay': [SUB.murraysBay, HB.mairangi, HB.grants],
     'Mairangi Bay': [HB.mairangi, HB.centre, HB.grants], 'Campbells Bay': [HB.sanctuary, HB.centre, HB.grants],
-    'Castor Bay': [HB.sanctuary, DT.plan, DT.parks], 'Northcross': [HB.centre, HB.park, HB.grants],
-    'Windsor Park': [HB.centre, HB.park, HB.grants],
+    'Castor Bay': [SUB.castorBay, DT.plan, DT.parks], 'Northcross': [SUB.northcross, HB.centre, HB.grants],
+    'Windsor Park': [SUB.windsorPark, HB.centre, HB.grants],
     'Takapuna': [DT.plan, DT.skate, DT.parks], 'Milford': [DT.plan, DT.skate, DT.parks],
-    'Devonport': [DT.skate, DT.plan, DT.parks], 'Belmont': [DT.skate, DT.plan, DT.parks],
-    'Bayswater': [DT.skate, DT.plan, DT.parks], 'Hauraki': [DT.plan, DT.skate, DT.parks],
-    'Forrest Hill': [DT.plan, DT.parks, DT.skate], 'Sunnynook': [DT.plan, DT.parks, DT.skate],
+    'Devonport': [DT.skate, DT.plan, DT.parks], 'Belmont': [SUB.belmont, DT.plan, DT.parks],
+    'Bayswater': [SUB.bayswater, DT.skate, DT.plan], 'Hauraki': [SUB.hauraki, DT.plan, DT.parks],
+    'Forrest Hill': [SUB.forrestHill, DT.plan, DT.parks],
+    'Sunnynook': [SUB.sunnynookScouts, SUB.sunnynookPark, SUB.sunnynookCivic],
     'Glenfield': [KP.glenfield, KP.grants, KP.houses], 'Birkdale': [KP.houses, KP.grants, KP.rugby],
-    'Beach Haven': [KP.houses, KP.grants, KP.rugby], 'Bayview': [KP.grants, KP.glenfield, KP.houses],
-    'Chatswood': [KP.rugby, KP.grants, KP.northcote], 'Northcote': [KP.northcote, KP.rugby, KP.grants],
-    'Hillcrest': [KP.grants, KP.glenfield, KP.rugby], 'Tōtara Vale': [KP.glenfield, KP.grants, KP.houses],
-    'Albany Heights': [UH.library, UH.invest, UH.scouts], 'Oteha': [UH.library, UH.invest, UH.scouts],
-    'Rosedale': [UH.library, UH.invest, UH.scouts], 'Greenhithe': [UH.scouts, UH.invest, UH.library],
-    'Hobsonville': [UH.invest, UH.library, UH.scouts], 'Pāremoremo': [UH.invest, UH.library, UH.scouts],
-    'Dairy Flat': [UH.library, UH.invest, UH.scouts] };
+    'Beach Haven': [KP.houses, KP.grants, KP.rugby], 'Bayview': [SUB.bayview, KP.grants, KP.glenfield],
+    'Chatswood': [SUB.chatswood, KP.rugby, KP.grants], 'Northcote': [KP.northcote, KP.rugby, KP.grants],
+    'Hillcrest': [KP.grants, KP.glenfield, KP.rugby], 'Tōtara Vale': [SUB.totaraVale, KP.glenfield, KP.grants],
+    'Albany Heights': [SUB.albanyHeights, UH.library, UH.invest], 'Oteha': [SUB.oteha, UH.library, UH.invest],
+    'Rosedale': [SUB.rosedale, UH.invest, UH.library], 'Greenhithe': [UH.scouts, UH.invest, UH.library],
+    'Hobsonville': [SUB.hobsonville, UH.invest, UH.library], 'Pāremoremo': [SUB.paremoremo, UH.invest, UH.library],
+    'Dairy Flat': [SUB.dairyFlat, UH.library, UH.invest] };
 
   // ---- raw-byte cost model for clip-aware placement (see failure shape 8) ----
   const COST = { tile: 9000, feature: 17000, text: 1500, heading: 1200, button: 2000, divider: 300, banner: 2000, stat: 1500 };
@@ -189,7 +239,7 @@
       blk('If selling is on your radar, even for next year, a no obligation valuation and strategy session gives you the number, the likely timeframe and a plan built for your home. I come to you, and it takes about 45 minutes.')]);
     const C = [blk('THE WEEK IN THE ECONOMY', { h: true, bold: true })];
     (window.__ECON || []).forEach(l => C.push(blk(l.t, { italic: !!l.i })));
-    C.push(blk(''), blk('AROUND ' + sub.toUpperCase() + ' THIS MONTH', { h: true, bold: true }));
+    C.push(blk(''), blk(communityHeading(sub), { h: true, bold: true }));
     (LOCAL[sub] || []).forEach(it => { C.push(blk(it.t + '.', { italic: true })); C.push(blk(it.b)); C.push(blk('')); });
     if (C[C.length - 1].text === '') C.pop();
     const writtenC = mk(C);
@@ -211,10 +261,7 @@
     const closing = clone(M.closing);
     const jb = closing.contents.textOne.blocks.find(b => b.inlineStyleRanges.some(r => r.style === 'BOLD') && b.inlineStyleRanges.some(r => r.style === 'ITALIC'));
     jb.text = joke; jb.inlineStyleRanges = jb.inlineStyleRanges.map(r => ({ ...r, offset: 0, length: joke.length }));
-    const fast = bd.lines.some(l => /, 1 day\)/.test(l));
-    const word = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight'][cnt] || String(cnt);
-    const subject = fast ? ('Sold in 1 day in ' + sub + '. What that means for you')
-      : (word + ' ' + sub + ' sale' + (cnt === 1 ? '' : 's') + ' and what they mean for you');
+    const subject = subjectFor(sub, bd);
     return { M, live, pre, writtenA, writtenB, writtenC, replyP, prefsP, stat, headSub, gridSold, closing, subject };
   }
 
@@ -267,5 +314,6 @@
   }
 
   window.V6 = { API, AGID, APPRAISAL, SENTINEL, PREFS, MASTER, fold, J, normImgs, clone, blk,
-    winPhrase, introFor, LOCAL, pickReinzLocation, parts, assemble, COST, TARGET, estimate, REPLY_BLOCKS, PREFS_BLOCKS };
+    winPhrase, introFor, LOCAL, SUB, DATED, communityHeading, subjectFor, pickReinzLocation,
+    parts, assemble, COST, TARGET, estimate, REPLY_BLOCKS, PREFS_BLOCKS };
 })();
