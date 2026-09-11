@@ -115,6 +115,10 @@
           .forEach(p => ((p.contents || {}).propertyListings || []).forEach(r => { if (r.status === 'current') shown.push(r); }));
         const live = ctx.current.filter(r => fold(r.city) === fold(sub));
         live.forEach(r => { if (!shown.some(x => x.id === r.id)) E.push('LIVE LISTING MISSING: ' + r.displayaddress); });
+        // The reverse direction was NOT asserted until 11 Sep 2026 (failure shape 15): a listing
+        // that goes off market after the build stays in the email and passed every check.
+        // Completeness and currency are two different properties — assert BOTH directions.
+        shown.forEach(r => { if (!live.some(x => x.id === r.id)) E.push('DEAD LISTING STILL SHOWN: ' + r.displayaddress); });
         shown.forEach(r => { if (fold(r.city) !== fold(sub)) E.push('listing from another suburb: ' + r.displayaddress); });
         if (pc.filter(p => [17, 19].includes(p.panel_id) && !(p.options || {}).feed && !((p.contents || {}).propertyListings || []).length).length) E.push('EMPTY PROPERTY PANEL (renders placeholder)');
         // 12 FIELD ACCURACY against the live feed
