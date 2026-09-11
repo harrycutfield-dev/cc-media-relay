@@ -26,8 +26,13 @@
         if (opts.namePrefix && c.name !== opts.namePrefix + ' ' + sub + ' update') E.push('name wrong: ' + c.name);
         // 1b SUBJECT — had NO assertion at all until 11 Sep 2026. A wrong subject is the one
         // defect every recipient sees before anything else, and nothing was checking it.
-        const expSubj = V.subjectFor(sub, bd);
+        const expSubj = V.subjectFor(sub, bd, { week: opts.week, prev: (opts.prevSubjects || {})[sub] });
         if ((c.email.subject || '') !== expSubj) E.push('subject wrong: "' + c.email.subject + '" expected "' + expSubj + '"');
+        // Must not repeat LAST WEEK'S subject (failure shape 16). Checking uniqueness only
+        // within this week's 34 missed 14 repeats on 12 Sep.
+        const prevSubj = (opts.prevSubjects || {})[sub];
+        if (prevSubj && (c.email.subject || '') === prevSubj) E.push('SUBJECT REPEATS LAST WEEK: ' + prevSubj);
+        if (/\bOne .* sale and what they mean/.test(c.email.subject || '')) E.push('singular sale with plural verb');
         if ((c.email.subject || '').indexOf(sub) < 0) E.push('subject does not name the suburb');
         if ((c.email.subject || '').length > 78) E.push('subject too long: ' + c.email.subject.length);
         if (/[–—]/.test(c.email.subject || '')) E.push('dash in subject');
