@@ -290,7 +290,11 @@
     const closing = clone(M.closing);
     const jb = closing.contents.textOne.blocks.find(b => b.inlineStyleRanges.some(r => r.style === 'BOLD') && b.inlineStyleRanges.some(r => r.style === 'ITALIC'));
     jb.text = joke; jb.inlineStyleRanges = jb.inlineStyleRanges.map(r => ({ ...r, offset: 0, length: joke.length }));
-    const subject = subjectFor(sub, bd);
+    // Subject options ride on window.__SUBJ = {week, prevSubjects} so a REBUILD reproduces the
+    // same subject instead of silently re-rolling the bank (and risking a last-week repeat).
+    // Set it before any build: window.__SUBJ = {week: <n>, prevSubjects: <prev subjects.json>}.
+    const _so = window.__SUBJ || {};
+    const subject = subjectFor(sub, bd, { week: _so.week, prev: (_so.prevSubjects || {})[sub] });
     return { M, live, pre, writtenA, writtenB, writtenC, replyP, prefsP, stat, headSub, gridSold, closing, subject };
   }
 
