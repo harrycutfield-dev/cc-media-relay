@@ -89,6 +89,32 @@
     return [l1, l2];
   }
 
+  // ---- ECONOMY: region-wide, so it rotates by WEEK ONLY (all 34 read the same thing in a
+  // given week, which is correct for an office-wide figure). It was identical to the prior week
+  // because the OCR had not moved since 2 September; the facts are the same, the wording is not.
+  // *** WHEN THE OCR OR ANY FIGURE CHANGES, REWRITE THIS BANK WITH THE NEW FACTS. ***
+  // Every variant must state the SAME verified numbers. Never let a variant drift from the data.
+  const ECON_FACTS = { ocr: '2.75%', date: '2 September', bp: '25 basis point' };
+  const ECON_BANK = [
+    ['The Reserve Bank lifted the OCR to 2.75% on 2 September.',
+     'A 25 basis point rise, with a hold signalled for October. Rates are moving because the economy is growing, and well priced homes are still meeting confident buyers.'],
+    ['The OCR moved to 2.75% at the Reserve Bank review on 2 September.',
+     'That is a 25 basis point lift, and the Reserve Bank has signalled a hold in October. Rates move when the economy is growing, and well presented homes keep finding confident buyers.'],
+    ['On 2 September the Reserve Bank took the OCR to 2.75%.',
+     'A 25 basis point increase, with October signalled as a hold. Rate movement of this kind reflects a growing economy, and buyers at our open homes are still committing.'],
+    ['The Reserve Bank set the OCR at 2.75% on 2 September.',
+     'Up 25 basis points, and a hold is signalled for October. That shift reflects an economy that is growing, and well priced homes are still meeting confident buyers.']];
+  function econLines() {
+    const v = window.__VARY || {};
+    const prev = v.prevEcon;
+    const start = (((v.week || 0) % ECON_BANK.length) + ECON_BANK.length) % ECON_BANK.length;
+    for (let k = 0; k < ECON_BANK.length; k++) {
+      const c = ECON_BANK[(start + k) % ECON_BANK.length];
+      if (!prev || c[0] !== prev) return [{ t: c[0] }, { t: c[1], i: true }];
+    }
+    const c = ECON_BANK[start]; return [{ t: c[0] }, { t: c[1], i: true }];
+  }
+
   // ---- INTRO: season -> activity + THIS suburb's own standout -> reframe media -> transition.
   // Variant-guarded: never claims a pace the sold data does not show. NEVER mentions the economy.
   // Every component now rotates; the perf clause stays data-driven and factual.
@@ -124,12 +150,37 @@
       'Buyer numbers through open homes are up, and ',
       'There is more competition at open homes, and ',
       'Open home attendance keeps building, and '], VOPTS(sub, 'bridge'));
-    let perf;
-    if (fast) perf = 'the homes that are presented and priced well are performing extremely well, with one selling in a single day this week';
-    else if (quick >= 2) perf = 'the homes that are presented and priced well are performing extremely well, several going under contract inside a month';
-    else if (quick === 1) perf = 'the homes that are presented and priced well are performing extremely well, one of them under contract inside a month';
-    else if (top > 0) perf = 'the homes that are presented and priced well are performing extremely well, with the top sale here reaching ' + fmt(top);
-    else perf = 'the homes that are presented and priced well are still finding their buyer';
+    // SUBURB-SPECIFIC, POSITIVE, AND NON-CONTRADICTORY (Harrison, 12 Sep 2026).
+    // The old clause asserted "performing extremely well" no matter what the data said, which
+    // contradicted the suburb's own figures printed directly below it — Dairy Flat's median is
+    // 130 days. Every claim here is now drawn from THIS suburb's own sold lines, and the pace
+    // sentence is chosen to AGREE with that suburb's median rather than fight it.
+    // Positive framing means finding the true positive angle, never overstating a quiet week.
+    const cnt0 = bd.lines.length, wpL = winPhrase(bd.label);
+    const rows = bd.lines.map(l => {
+      const addr = (l.split(/\s{2,}/)[0] || '').trim();
+      const pm = l.match(/\$([\d,]+)/), dm = l.match(/(\d+) days?\)/);
+      return { addr: addr, price: pm ? +pm[1].replace(/,/g, '') : 0, days: dm ? +dm[1] : null };
+    }).filter(r => r.addr);
+    const byDays = rows.filter(r => r.days !== null).sort((a, b) => a.days - b.days);
+    const byPrice = rows.slice().sort((a, b) => b.price - a.price);
+    const quickest = byDays[0], dearest = byPrice[0];
+    const dayWord = n => n === 1 ? 'a single day' : n + ' days';
+    let lead;
+    if (quickest && quickest.days <= 7)
+      lead = quickest.addr + ' sold in ' + dayWord(quickest.days) + ', which is the clearest sign of what a well presented home can do in ' + sub + ' right now';
+    else if (cnt0 > 1 && dearest && dearest.price > 0)
+      lead = cnt0 + ' homes sold in ' + sub + ' ' + wpL + ', led by ' + dearest.addr + ' at ' + fmt(dearest.price);
+    else if (cnt0 === 1 && dearest && dearest.price > 0)
+      lead = dearest.addr + ' sold for ' + fmt(dearest.price) + (dearest.days !== null ? ' after ' + dayWord(dearest.days) + ' on the market' : '');
+    else
+      lead = sub + ' was quiet on settled sales ' + wpL + ', and the homes on the market here are getting steady buyer attention';
+    // The pace sentence must AGREE with the median, never contradict it.
+    const md = bd.days;
+    const pace = !cnt0 ? ''
+      : md <= 35 ? ' Homes here are selling in a median of ' + md + ' days, which is quick by any measure.'
+      : md <= 60 ? ' The median time to sell in ' + sub + ' is ' + md + ' days, so well presented homes are moving at a healthy pace.'
+      : ' The median here sits at ' + md + ' days, which rewards the sellers who come to market properly presented and priced.';
     const greet = pick([
       'I hope you have had a good week. ',
       'I hope your week has gone well. ',
@@ -146,7 +197,10 @@
       'Here is how that played out in ' + sub + '.',
       'This is what it looked like in ' + sub + '.',
       'Here are the ' + sub + ' numbers behind that.'], VOPTS(sub, 'transition'));
-    return [greet + season + ' ' + bridge + perf + '.', '', media, '', transition];
+    // The bridge claims busier open homes, so it is dropped on a zero-sale week where it would
+    // sit oddly against "quiet on settled sales".
+    const opener = greet + season + ' ' + (cnt0 ? bridge : '') + lead + '.' + pace;
+    return [opener, '', media, '', transition];
   }
 
   // ---- SUBJECT ----
@@ -349,7 +403,9 @@
     const writtenB = mk([blk('WHAT YOUR HOME IS WORTH TODAY', { h: true, bold: true }),
       blk('If selling is on your radar, even for next year, a no obligation valuation and strategy session gives you the number, the likely timeframe and a plan built for your home. I come to you, and it takes about 45 minutes.')]);
     const C = [blk('THE WEEK IN THE ECONOMY', { h: true, bold: true })];
-    (window.__ECON || []).forEach(l => C.push(blk(l.t, { italic: !!l.i })));
+    // econLines() rotates the wording weekly; window.__ECON overrides only when the FACTS change.
+    ((window.__ECON && window.__ECON.length) ? window.__ECON : econLines())
+      .forEach(l => C.push(blk(l.t, { italic: !!l.i })));
     C.push(blk(''), blk(communityHeading(sub), { h: true, bold: true }));
     (LOCAL[sub] || []).forEach(it => { C.push(blk(it.t + '.', { italic: true })); C.push(blk(it.b)); C.push(blk('')); });
     if (C[C.length - 1].text === '') C.pop();
