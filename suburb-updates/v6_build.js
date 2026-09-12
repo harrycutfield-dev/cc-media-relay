@@ -220,22 +220,31 @@
     const word = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight'][cnt] || String(cnt);
     const wp = winPhrase(bd.label);          // never "this recent weeks"
     const days = bd.days;
+    // TONE (Harrison, 12 Sep 2026): "entice the client to open and read the email without being
+    // too salesy." So: concrete and specific, a real curiosity gap, personal relevance. NEVER
+    // hype words, urgency, exclamation marks, ALL CAPS, or a pitch. The subject states what is
+    // inside; it does not sell it. Always print the suburb->subject list for Harrison to review.
     let bank;
     if (fast) bank = [
-      'Sold in 1 day in ' + sub + '. What that means for you',
       'A ' + sub + ' home sold in a single day',
-      sub + ': sold in one day, and what it signals',
-      'One day on the market in ' + sub];
+      'One day on the market in ' + sub,
+      'Sold in one day in ' + sub + '. Here is what that took',
+      'What a one day sale says about ' + sub + ' right now'];
+    else if (cnt === 0) bank = [                               // zero-sale week: was a latent bug
+      'What is on the market in ' + sub + ' right now',        // (empty word -> leading space)
+      'Your ' + sub + ' market update',
+      'The ' + sub + ' update ' + wp,
+      sub + ': what buyers are looking at right now'];
     else if (cnt === 1) bank = [
-      'One ' + sub + ' sale and what it means for you',        // singular verb, fixed 12 Sep
+      'One ' + sub + ' sale ' + wp + ', and what it sold for',
       'One ' + sub + ' sale, and a median of ' + days + ' days',
       'What the latest ' + sub + ' sale tells us',
       'The ' + sub + ' result ' + wp];
     else bank = [
-      word + ' ' + sub + ' sales and what they mean for you',
-      word + ' ' + sub + ' sales, and a median of ' + days + ' days',
-      'What ' + word.toLowerCase() + ' ' + sub + ' sales tell us ' + wp,
-      'The ' + sub + ' results, and what they mean for your home'];
+      word + ' homes sold in ' + sub + ' ' + wp,
+      'What ' + word.toLowerCase() + ' ' + sub + ' sales say about your street',
+      'The ' + sub + ' numbers ' + wp,
+      word + ' ' + sub + ' sales, and a median of ' + days + ' days'];
     const start = ((opts.week || 0) + sub.length) % bank.length;
     for (let k = 0; k < bank.length; k++) {
       const c = bank[(start + k) % bank.length];
