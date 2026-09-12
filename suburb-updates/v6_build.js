@@ -150,6 +150,50 @@
       'Buyer numbers through open homes are up, and ',
       'There is more competition at open homes, and ',
       'Open home attendance keeps building, and '], VOPTS(sub, 'bridge'));
+    // INSIGHT ROTATION (Harrison, 12 Sep 2026: "needs a different insight into the market as to
+    // last week ... it sounds still so similar"). Rotating WORDS is not enough — the intro was
+    // the same SHAPE every week (a sale, then the median). Each week now reads the suburb's data
+    // through a genuinely different LENS. Lenses whose preconditions fail are skipped, and last
+    // week's lens (stored as `lens` in blocks.json) is never reused.
+    // Every lens states only what the data supports. No lens may invent a trend.
+    const LENSES = [
+      { k: 'speed', ok: () => byDays.length && byDays[0].days <= 14,
+        s: () => byDays[0].addr + ' sold in ' + dayWord(byDays[0].days) + ', and that is what a well presented home can do in ' + sub + ' right now' },
+      // 'top' and 'depth' are the fallbacks for data-poor suburbs (a single sale, no live stock),
+      // where no other lens qualifies and the lens must repeat. They carry their own phrasing
+      // banks so the sentence still reads differently week to week.
+      { k: 'top', ok: () => dearest && dearest.price > 0,
+        s: () => pick([
+          'the top result was ' + dearest.addr + ' at ' + fmt(dearest.price) + ', which shows what the right buyer will pay here',
+          dearest.addr + ' achieved ' + fmt(dearest.price) + ', and that is the benchmark buyers are working to in ' + sub,
+          'the strongest result was ' + dearest.addr + ' at ' + fmt(dearest.price),
+          dearest.addr + ' sold at ' + fmt(dearest.price) + ', which tells you what a buyer will commit to here'],
+          VOPTS(sub, 'lensText')) },
+      // SPREAD only on comparable homes. An outlier (a studio, a carpark) made Takapuna read
+      // "sales ran from $240,000 to $1,500,000" — misleading as a suburb range, and a poor look
+      // for a Takapuna owner. Require 2+ bedrooms and a low end at least 40% of the high.
+      { k: 'spread', ok: () => { const h = rows.filter(r => r.beds >= 2 && r.price > 0);
+          return h.length >= 3 && h[h.length - 1].price >= h[0].price * 0.4; },
+        s: () => { const h = rows.filter(r => r.beds >= 2 && r.price > 0).sort((a, b) => b.price - a.price);
+          return 'sales ran from ' + fmt(h[h.length - 1].price) + ' to ' + fmt(h[0].price) + ', so there is genuine buyer depth across price points in ' + sub; } },
+      { k: 'vsmedian', ok: () => byDays.length >= 2 && byDays.filter(r => r.days < bd.days).length >= 1,
+        s: () => byDays.filter(r => r.days < bd.days).length + ' of the ' + rows.length + ' sales beat the ' + sub + ' median of ' + bd.days + ' days, which rewards getting the presentation right' },
+      { k: 'beds', ok: () => bedTop && bedTop[1] >= 2,
+        s: () => bedTop[1] + ' of the ' + rows.length + ' sales were ' + bedTop[0] + ' bedroom homes, so that is where the competition sits in ' + sub + ' at the moment' },
+      { k: 'method', ok: () => auctionN >= 1 && rows.length >= 2,
+        s: () => auctionN + ' of the ' + rows.length + ' sold under the hammer, and auction is still surfacing the best buyers here' },
+      // wording deliberately avoids "building" — the bridge already uses it, and the two
+      // together read as a stutter.
+      { k: 'stock', ok: () => liveN > 0,
+        s: () => 'we have ' + liveN + ' home' + (liveN === 1 ? '' : 's') + ' on the market in ' + sub + ' right now, and they are drawing steady interest' },
+      { k: 'depth', ok: () => cnt0 >= 2,
+        s: () => pick([
+          cnt0 + ' homes changed hands in ' + sub + ' ' + wpL + ', which is steady turnover for a suburb this size',
+          cnt0 + ' sales went through in ' + sub + ' ' + wpL,
+          'there were ' + cnt0 + ' sales in ' + sub + ' ' + wpL + ', and buyers are working through the stock as it comes up',
+          sub + ' recorded ' + cnt0 + ' sales ' + wpL],
+          VOPTS(sub, 'lensText')) }];
+
     // SUBURB-SPECIFIC, POSITIVE, AND NON-CONTRADICTORY (Harrison, 12 Sep 2026).
     // The old clause asserted "performing extremely well" no matter what the data said, which
     // contradicted the suburb's own figures printed directly below it — Dairy Flat's median is
@@ -159,22 +203,34 @@
     const cnt0 = bd.lines.length, wpL = winPhrase(bd.label);
     const rows = bd.lines.map(l => {
       const addr = (l.split(/\s{2,}/)[0] || '').trim();
-      const pm = l.match(/\$([\d,]+)/), dm = l.match(/(\d+) days?\)/);
-      return { addr: addr, price: pm ? +pm[1].replace(/,/g, '') : 0, days: dm ? +dm[1] : null };
+      const pm = l.match(/\$([\d,]+)/), dm = l.match(/(\d+) days?\)/), bm = l.match(/\((\d+) bed/);
+      return { addr: addr, price: pm ? +pm[1].replace(/,/g, '') : 0, days: dm ? +dm[1] : null,
+        beds: bm ? +bm[1] : 0 };
     }).filter(r => r.addr);
     const byDays = rows.filter(r => r.days !== null).sort((a, b) => a.days - b.days);
     const byPrice = rows.slice().sort((a, b) => b.price - a.price);
     const quickest = byDays[0], dearest = byPrice[0];
     const dayWord = n => n === 1 ? 'a single day' : n + ' days';
-    let lead;
-    if (quickest && quickest.days <= 7)
-      lead = quickest.addr + ' sold in ' + dayWord(quickest.days) + ', which is the clearest sign of what a well presented home can do in ' + sub + ' right now';
-    else if (cnt0 > 1 && dearest && dearest.price > 0)
-      lead = cnt0 + ' homes sold in ' + sub + ' ' + wpL + ', led by ' + dearest.addr + ' at ' + fmt(dearest.price);
-    else if (cnt0 === 1 && dearest && dearest.price > 0)
-      lead = dearest.addr + ' sold for ' + fmt(dearest.price) + (dearest.days !== null ? ' after ' + dayWord(dearest.days) + ' on the market' : '');
-    else
+    // extra signals the lenses read. __LIVE is set from the feed before BOTH build and check so
+    // the checker's introFor() reproduces the builder's exactly.
+    const bedCount = {};
+    bd.lines.forEach(l => { const m = l.match(/\((\d+) bed/); if (m) bedCount[m[1]] = (bedCount[m[1]] || 0) + 1; });
+    const bedTop = Object.entries(bedCount).sort((a, b) => b[1] - a[1])[0];
+    const auctionN = bd.lines.filter(l => /auction/i.test(l)).length;
+    const liveN = ((window.__LIVE || {})[sub]) || 0;
+    // Pick this week's lens: skip any whose data does not support it, never reuse last week's.
+    const avail = LENSES.filter(L => { try { return L.ok(); } catch (e) { return false; } });
+    const lastLens = PREVOF(sub, 'lens');
+    const fresh = avail.filter(L => L.k !== lastLens);
+    const poolL = fresh.length ? fresh : avail;
+    let lead, lensKey = 'quiet';
+    if (poolL.length) {
+      const iL = (((window.__VARY || {}).week || 0) + sub.length) % poolL.length;
+      const L = poolL[iL]; lensKey = L.k; lead = L.s();
+    } else {
       lead = sub + ' was quiet on settled sales ' + wpL + ', and the homes on the market here are getting steady buyer attention';
+    }
+    introFor.lastLens = lensKey;
     // The pace sentence must AGREE with the median, never contradict it.
     const md = bd.days;
     const pace = !cnt0 ? ''
