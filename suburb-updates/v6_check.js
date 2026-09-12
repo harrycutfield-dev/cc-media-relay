@@ -33,6 +33,19 @@
         const prevSubj = (opts.prevSubjects || {})[sub];
         if (prevSubj && (c.email.subject || '') === prevSubj) E.push('SUBJECT REPEATS LAST WEEK: ' + prevSubj);
         if (/\bOne .* sale and what they mean/.test(c.email.subject || '')) E.push('singular sale with plural verb');
+        // 1c WEEK-OVER-WEEK FRESHNESS on every reader-visible generated block.
+        // Measured 12 Sep before the variation engine existed: 21/34 intros and 10/34 preheaders
+        // were byte-identical to the prior week, and the media paragraph + transition were
+        // CONSTANT for all 34 every week. A repeat here is a hard fail, not a warning.
+        const pv = ((opts.prevBlocks || {})[sub]) || {};
+        const introNow = V.introFor(sub, bd);
+        const nowBlocks = { pre: V.preheaderFor(sub, bd), subject: c.email.subject,
+          opener: introNow[0], media: introNow[2], transition: introNow[4],
+          t1: V.thirtyLines(sub, bd)[0], t2: V.thirtyLines(sub, bd)[1] };
+        Object.keys(nowBlocks).forEach(k => {
+          if (pv[k] && nowBlocks[k] === pv[k]) E.push('REPEATS LAST WEEK [' + k + ']: ' + String(nowBlocks[k]).slice(0, 44));
+        });
+        store.__blocks = store.__blocks || {}; store.__blocks[sub] = nowBlocks;
         if ((c.email.subject || '').indexOf(sub) < 0) E.push('subject does not name the suburb');
         if ((c.email.subject || '').length > 78) E.push('subject too long: ' + c.email.subject.length);
         if (/[–—]/.test(c.email.subject || '')) E.push('dash in subject');
@@ -41,8 +54,9 @@
         store.__subjects[c.email.subject] = sub;
         // 2 PREHEADER — per suburb, accurate (failure shape 11)
         const pre = txt(pc[0]).join(' ');
-        if (pre.indexOf(cnt + ' home' + (cnt === 1 ? '' : 's') + ' sold in ' + sub + ' ' + wp) < 0) E.push('preheader not per-suburb: ' + pre.slice(0, 50));
+        if (pre.indexOf(V.preheaderFor(sub, bd)) < 0) E.push('preheader not the generated one: ' + pre.slice(0, 50));
         if (pre.indexOf('View this email in your browser') < 0) E.push('preheader lost view-online line');
+        if (pre.indexOf(sub) < 0) E.push('preheader does not name the suburb');
         // 3 INTRO — generated, per suburb, no economy, no overclaim
         const expIntro = V.introFor(sub, bd)[0];
         if (ALL.indexOf(expIntro) < 0) E.push('intro not the generated per-suburb intro');
@@ -55,8 +69,7 @@
         // 4 FIGURES
         const st = pc.find(p => p.panel_id === 8); const dm = st ? txt(st).join(' ').match(/(\d{1,3})\s*Days/i) : null;
         if (!dm || +dm[1] !== bd.days) E.push('stat card days do not match REINZ');
-        if (ALL.indexOf('Sold ' + wp + ': ' + cnt + ' home') < 0) E.push('30 second count/window');
-        if (ALL.indexOf('Median time to sell in ' + sub + ': ' + bd.days + ' days') < 0) E.push('30 second median');
+        V.thirtyLines(sub, bd).forEach(t => { if (ALL.indexOf(t) < 0) E.push('30 second line missing: ' + t.slice(0, 34)); });
         bd.lines.forEach(l => { if (ALL.indexOf(l) < 0) E.push('sold line missing: ' + l.slice(0, 24)); });
         if (opts.auctionLine && ALL.indexOf(opts.auctionLine) < 0) E.push('auction figures not current');
         if (opts.staleAuction && new RegExp(opts.staleAuction).test(ALL)) E.push('STALE auction figures present');
