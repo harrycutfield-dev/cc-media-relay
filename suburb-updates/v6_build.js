@@ -40,30 +40,113 @@
 
   const winPhrase = label => { const w = (label || '').replace('past ', ''); return w === 'recent weeks' ? 'over recent weeks' : 'this ' + w; };
 
+  // ---- VARIATION ENGINE (12 Sep 2026) ----
+  // EVERY reader-visible generated block rotates a phrasing bank and is asserted against last
+  // week's stored value. Measured before this existed: 21 of 34 intros byte-identical to the
+  // prior week, 10 of 34 preheaders, and the media paragraph + transition were CONSTANT for all
+  // 34 suburbs every single week. A deterministic generator over slow-moving inputs always
+  // converges on repetition. `prev` is last week's actual string for THIS suburb and block.
+  function pick(bank, opts) {
+    opts = opts || {};
+    const seed = (opts.week || 0) + String(opts.seed || '').length;
+    const start = ((seed % bank.length) + bank.length) % bank.length;
+    for (let k = 0; k < bank.length; k++) {
+      const c = bank[(start + k) % bank.length];
+      if (c !== opts.prev) return c;
+    }
+    return bank[start];
+  }
+  const PREVOF = (sub, key) => (((window.__VARY || {}).prev || {})[sub] || {})[key];
+  const VOPTS = (sub, key) => ({ week: (window.__VARY || {}).week, seed: sub, prev: PREVOF(sub, key) });
+
+  // Preheader: was a pure function of count + window, so it repeated whenever the market was
+  // quiet. Same facts, four phrasings.
+  function preheaderFor(sub, bd) {
+    const c = bd.lines.length, wp = winPhrase(bd.label), h = c + ' home' + (c === 1 ? '' : 's');
+    return pick([
+      h + ' sold in ' + sub + ' ' + wp + ', plus what the latest numbers mean for your value.',
+      'The ' + sub + ' results ' + wp + ', and what they mean for your value.',
+      h + ' sold in ' + sub + ' ' + wp + '. Here is what that says about your place.',
+      'What sold in ' + sub + ' ' + wp + ', and what it means for your home.'],
+      VOPTS(sub, 'pre'));
+  }
+
+  // The 30 second block: same two facts, rotated phrasing. v6_check calls THIS function rather
+  // than matching a hard-coded string.
+  function thirtyLines(sub, bd) {
+    const c = bd.lines.length, wp = winPhrase(bd.label), d = bd.days;
+    const h = c + ' home' + (c === 1 ? '' : 's');
+    const l1 = pick([
+      'Sold ' + wp + ': ' + h + '.',
+      h + ' sold ' + wp + '.',
+      'Homes sold ' + wp + ': ' + c + '.',
+      'Sales ' + wp + ': ' + h + '.'], VOPTS(sub, 't1'));
+    const l2 = pick([
+      'Median time to sell in ' + sub + ': ' + d + ' days.',
+      sub + ' is taking a median of ' + d + ' days to sell.',
+      'Median days to sell in ' + sub + ': ' + d + '.',
+      'Homes in ' + sub + ' are selling in a median of ' + d + ' days.'], VOPTS(sub, 't2'));
+    return [l1, l2];
+  }
+
   // ---- INTRO: season -> activity + THIS suburb's own standout -> reframe media -> transition.
   // Variant-guarded: never claims a pace the sold data does not show. NEVER mentions the economy.
+  // Every component now rotates; the perf clause stays data-driven and factual.
   function introFor(sub, bd) {
     const fast = bd.lines.some(l => /, 1 day\)/.test(l));
     const quick = bd.lines.filter(l => { const m = l.match(/(\d+) days?\)/); return m && +m[1] <= 30; }).length;
     const top = Math.max(...bd.lines.map(l => { const m = l.match(/\$([\d,]+)/); return m ? +m[1].replace(/,/g, '') : 0; }), 0);
     const fmt = n => '$' + n.toLocaleString('en-NZ');
     const m = new Date().getMonth();
-    const season = (m >= 8 && m <= 10) ? 'Spring has arrived and you can feel it in the market.'
-      : (m === 11 || m <= 1) ? 'The summer stretch is here and the market has real energy about it.'
-      : (m >= 2 && m <= 4) ? 'Autumn is settling in and the market is holding its momentum.'
-      : 'Winter has not slowed things down the way people expect.';
+    const SEASONS = (m >= 8 && m <= 10) ? [
+      'Spring has arrived and you can feel it in the market.',
+      'Spring is well underway and the market has lifted with it.',
+      'The spring market is in full swing now.',
+      'Spring stock is coming through and buyers have followed it.']
+      : (m === 11 || m <= 1) ? [
+      'The summer stretch is here and the market has real energy about it.',
+      'Summer is here and the market has not eased off.',
+      'The market carries real momentum through summer.',
+      'Summer buying is brisk this year.']
+      : (m >= 2 && m <= 4) ? [
+      'Autumn is settling in and the market is holding its momentum.',
+      'Autumn has arrived and the market is still moving well.',
+      'The autumn market is holding its pace.',
+      'Autumn has not taken the heat out of things.']
+      : [
+      'Winter has not slowed things down the way people expect.',
+      'The winter market is busier than most people assume.',
+      'Winter is quieter on paper, not at our open homes.',
+      'Winter has held up better than the usual story suggests.'];
+    const season = pick(SEASONS, VOPTS(sub, 'season'));
+    const bridge = pick([
+      'Open homes are busier, more buyers are coming through the door, and ',
+      'Buyer numbers through open homes are up, and ',
+      'There is more competition at open homes, and ',
+      'Open home attendance keeps building, and '], VOPTS(sub, 'bridge'));
     let perf;
     if (fast) perf = 'the homes that are presented and priced well are performing extremely well, with one selling in a single day this week';
     else if (quick >= 2) perf = 'the homes that are presented and priced well are performing extremely well, several going under contract inside a month';
     else if (quick === 1) perf = 'the homes that are presented and priced well are performing extremely well, one of them under contract inside a month';
     else if (top > 0) perf = 'the homes that are presented and priced well are performing extremely well, with the top sale here reaching ' + fmt(top);
     else perf = 'the homes that are presented and priced well are still finding their buyer';
-    return [
-      'I hope you have had a good week. ' + season + ' Open homes are busier, more buyers are coming through the door, and ' + perf + '.',
-      '',
+    const greet = pick([
+      'I hope you have had a good week. ',
+      'I hope your week has gone well. ',
+      'Hope you have had a good week. ',
+      'I hope the week has treated you well. '], VOPTS(sub, 'greet'));
+    const media = pick([
       'You may see the odd gloomy headline about property at the moment. What we are seeing on the ground tells a different story, and our own results below back that up.',
-      '',
-      'Here is what that looked like in ' + sub + ' this week.'];
+      'The headlines about property can be gloomy. What is actually happening at our open homes and auctions looks quite different, and the results below show it.',
+      'Property headlines and property reality are two different things right now. The results below are what we are actually seeing week to week.',
+      'Set the doom in the property headlines aside for a moment. The numbers we are getting on the ground, set out below, tell their own story.'],
+      VOPTS(sub, 'media'));
+    const transition = pick([
+      'Here is what that looked like in ' + sub + ' this week.',
+      'Here is how that played out in ' + sub + '.',
+      'This is what it looked like in ' + sub + '.',
+      'Here are the ' + sub + ' numbers behind that.'], VOPTS(sub, 'transition'));
+    return [greet + season + ' ' + bridge + perf + '.', '', media, '', transition];
   }
 
   // ---- SUBJECT ----
@@ -254,9 +337,8 @@
     const g = blk('Hi First Name,', { h: true, italic: true, er: [{ offset: 3, length: 10, key: 0 }] });
     const A = [g, blk('')];
     introFor(sub, bd).forEach(t => A.push(blk(t)));
-    A.push(blk(''), blk('THE 30 SECOND VERSION', { h: true, bold: true }),
-      blk('Sold ' + wp + ': ' + cnt + ' home' + (cnt === 1 ? '' : 's') + '.'),
-      blk('Median time to sell in ' + sub + ': ' + bd.days + ' days.'));
+    A.push(blk(''), blk('THE 30 SECOND VERSION', { h: true, bold: true }));
+    thirtyLines(sub, bd).forEach(t => A.push(blk(t)));
     auctionLines.forEach(l => A.push(blk(l)));
     A.push(blk(''), blk('WHAT SOLD IN ' + sub.toUpperCase(), { h: true, bold: true }));
     bd.lines.forEach(l => A.push(blk(l)));
@@ -279,7 +361,7 @@
       nb.inlineStyleRanges = (b.inlineStyleRanges || []).map(r => ({ ...r, offset: 0, length: nb.text.length })); return nb; });
     const pre = clone(M.pre);
     const vl = pre.contents.textOne.blocks.slice(-1)[0];
-    const hook = cnt + ' home' + (cnt === 1 ? '' : 's') + ' sold in ' + sub + ' ' + wp + ', plus what the latest numbers mean for your value.';
+    const hook = preheaderFor(sub, bd);
     pre.contents.textOne.blocks = [{ key: rk(), text: hook, type: vl.type, depth: 0,
       inlineStyleRanges: [{ offset: 0, length: hook.length, style: '#595959' }], entityRanges: [], data: vl.data || {} }, vl];
     const headSub = clone(M.headSub);
@@ -293,8 +375,8 @@
     // Subject options ride on window.__SUBJ = {week, prevSubjects} so a REBUILD reproduces the
     // same subject instead of silently re-rolling the bank (and risking a last-week repeat).
     // Set it before any build: window.__SUBJ = {week: <n>, prevSubjects: <prev subjects.json>}.
-    const _so = window.__SUBJ || {};
-    const subject = subjectFor(sub, bd, { week: _so.week, prev: (_so.prevSubjects || {})[sub] });
+    const _v = window.__VARY || {};
+    const subject = subjectFor(sub, bd, { week: _v.week, prev: PREVOF(sub, 'subject') });
     return { M, live, pre, writtenA, writtenB, writtenC, replyP, prefsP, stat, headSub, gridSold, closing, subject };
   }
 
@@ -347,6 +429,7 @@
   }
 
   window.V6 = { API, AGID, APPRAISAL, SENTINEL, PREFS, MASTER, fold, J, normImgs, clone, blk,
-    winPhrase, introFor, LOCAL, SUB, DATED, communityHeading, subjectFor, pickReinzLocation,
-    parts, assemble, COST, TARGET, estimate, REPLY_BLOCKS, PREFS_BLOCKS };
+    winPhrase, introFor, LOCAL, SUB, DATED, communityHeading, subjectFor, preheaderFor,
+    thirtyLines, pick, pickReinzLocation, parts, assemble, COST, TARGET, estimate,
+    REPLY_BLOCKS, PREFS_BLOCKS };
 })();
