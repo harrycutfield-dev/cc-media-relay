@@ -29,7 +29,8 @@
    "t1": "Sales over recent weeks: 1 home.",
    "t2": "Homes in Albany Heights are selling in a median of 57 days."
   },
-  "last_send": "2026-09-13"
+  "last_send": "2026-09-13",
+  "listings": {}
  },
  "Bayswater": {
   "sales": {
@@ -77,7 +78,12 @@
    "t1": "Homes sold this fortnight: 2.",
    "t2": "Median days to sell in Bayswater: 56."
   },
-  "last_send": "2026-09-13"
+  "last_send": "2026-09-13",
+  "listings": {
+   "565190273": {
+    "first_sent": "2026-09-13"
+   }
+  }
  },
  "Bayview": {
   "sales": {
@@ -125,7 +131,12 @@
    "t1": "Sold this fortnight: 2 homes.",
    "t2": "Bayview is taking a median of 42 days to sell."
   },
-  "last_send": "2026-09-13"
+  "last_send": "2026-09-13",
+  "listings": {
+   "553085257": {
+    "first_sent": "2026-09-13"
+   }
+  }
  },
  "Beach Haven": {
   "sales": {
@@ -185,7 +196,21 @@
    "t1": "Sold this month: 8 homes.",
    "t2": "Beach Haven is taking a median of 48 days to sell."
   },
-  "last_send": "2026-09-13"
+  "last_send": "2026-09-13",
+  "listings": {
+   "560551869": {
+    "first_sent": "2026-09-13"
+   },
+   "562974596": {
+    "first_sent": "2026-09-13"
+   },
+   "569860666": {
+    "first_sent": "2026-09-13"
+   },
+   "572983765": {
+    "first_sent": "2026-09-13"
+   }
+  }
  },
  "Belmont": {
   "sales": {
@@ -221,7 +246,12 @@
    "t1": "2 homes sold this month.",
    "t2": "Belmont is taking a median of 39 days to sell."
   },
-  "last_send": "2026-09-13"
+  "last_send": "2026-09-13",
+  "listings": {
+   "553120402": {
+    "first_sent": "2026-09-13"
+   }
+  }
  },
  "Birkdale": {
   "sales": {
@@ -269,7 +299,21 @@
    "t1": "3 homes sold this fortnight.",
    "t2": "Birkdale is taking a median of 48 days to sell."
   },
-  "last_send": "2026-09-13"
+  "last_send": "2026-09-13",
+  "listings": {
+   "553122105": {
+    "first_sent": "2026-09-13"
+   },
+   "556734867": {
+    "first_sent": "2026-09-13"
+   },
+   "569350596": {
+    "first_sent": "2026-09-13"
+   },
+   "571098427": {
+    "first_sent": "2026-09-13"
+   }
+  }
  },
  "Browns Bay": {
   "sales": {
@@ -317,7 +361,39 @@
    "t1": "Sales this fortnight: 3 homes.",
    "t2": "Homes in Browns Bay are selling in a median of 39 days."
   },
-  "last_send": "2026-09-13"
+  "last_send": "2026-09-13",
+  "listings": {
+   "553078504": {
+    "first_sent": "2026-09-13"
+   },
+   "553088251": {
+    "first_sent": "2026-09-13"
+   },
+   "553099607": {
+    "first_sent": "2026-09-13"
+   },
+   "553123683": {
+    "first_sent": "2026-09-13"
+   },
+   "553125007": {
+    "first_sent": "2026-09-13"
+   },
+   "553145354": {
+    "first_sent": "2026-09-13"
+   },
+   "558459848": {
+    "first_sent": "2026-09-13"
+   },
+   "568400463": {
+    "first_sent": "2026-09-13"
+   },
+   "569069317": {
+    "first_sent": "2026-09-13"
+   },
+   "571346648": {
+    "first_sent": "2026-09-13"
+   }
+  }
  },
  "Campbells Bay": {
   "sales": {
@@ -373,7 +449,21 @@
    "t1": "Homes sold this month: 7.",
    "t2": "Median days to sell in Campbells Bay: 46."
   },
-  "last_send": "2026-09-13"
+  "last_send": "2026-09-13",
+  "listings": {
+   "553100753": {
+    "first_sent": "2026-09-13"
+   },
+   "553117580": {
+    "first_sent": "2026-09-13"
+   },
+   "553121509": {
+    "first_sent": "2026-09-13"
+   },
+   "563037739": {
+    "first_sent": "2026-09-13"
+   }
+  }
  },
  "Castor Bay": {
   "sales": {
@@ -413,7 +503,15 @@
    "t1": "Sales over recent weeks: 3 homes.",
    "t2": "Homes in Castor Bay are selling in a median of 52 days."
   },
-  "last_send": "2026-09-13"
+  "last_send": "2026-09-13",
+  "listings": {
+   "553097671": {
+    "first_sent": "2026-09-13"
+   },
+   "564550991": {
+    "first_sent": "2026-09-13"
+   }
+  }
  },
  "Chatswood": {
   "sales": {
@@ -461,7 +559,12 @@
    "t1": "Homes sold over recent weeks: 5.",
    "t2": "Median days to sell in Chatswood: 40."
   },
-  "last_send": "2026-09-13"
+  "last_send": "2026-09-13",
+  "listings": {
+   "553108074": {
+    "first_sent": "2026-09-13"
+   }
+  }
  },
  "Dairy Flat": {
   "sales": {
@@ -493,7 +596,12 @@
    "t1": "Sales over recent weeks: 1 home.",
    "t2": "Homes in Dairy Flat are selling in a median of 130 days."
   },
-  "last_send": "2026-09-13"
+  "last_send": "2026-09-13",
+  "listings": {
+   "553125001": {
+    "first_sent": "2026-09-13"
+   }
+  }
  },
  "Devonport": {
   "sales": {
@@ -537,7 +645,8 @@
    "t1": "Homes sold this month: 4.",
    "t2": "Median days to sell in Devonport: 50."
   },
-  "last_send": "2026-09-13"
+  "last_send": "2026-09-13",
+  "listings": {}
  },
  "Forrest Hill": {
   "sales": {
@@ -585,7 +694,12 @@
    "t1": "5 homes sold this month.",
    "t2": "Forrest Hill is taking a median of 42 days to sell."
   },
-  "last_send": "2026-09-13"
+  "last_send": "2026-09-13",
+  "listings": {
+   "570766740": {
+    "first_sent": "2026-09-13"
+   }
+  }
  },
  "Glenfield": {
   "sales": {
@@ -645,7 +759,36 @@
    "t1": "Homes sold this month: 8.",
    "t2": "Median days to sell in Glenfield: 45."
   },
-  "last_send": "2026-09-13"
+  "last_send": "2026-09-13",
+  "listings": {
+   "553100467": {
+    "first_sent": "2026-09-13"
+   },
+   "553131513": {
+    "first_sent": "2026-09-13"
+   },
+   "553133905": {
+    "first_sent": "2026-09-13"
+   },
+   "555935768": {
+    "first_sent": "2026-09-13"
+   },
+   "556734677": {
+    "first_sent": "2026-09-13"
+   },
+   "565190212": {
+    "first_sent": "2026-09-13"
+   },
+   "568600466": {
+    "first_sent": "2026-09-13"
+   },
+   "568733692": {
+    "first_sent": "2026-09-13"
+   },
+   "572480468": {
+    "first_sent": "2026-09-13"
+   }
+  }
  },
  "Greenhithe": {
   "sales": {
@@ -697,7 +840,8 @@
    "t1": "Sales this fortnight: 3 homes.",
    "t2": "Homes in Greenhithe are selling in a median of 45 days."
   },
-  "last_send": "2026-09-13"
+  "last_send": "2026-09-13",
+  "listings": {}
  },
  "Hauraki": {
   "sales": {
@@ -753,7 +897,8 @@
    "t1": "Sold this month: 7 homes.",
    "t2": "Hauraki is taking a median of 49 days to sell."
   },
-  "last_send": "2026-09-13"
+  "last_send": "2026-09-13",
+  "listings": {}
  },
  "Hillcrest": {
   "sales": {
@@ -805,7 +950,27 @@
    "t1": "Homes sold this month: 6.",
    "t2": "Median days to sell in Hillcrest: 41."
   },
-  "last_send": "2026-09-13"
+  "last_send": "2026-09-13",
+  "listings": {
+   "553096000": {
+    "first_sent": "2026-09-13"
+   },
+   "553100773": {
+    "first_sent": "2026-09-13"
+   },
+   "553127583": {
+    "first_sent": "2026-09-13"
+   },
+   "563504205": {
+    "first_sent": "2026-09-13"
+   },
+   "568402535": {
+    "first_sent": "2026-09-13"
+   },
+   "574006606": {
+    "first_sent": "2026-09-13"
+   }
+  }
  },
  "Hobsonville": {
   "sales": {
@@ -869,7 +1034,36 @@
    "t1": "Sold this fortnight: 5 homes.",
    "t2": "Hobsonville is taking a median of 51 days to sell."
   },
-  "last_send": "2026-09-13"
+  "last_send": "2026-09-13",
+  "listings": {
+   "553091238": {
+    "first_sent": "2026-09-13"
+   },
+   "553100745": {
+    "first_sent": "2026-09-13"
+   },
+   "553115860": {
+    "first_sent": "2026-09-13"
+   },
+   "553128476": {
+    "first_sent": "2026-09-13"
+   },
+   "553140630": {
+    "first_sent": "2026-09-13"
+   },
+   "561994343": {
+    "first_sent": "2026-09-13"
+   },
+   "563824044": {
+    "first_sent": "2026-09-13"
+   },
+   "565190292": {
+    "first_sent": "2026-09-13"
+   },
+   "568517913": {
+    "first_sent": "2026-09-13"
+   }
+  }
  },
  "Long Bay": {
   "sales": {
@@ -937,7 +1131,15 @@
    "t1": "4 homes sold this month.",
    "t2": "Long Bay is taking a median of 55 days to sell."
   },
-  "last_send": "2026-09-13"
+  "last_send": "2026-09-13",
+  "listings": {
+   "554223963": {
+    "first_sent": "2026-09-13"
+   },
+   "560308351": {
+    "first_sent": "2026-09-13"
+   }
+  }
  },
  "Mairangi Bay": {
   "sales": {
@@ -981,7 +1183,48 @@
    "t1": "3 homes sold this fortnight.",
    "t2": "Mairangi Bay is taking a median of 44 days to sell."
   },
-  "last_send": "2026-09-13"
+  "last_send": "2026-09-13",
+  "listings": {
+   "553100772": {
+    "first_sent": "2026-09-13"
+   },
+   "553132252": {
+    "first_sent": "2026-09-13"
+   },
+   "553133555": {
+    "first_sent": "2026-09-13"
+   },
+   "553140071": {
+    "first_sent": "2026-09-13"
+   },
+   "553148280": {
+    "first_sent": "2026-09-13"
+   },
+   "560069460": {
+    "first_sent": "2026-09-13"
+   },
+   "567224942": {
+    "first_sent": "2026-09-13"
+   },
+   "567541721": {
+    "first_sent": "2026-09-13"
+   },
+   "569494608": {
+    "first_sent": "2026-09-13"
+   },
+   "570797985": {
+    "first_sent": "2026-09-13"
+   },
+   "570921676": {
+    "first_sent": "2026-09-13"
+   },
+   "570921677": {
+    "first_sent": "2026-09-13"
+   },
+   "570921678": {
+    "first_sent": "2026-09-13"
+   }
+  }
  },
  "Milford": {
   "sales": {
@@ -1029,7 +1272,27 @@
    "t1": "3 homes sold this fortnight.",
    "t2": "Milford is taking a median of 46 days to sell."
   },
-  "last_send": "2026-09-13"
+  "last_send": "2026-09-13",
+  "listings": {
+   "553117300": {
+    "first_sent": "2026-09-13"
+   },
+   "553148308": {
+    "first_sent": "2026-09-13"
+   },
+   "554322118": {
+    "first_sent": "2026-09-13"
+   },
+   "557690396": {
+    "first_sent": "2026-09-13"
+   },
+   "564550952": {
+    "first_sent": "2026-09-13"
+   },
+   "568751800": {
+    "first_sent": "2026-09-13"
+   }
+  }
  },
  "Murrays Bay": {
   "sales": {
@@ -1073,7 +1336,24 @@
    "t1": "Sold this month: 4 homes.",
    "t2": "Murrays Bay is taking a median of 40 days to sell."
   },
-  "last_send": "2026-09-13"
+  "last_send": "2026-09-13",
+  "listings": {
+   "553083804": {
+    "first_sent": "2026-09-13"
+   },
+   "553096617": {
+    "first_sent": "2026-09-13"
+   },
+   "553561789": {
+    "first_sent": "2026-09-13"
+   },
+   "558450496": {
+    "first_sent": "2026-09-13"
+   },
+   "567541697": {
+    "first_sent": "2026-09-13"
+   }
+  }
  },
  "Northcote": {
   "sales": {
@@ -1121,7 +1401,18 @@
    "t1": "Homes sold this fortnight: 3.",
    "t2": "Median days to sell in Northcote: 41."
   },
-  "last_send": "2026-09-13"
+  "last_send": "2026-09-13",
+  "listings": {
+   "553077106": {
+    "first_sent": "2026-09-13"
+   },
+   "571919340": {
+    "first_sent": "2026-09-13"
+   },
+   "572986965": {
+    "first_sent": "2026-09-13"
+   }
+  }
  },
  "Northcross": {
   "sales": {
@@ -1165,7 +1456,12 @@
    "t1": "Sales this fortnight: 3 homes.",
    "t2": "Homes in Northcross are selling in a median of 39 days."
   },
-  "last_send": "2026-09-13"
+  "last_send": "2026-09-13",
+  "listings": {
+   "553128027": {
+    "first_sent": "2026-09-13"
+   }
+  }
  },
  "Oteha": {
   "sales": {
@@ -1213,7 +1509,8 @@
    "t1": "Homes sold this month: 4.",
    "t2": "Median days to sell in Oteha: 36."
   },
-  "last_send": "2026-09-13"
+  "last_send": "2026-09-13",
+  "listings": {}
  },
  "Pāremoremo": {
   "sales": {
@@ -1245,7 +1542,8 @@
    "t1": "Sales over recent weeks: 1 home.",
    "t2": "Homes in Pāremoremo are selling in a median of 50 days."
   },
-  "last_send": "2026-09-13"
+  "last_send": "2026-09-13",
+  "listings": {}
  },
  "Rosedale": {
   "sales": {
@@ -1281,7 +1579,8 @@
    "t1": "2 homes sold over recent weeks.",
    "t2": "Rosedale is taking a median of 20 days to sell."
   },
-  "last_send": "2026-09-13"
+  "last_send": "2026-09-13",
+  "listings": {}
  },
  "Rothesay Bay": {
   "sales": {
@@ -1321,7 +1620,18 @@
    "t1": "3 homes sold this month.",
    "t2": "Rothesay Bay is taking a median of 42 days to sell."
   },
-  "last_send": "2026-09-13"
+  "last_send": "2026-09-13",
+  "listings": {
+   "553147168": {
+    "first_sent": "2026-09-13"
+   },
+   "558760542": {
+    "first_sent": "2026-09-13"
+   },
+   "561354954": {
+    "first_sent": "2026-09-13"
+   }
+  }
  },
  "Sunnynook": {
   "sales": {
@@ -1365,7 +1675,18 @@
    "t1": "Homes sold this month: 3.",
    "t2": "Median days to sell in Sunnynook: 38."
   },
-  "last_send": "2026-09-13"
+  "last_send": "2026-09-13",
+  "listings": {
+   "553112869": {
+    "first_sent": "2026-09-13"
+   },
+   "553127041": {
+    "first_sent": "2026-09-13"
+   },
+   "553142248": {
+    "first_sent": "2026-09-13"
+   }
+  }
  },
  "Takapuna": {
   "sales": {
@@ -1421,7 +1742,27 @@
    "t1": "5 homes sold this fortnight.",
    "t2": "Takapuna is taking a median of 67 days to sell."
   },
-  "last_send": "2026-09-13"
+  "last_send": "2026-09-13",
+  "listings": {
+   "553100177": {
+    "first_sent": "2026-09-13"
+   },
+   "558760539": {
+    "first_sent": "2026-09-13"
+   },
+   "567560319": {
+    "first_sent": "2026-09-13"
+   },
+   "570489850": {
+    "first_sent": "2026-09-13"
+   },
+   "571443914": {
+    "first_sent": "2026-09-13"
+   },
+   "573651490": {
+    "first_sent": "2026-09-13"
+   }
+  }
  },
  "Torbay": {
   "sales": {
@@ -1469,7 +1810,48 @@
    "t1": "Sales this fortnight: 3 homes.",
    "t2": "Homes in Torbay are selling in a median of 45 days."
   },
-  "last_send": "2026-09-13"
+  "last_send": "2026-09-13",
+  "listings": {
+   "553080633": {
+    "first_sent": "2026-09-13"
+   },
+   "553096630": {
+    "first_sent": "2026-09-13"
+   },
+   "553113720": {
+    "first_sent": "2026-09-13"
+   },
+   "553129131": {
+    "first_sent": "2026-09-13"
+   },
+   "553129448": {
+    "first_sent": "2026-09-13"
+   },
+   "553134213": {
+    "first_sent": "2026-09-13"
+   },
+   "553146448": {
+    "first_sent": "2026-09-13"
+   },
+   "559367227": {
+    "first_sent": "2026-09-13"
+   },
+   "563269786": {
+    "first_sent": "2026-09-13"
+   },
+   "569783486": {
+    "first_sent": "2026-09-13"
+   },
+   "570569748": {
+    "first_sent": "2026-09-13"
+   },
+   "571575188": {
+    "first_sent": "2026-09-13"
+   },
+   "573106786": {
+    "first_sent": "2026-09-13"
+   }
+  }
  },
  "Tōtara Vale": {
   "sales": {
@@ -1533,7 +1915,8 @@
    "t1": "Sold this month: 8 homes.",
    "t2": "Tōtara Vale is taking a median of 36 days to sell."
   },
-  "last_send": "2026-09-13"
+  "last_send": "2026-09-13",
+  "listings": {}
  },
  "Waiake": {
   "sales": {
@@ -1569,7 +1952,12 @@
    "t1": "Sales this month: 1 home.",
    "t2": "Homes in Waiake are selling in a median of 52 days."
   },
-  "last_send": "2026-09-13"
+  "last_send": "2026-09-13",
+  "listings": {
+   "572591267": {
+    "first_sent": "2026-09-13"
+   }
+  }
  },
  "Windsor Park": {
   "sales": {
@@ -1613,6 +2001,7 @@
    "t1": "3 homes sold this month.",
    "t2": "Windsor Park is taking a median of 49 days to sell."
   },
-  "last_send": "2026-09-13"
+  "last_send": "2026-09-13",
+  "listings": {}
  }
 }
