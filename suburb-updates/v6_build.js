@@ -104,7 +104,22 @@
      'A 25 basis point increase, with October signalled as a hold. Rate movement of this kind reflects a growing economy, and buyers at our open homes are still committing.'],
     ['The Reserve Bank set the OCR at 2.75% on 2 September.',
      'Up 25 basis points, and a hold is signalled for October. That shift reflects an economy that is growing, and well priced homes are still meeting confident buyers.']];
+  // ITEM 4 (13 Sep 2026): the economy facts must be PULLED and DATED each run, never read from
+  // a bank that can silently age. window.__ECONFACTS = {ocr, effective_date, bp, signal,
+  // pulled_at, source}. econLines() REFUSES to emit if the facts are missing or were pulled
+  // before the last send — a stale figure must never rotate into a fresh-sounding sentence.
+  function econFactsOk() {
+    const f = window.__ECONFACTS, v = window.__VARY || {};
+    if (!f || !f.ocr || !f.effective_date || !f.pulled_at) return 'economy facts missing (set window.__ECONFACTS)';
+    if (v.lastSend && f.pulled_at.slice(0, 10) < v.lastSend) return 'economy facts pulled ' + f.pulled_at.slice(0, 10) + ', before the last send ' + v.lastSend;
+    // every bank variant must state the CURRENT ocr, or the bank is stale relative to the facts
+    if (!ECON_BANK.every(p => p[0].indexOf(f.ocr) >= 0)) return 'ECON_BANK does not state the current OCR ' + f.ocr + ' - rewrite the bank';
+    return null;
+  }
+
   function econLines() {
+    const problem = econFactsOk();
+    if (problem) throw new Error('ECONOMY BLOCKED: ' + problem);
     const v = window.__VARY || {};
     const prev = v.prevEcon;
     const start = (((v.week || 0) % ECON_BANK.length) + ECON_BANK.length) % ECON_BANK.length;
@@ -368,6 +383,31 @@
     waiake: { t: 'Waiake Beach Reserve looks straight out over the bay', b: 'Large open lawn, toilets, picnic tables, barbecues, drinking fountains, mobility parking and a boat and dinghy ramp.' },
     windsorPark: { t: 'Windsor Park is home to East Coast Bays cricket and rugby', b: 'Both clubs are based at the park, touch rugby runs there through summer, and Windsor Park Baptist on East Coast Road is the other anchor of the suburb.' } };
 
+  // ---- COMMUNITY EXPIRY (item 3, 13 Sep 2026) ----
+  // Each item may carry `on` (event date, ISO) and `verified_on`. Rules, in order:
+  //   1. an item whose event date has PASSED is dropped outright - never rolled forward
+  //   2. an item not verified within VERIFY_DAYS is dropped - re-verify or lose it
+  //   3. an item already sent to THIS suburb is not "new" (novelty comes from the ledger)
+  // If nothing survives, the caller states there is no new news and shows the most recent two.
+  const VERIFY_DAYS = 42;
+  function communityFor(sub) {
+    const today = (window.__VARY || {}).today || new Date().toISOString().slice(0, 10);
+    const led = (((window.__VARY || {}).ledger || {})[sub] || {}).community || {};
+    const all = (LOCAL[sub] || []);
+    const alive = all.filter(it => {
+      if (it.on && it.on < today) return false;                       // event has been and gone
+      if (it.verified_on) {
+        const age = (new Date(today) - new Date(it.verified_on)) / 864e5;
+        if (age > VERIFY_DAYS) return false;                          // gone stale, re-verify
+      }
+      return true;
+    });
+    const unsent = alive.filter(it => !led[String(it.t).toLowerCase().trim()]);
+    // Harrison: when there is nothing new, say so and show the most recent, SPLIT INTO TWO.
+    const fallback = alive.slice(0, 2);
+    return { items: unsent, fallback: fallback.length ? fallback : all.slice(0, 2), alive: alive.length };
+  }
+
   const DATED = new Set(['Belmont', 'Sunnynook', 'Hobsonville', 'Long Bay', 'Browns Bay',
     'Devonport', 'Takapuna', 'Milford', 'Mairangi Bay', 'Campbells Bay', 'Northcote',
     'Glenfield', 'Greenhithe', 'Hillcrest']);
@@ -472,7 +512,19 @@
     ((window.__ECON && window.__ECON.length) ? window.__ECON : econLines())
       .forEach(l => C.push(blk(l.t, { italic: !!l.i })));
     C.push(blk(''), blk(communityHeading(sub), { h: true, bold: true }));
-    (LOCAL[sub] || []).forEach(it => { C.push(blk(it.t + '.', { italic: true })); C.push(blk(it.b)); C.push(blk('')); });
+    // ITEM 3 (13 Sep 2026): EXPIRY IS ENFORCED HERE, not by hand.
+    // An item with an event date in the past is dropped - Harrison: "ensure no events show that
+    // the date has already been and gone as it would be irrelevant". The Restore Hibiscus & Bays
+    // planting days are the worked example: real in July, finished by September.
+    // When nothing survives, SAY SO, then show the most recent, split into two.
+    const comm = communityFor(sub);
+    if (comm.items.length) {
+      comm.items.forEach(it => { C.push(blk(it.t + '.', { italic: true })); C.push(blk(it.b)); C.push(blk('')); });
+    } else {
+      C.push(blk('No new events or news in ' + sub + ' this week.'));
+      C.push(blk(''));
+      comm.fallback.forEach(it => { C.push(blk(it.t + '.', { italic: true })); C.push(blk(it.b)); C.push(blk('')); });
+    }
     if (C[C.length - 1].text === '') C.pop();
     const writtenC = mk(C);
     const replyP = mk(REPLY_BLOCKS()), prefsP = mk(PREFS_BLOCKS());
@@ -550,7 +602,7 @@
   }
 
   window.V6 = { API, AGID, APPRAISAL, SENTINEL, PREFS, MASTER, fold, J, normImgs, clone, blk,
-    winPhrase, introFor, LOCAL, SUB, DATED, communityHeading, subjectFor, preheaderFor,
-    thirtyLines, pick, pickReinzLocation, parts, assemble, COST, TARGET, estimate,
-    REPLY_BLOCKS, PREFS_BLOCKS };
+    winPhrase, introFor, LOCAL, SUB, DATED, communityHeading, communityFor, econLines,
+    econFactsOk, ECON_BANK, subjectFor, preheaderFor, thirtyLines, pick, pickReinzLocation,
+    parts, assemble, COST, TARGET, estimate, REPLY_BLOCKS, PREFS_BLOCKS };
 })();
