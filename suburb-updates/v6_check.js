@@ -70,12 +70,22 @@
         const st = pc.find(p => p.panel_id === 8); const dm = st ? txt(st).join(' ').match(/(\d{1,3})\s*Days/i) : null;
         if (!dm || +dm[1] !== bd.days) E.push('stat card days do not match REINZ');
         V.thirtyLines(sub, bd).forEach(t => { if (ALL.indexOf(t) < 0) E.push('30 second line missing: ' + t.slice(0, 34)); });
-        bd.lines.forEach(l => { if (ALL.indexOf(l) < 0) E.push('sold line missing: ' + l.slice(0, 24)); });
+        // TWO SOLD BLOCKS (14 Sep 2026). The checker calls the BUILDER'S soldBlocks so a change
+        // to the copy cannot leave a stale assertion behind (failure shapes 11 and 14).
+        const SB = V.soldBlocks(sub, bd.sold || { thisWeek: [], twoMonths: [] }, (opts.cap || 8));
+        if (ALL.indexOf(SB.weekHeading) < 0) E.push('missing heading: ' + SB.weekHeading);
+        if (ALL.indexOf(SB.recentHeading) < 0) E.push('missing heading: ' + SB.recentHeading);
+        SB.weekLines.forEach(l => { if (ALL.indexOf(l) < 0) E.push('week line missing: ' + l.slice(0, 30)); });
+        SB.recentLines.forEach(l => { if (ALL.indexOf(l) < 0) E.push('recent line missing: ' + l.slice(0, 30)); });
+        // every sold line that carries a date must show it, and no line may predate the window
+        (bd.sold && bd.sold.twoMonths || []).forEach(s => {
+          if (s.dt && s.dt < (bd.cutoff || '2026-07-18')) E.push('sale older than the window: ' + s.a + ' ' + s.dt);
+        });
         if (opts.auctionLine && ALL.indexOf(opts.auctionLine) < 0) E.push('auction figures not current');
         if (opts.staleAuction && new RegExp(opts.staleAuction).test(ALL)) E.push('STALE auction figures present');
         if (opts.ocr && (ALL.match(new RegExp(opts.ocr.replace('.', '\\.'), 'g')) || []).length < 1) E.push('economy figure missing');
         // 5 SUBURB NAMING
-        if (ALL.indexOf('WHAT SOLD IN ' + sub.toUpperCase()) < 0) E.push('sold heading wrong suburb');
+        // (sold headings are asserted in group 4 via the builder's own soldBlocks)
         if (ALL.indexOf(V.communityHeading(sub)) < 0) E.push('community heading wrong: expected ' + V.communityHeading(sub));
         if (!V.DATED.has(sub) && /AROUND [A-ZĀĒĪŌŪ ]+ THIS MONTH/.test(ALL)) E.push('undated suburb promises THIS MONTH');
         if (ALL.indexOf('WHAT YOUR HOME IS WORTH TODAY') < 0) E.push('valuation section missing');
