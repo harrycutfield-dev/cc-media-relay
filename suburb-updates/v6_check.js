@@ -99,6 +99,14 @@
           E.push('COMMUNITY LEAD DOES NOT NAME ' + sub + ': ' + lead.t.slice(0, 40));
         if (/Plan Change 120|granny flat|out of zone ballots/i.test(ALL)) E.push('generic Auckland-wide filler present');
         (V.LOCAL[sub] || []).forEach(it => { if (ALL.indexOf(it.t) < 0) E.push('community item missing: ' + it.t.slice(0, 28)); });
+        // 6b GEOGRAPHY + STATUS ROT (failure shapes 17 and 18, 18 Sep 2026).
+        // Delegated to window.CG so the checker and the sourcing phase run the SAME gate.
+        // Without this the checker happily passed a Devon, England event as Torbay news.
+        if (typeof CG === 'undefined') E.push('v7_community_gate.js NOT LOADED - geography and status rot unchecked');
+        else {
+          const g = CG.check({ [sub]: V.LOCAL[sub] || [] }, { today: (V.VARY && V.VARY.today), suburbs: [sub] });
+          g.fail.forEach(f => E.push('CG ' + f));
+        }
         // 7 CTA PAIR
         if (ALL.indexOf('WHERE ARE YOU AT WITH YOUR PLACE?') < 0) E.push('reply CTA heading missing');
         if (ALL.indexOf('current property journey') < 0) E.push('reply CTA body missing');
