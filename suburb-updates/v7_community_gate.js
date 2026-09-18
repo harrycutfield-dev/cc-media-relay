@@ -129,8 +129,12 @@
       if (firstNews > -1 && lastEv > firstNews) fail.push(`[${sub}] news appears before an event`);
 
       // --- LEAD NAMES THE SUBURB (failure shape 13, asserted on the LEAD only) ---
-      const lead = arr[0], head = String(sub).split(' ')[0].toLowerCase();
-      if (!`${lead.t || ''} ${lead.b || ''}`.toLowerCase().includes(head))
+      // FOLD MACRONS. Copy writes "Paremoremo" and "Totara Vale" while the suburb keys carry
+      // macrons, so a literal compare failed both on 18 Sep. Same defect class as the REINZ
+      // typeahead, which returned nothing for "Pāremoremo" until the query was folded.
+      const fold = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+      const lead = arr[0], head = fold(sub).split(' ')[0];
+      if (!fold(`${lead.t || ''} ${lead.b || ''}`).includes(head))
         fail.push(`[${sub}] LEAD does not name the suburb: "${String(lead.t).slice(0, 50)}"`);
       const k = String(lead.t || '').toLowerCase().trim();
       if (!leads.has(k)) leads.set(k, []);
