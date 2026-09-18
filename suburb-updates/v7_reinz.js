@@ -81,9 +81,17 @@
         category: rec.category || '', sale_id: rec.sale_id
       });
     }));
-    // de-dupe by sale_id then key
-    const seen = new Set();
-    return out.filter(s => { const k = s.sale_id || s.key; if (seen.has(k)) return false; seen.add(k); return true; });
+    // DE-DUPE ON ADDRESS+PRICE, NOT sale_id. REINZ returns more than one record with different
+    // sale_ids for the same property, so keying on sale_id let duplicates through: Browns Bay
+    // 12B Palliser Lane, Glenfield 7/6 Embassy Place, Hobsonville 8/4 Limestone Drive and
+    // Windsor Park 1A Altair Place each appeared TWICE in their own suburb list (18 Sep check).
+    // Keep the record with the earliest sale_date - that is when it actually went unconditional.
+    const byKey = new Map();
+    out.forEach(s => {
+      const prev = byKey.get(s.key);
+      if (!prev || (s.sale_date && prev.sale_date && s.sale_date < prev.sale_date)) byKey.set(s.key, s);
+    });
+    return [...byKey.values()];
   }
 
   // ---- 3. SUBURB STATS -------------------------------------------------------
@@ -115,12 +123,20 @@
       // sent as Waiake on 13 Sep when REINZ records it as Browns Bay)
       const mine = all.filter(s => !s.suburb || fold(s.suburb).indexOf(fold(sub)) === 0);
       const foreign = all.filter(s => s.suburb && fold(s.suburb).indexOf(fold(sub)) !== 0);
-      const inWindow = mine.filter(s => s.sale_date && s.sale_date >= cutoff);
       const led = (ledger && ledger[sub] && ledger[sub].sales) || {};
+      const weekFrom = opts.weekFrom || cutoff;
+      const inWindow = mine.filter(s => s.sale_date && s.sale_date >= cutoff)
+        .sort((a, b) => String(b.sale_date).localeCompare(String(a.sale_date)));
+      // THE LEDGER FILTER APPLIES TO BOTH BLOCKS. It was dropped when the two-block structure
+      // came in, and the 18 Sep check found 11 of 51 "sold this week" lines had already been
+      // sent - Mairangi Bay's 313 East Coast Road would have gone out a THIRD week running.
+      const unsent = inWindow.filter(s => !led[s.key]);
+      const cap = opts.cap || 8;
       data[sub] = {
-        location: loc, pulled_at, cutoff,
-        fresh: inWindow.filter(s => !led[s.key]),
-        recent: inWindow.filter(s => !!led[s.key]),
+        location: loc, pulled_at, cutoff, weekFrom,
+        thisWeek: unsent.filter(s => s.sale_date >= weekFrom).slice(0, cap),
+        twoMonths: unsent.slice(0, cap),
+        suppressed: inWindow.filter(s => !!led[s.key]).map(s => s.address),
         rejected_wrong_suburb: foreign.map(s => s.address + ' -> ' + s.suburb),
         stats: await pullStats(loc)
       };
