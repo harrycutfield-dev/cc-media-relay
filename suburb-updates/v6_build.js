@@ -389,23 +389,79 @@
   //   2. an item not verified within VERIFY_DAYS is dropped - re-verify or lose it
   //   3. an item already sent to THIS suburb is not "new" (novelty comes from the ledger)
   // If nothing survives, the caller states there is no new news and shows the most recent two.
+  // ---- SOLD BLOCKS (Harrison, 14 Sep 2026) ----
+  // TWO blocks now:
+  //   SOLD THIS WEEK IN <SUBURB>   - freshest sales, each WITH its unconditional sale date
+  //   RECENTLY SOLD IN <SUBURB>    - the past 2 months
+  // The unconditional date is REINZ `sale_date`. If a week has no sales, say so plainly
+  // (Harrison, 13 Sep) and let the 2-month block carry the section.
+  const NZ_MONTH = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function fmtDate(iso) {
+    if (!iso) return '';
+    const p = String(iso).slice(0, 10).split('-');
+    return p.length === 3 ? (+p[2]) + ' ' + NZ_MONTH[+p[1] - 1] : '';
+  }
+  const money = n => '$' + Number(n || 0).toLocaleString('en-NZ');
+  function soldLine(s, withDate) {
+    const bits = [];
+    if (s.b) bits.push(s.b + ' bed');
+    if (s.d != null) bits.push(s.d + (s.d === 1 ? ' day' : ' days'));
+    const tail = bits.length ? '  (' + bits.join(', ') + ')' : '';
+    return s.a + '  ' + money(s.p) + tail + (withDate && s.dt ? '  sold ' + fmtDate(s.dt) : '');
+  }
+  // sold = {thisWeek:[], twoMonths:[]} straight from v7_reinz
+  function soldBlocks(sub, sold, cap) {
+    cap = cap || 8;
+    const wk = (sold.thisWeek || []).slice(0, cap);
+    const seen = new Set(wk.map(s => s.a));
+    const two = (sold.twoMonths || []).filter(s => !seen.has(s.a)).slice(0, cap);
+    return {
+      weekHeading: 'SOLD THIS WEEK IN ' + sub.toUpperCase(),
+      weekLines: wk.length ? wk.map(s => soldLine(s, true))
+        : ['No new unconditional sales in ' + sub + ' this week.'],
+      recentHeading: 'RECENTLY SOLD IN ' + sub.toUpperCase() + ' (PAST TWO MONTHS)',
+      recentLines: two.length ? two.map(s => soldLine(s, true))
+        : ['No sales recorded in ' + sub + ' over the past two months.'],
+      weekCount: wk.length, recentCount: two.length
+    };
+  }
+
   const VERIFY_DAYS = 42;
+  // SPLIT INTO TWO BLOCKS (Harrison, 14 Sep 2026):
+  //   UPCOMING IN <SUBURB>  - FUTURE events, SOONEST FIRST, each shown WITH its date.
+  //                           (Harrison, 18 Sep 2026: "you can include future events (soonest
+  //                           first) but not events that have already been and gone." So there
+  //                           is NO horizon cap - a November event is fine - but an event dated
+  //                           before today is NEVER shown.)
+  //   <SUBURB> NEWS         - the latest news. If nothing has changed since last week, SAY SO
+  //                           and still show the older news. THIS SECTION ALWAYS HAS SOMETHING.
+  // An item is an EVENT if it carries `on` (event date); otherwise it is NEWS.
+  const EVENT_MAX = 3;            // how many upcoming events to show; no DATE horizon
   function communityFor(sub) {
-    const today = (window.__VARY || {}).today || new Date().toISOString().slice(0, 10);
-    const led = (((window.__VARY || {}).ledger || {})[sub] || {}).community || {};
+    const V = window.__VARY || {};
+    const today = V.today || new Date().toISOString().slice(0, 10);
+    const led = ((V.ledger || {})[sub] || {}).community || {};
     const all = (LOCAL[sub] || []);
-    const alive = all.filter(it => {
-      if (it.on && it.on < today) return false;                       // event has been and gone
-      if (it.verified_on) {
-        const age = (new Date(today) - new Date(it.verified_on)) / 864e5;
-        if (age > VERIFY_DAYS) return false;                          // gone stale, re-verify
-      }
-      return true;
-    });
-    const unsent = alive.filter(it => !led[String(it.t).toLowerCase().trim()]);
-    // Harrison: when there is nothing new, say so and show the most recent, SPLIT INTO TWO.
-    const fallback = alive.slice(0, 2);
-    return { items: unsent, fallback: fallback.length ? fallback : all.slice(0, 2), alive: alive.length };
+    const fresh = it => {
+      if (!it.verified_on) return true;
+      return (new Date(today) - new Date(it.verified_on)) / 864e5 <= VERIFY_DAYS;
+    };
+    // EVENTS: any FUTURE date, soonest first, no horizon cap. `on >= today` is the only date
+    // rule - an event that has been and gone is never shown.
+    const events = all.filter(it => it.on && it.on >= today && fresh(it))
+      .sort((a, b) => String(a.on).localeCompare(String(b.on)))
+      .slice(0, EVENT_MAX);
+    // NEWS: undated items (or dated beyond the horizon are simply not events this week)
+    const news = all.filter(it => !it.on && fresh(it));
+    const newsUnsent = news.filter(it => !led[String(it.t).toLowerCase().trim()]);
+    // the news block is NEVER empty: new news, else older news with an honest label
+    const newsItems = newsUnsent.length ? newsUnsent : news.slice(0, 2);
+    return {
+      events, eventsEmpty: !events.length,
+      news: newsItems, newsIsNew: newsUnsent.length > 0,
+      newsEmpty: !newsItems.length,
+      headings: { events: 'UPCOMING IN ' + sub.toUpperCase(), news: sub.toUpperCase() + ' NEWS' }
+    };
   }
 
   const DATED = new Set(['Belmont', 'Sunnynook', 'Hobsonville', 'Long Bay', 'Browns Bay',
@@ -518,13 +574,20 @@
     // planting days are the worked example: real in July, finished by September.
     // When nothing survives, SAY SO, then show the most recent, split into two.
     const comm = communityFor(sub);
-    if (comm.items.length) {
-      comm.items.forEach(it => { C.push(blk(it.t + '.', { italic: true })); C.push(blk(it.b)); C.push(blk('')); });
+    // UPCOMING - events in the next two weeks, each with its date. Never a past event.
+    C.push(blk(comm.headings.events, { h: true, bold: true }));
+    if (comm.events.length) {
+      comm.events.forEach(it => {
+        C.push(blk(it.t + ' (' + fmtDate(it.on) + ').', { italic: true }));
+        C.push(blk(it.b)); C.push(blk(''));
+      });
     } else {
-      C.push(blk('No new events or news in ' + sub + ' this week.'));
-      C.push(blk(''));
-      comm.fallback.forEach(it => { C.push(blk(it.t + '.', { italic: true })); C.push(blk(it.b)); C.push(blk('')); });
+      C.push(blk('No events currently listed in ' + sub + '.')); C.push(blk(''));
     }
+    // NEWS - always has something. Says so plainly when nothing has changed.
+    C.push(blk(comm.headings.news, { h: true, bold: true }));
+    if (!comm.newsIsNew && comm.news.length) { C.push(blk('No new news in ' + sub + ' this week. The latest remains:')); C.push(blk('')); }
+    comm.news.forEach(it => { C.push(blk(it.t + '.', { italic: true })); C.push(blk(it.b)); C.push(blk('')); });
     if (C[C.length - 1].text === '') C.pop();
     const writtenC = mk(C);
     const replyP = mk(REPLY_BLOCKS()), prefsP = mk(PREFS_BLOCKS());
