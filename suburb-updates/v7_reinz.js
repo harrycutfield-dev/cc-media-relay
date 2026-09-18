@@ -71,7 +71,10 @@
     const feats = ((j.result || {}).features) || [];
     const out = [];
     feats.forEach(f => ((f.properties || {}).records || []).forEach(rec => {
-      const addr = ((rec.unit ? rec.unit + '/' : '') + (rec.street_number || '') + ' ' + (rec.street || '')).replace(/\s+/g, ' ').trim();
+      // `suffix` carries the unit letter: 40 + "A" = 40A Waiake Street. Dropping it printed TWO
+      // different Torbay sales as "40 Waiake Street" (18 Sep) - a wrong address in a live email.
+      const addr = ((rec.unit ? rec.unit + '/' : '') + (rec.street_number || '') + (rec.suffix || '')
+        + ' ' + (rec.street || '')).replace(/\s+/g, ' ').trim();
       out.push({
         key: norm(addr) + '|' + (rec.sale_price || 0),
         address: addr, suburb: rec.suburb || '', price: rec.sale_price || 0,
