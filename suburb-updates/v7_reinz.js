@@ -78,7 +78,8 @@
         beds: rec.bedrooms, days: rec.days_to_sell,
         sale_date: rec.sale_date || '', agreement_date: rec.agreement_date || '',
         settlement_date: rec.settlement_date || '', method: rec.sale_method || '',
-        category: rec.category || '', sale_id: rec.sale_id
+        category: rec.category || '', sale_id: rec.sale_id,
+        is_settled: rec.is_settled === true          // REINZ's own flag
       });
     }));
     // DE-DUPE ON ADDRESS+PRICE, NOT sale_id. REINZ returns more than one record with different
@@ -86,8 +87,13 @@
     // 12B Palliser Lane, Glenfield 7/6 Embassy Place, Hobsonville 8/4 Limestone Drive and
     // Windsor Park 1A Altair Place each appeared TWICE in their own suburb list (18 Sep check).
     // Keep the record with the earliest sale_date - that is when it actually went unconditional.
+    // UNCONDITIONAL ONLY (Harrison, 18 Sep 2026: "Only unconditional sales - simple").
+    // REINZ returns both. For Mairangi Bay over Jul-Sep it was 32 sales: 14 already SETTLED and
+    // 18 unconditional. `sale_date` is the unconditional date for BOTH, so a date filter alone
+    // cannot separate them - only `is_settled` can. Everything settled is dropped here.
+    const unconditional = out.filter(s => s.is_settled === false);
     const byKey = new Map();
-    out.forEach(s => {
+    unconditional.forEach(s => {
       const prev = byKey.get(s.key);
       if (!prev || (s.sale_date && prev.sale_date && s.sale_date < prev.sale_date)) byKey.set(s.key, s);
     });
