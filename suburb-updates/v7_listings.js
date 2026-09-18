@@ -42,23 +42,40 @@
     return { pulled_at: new Date().toISOString(), current, sold };
   }
 
-  // ledger: {suburb:{listings:{id:{first_sent}}}}
-  // Returns the two blocks in Harrison's order, his listings first within each.
-  function splitForSuburb(sub, ctx, ledger) {
+  // RULE CHANGE (Harrison, 14 Sep 2026): "list new to always include the latest listings that we
+  // have live in that suburb - if they are live they present there."
+  // So the ledger NO LONGER SUPPRESSES LISTINGS. Every live listing appears somewhere, every
+  // week. The split is by RECENCY (`listed_at`), not by novelty:
+  //   NEW TO THE MARKET IN <SUBURB>  = the most recently listed live stock (NEW_DAYS window,
+  //                                    or the newest NEW_MIN if nothing is inside it)
+  //   OUR LISTINGS IN <SUBURB>       = the remaining live stock
+  // Harrison's own listings are still ordered FIRST inside BOTH blocks.
+  const NEW_DAYS = 14, NEW_MIN = 3;
+  function splitForSuburb(sub, ctx, ledger, opts) {
+    opts = opts || {};
+    const today = opts.today || new Date().toISOString().slice(0, 10);
+    const cutoff = new Date(new Date(today) - NEW_DAYS * 864e5).toISOString().slice(0, 10);
     const live = ctx.current.filter(r => fold(r.city) === fold(sub)).map(r => J(r));
-    const led = (ledger && ledger[sub] && ledger[sub].listings) || {};
+    const listedOn = r => String(r.listed_at || r.created_at || '').slice(0, 10);
     const order = arr => {
       const mine = arr.filter(isMine), rest = arr.filter(r => !isMine(r));
-      const byAddr = (a, b) => String(a.displayaddress || '').localeCompare(String(b.displayaddress || ''));
-      return mine.sort(byAddr).concat(rest.sort(byAddr));       // HIS LISTINGS ALWAYS FIRST
+      const byNew = (a, b) => listedOn(b).localeCompare(listedOn(a));   // newest first
+      return mine.sort(byNew).concat(rest.sort(byNew));                 // HIS LISTINGS FIRST
     };
-    const fresh = order(live.filter(r => !led[r.id]));
-    const rest = order(live.filter(r => !!led[r.id]));
+    const byRecent = live.slice().sort((a, b) => listedOn(b).localeCompare(listedOn(a)));
+    let freshSet = byRecent.filter(r => listedOn(r) >= cutoff);
+    // if nothing listed inside the window, still lead with the newest so the block is never empty
+    if (!freshSet.length) freshSet = byRecent.slice(0, Math.min(NEW_MIN, byRecent.length));
+    const freshIds = new Set(freshSet.map(r => r.id));
+    const fresh = order(freshSet);
+    const rest = order(live.filter(r => !freshIds.has(r.id)));
     return {
       newThisWeek: fresh, ours: rest, liveCount: live.length,
       mineCount: live.filter(isMine).length,
+      newestListedAt: byRecent.length ? listedOn(byRecent[0]) : null,
+      insideWindow: byRecent.filter(r => listedOn(r) >= cutoff).length,
       headings: {
-        fresh: 'NEW TO THE MARKET THIS WEEK IN ' + String(sub).toUpperCase(),
+        fresh: 'NEW TO THE MARKET IN ' + String(sub).toUpperCase(),
         rest: 'OUR LISTINGS IN ' + String(sub).toUpperCase()
       }
     };
