@@ -63,9 +63,11 @@
       return mine.sort(byNew).concat(rest.sort(byNew));                 // HIS LISTINGS FIRST
     };
     const byRecent = live.slice().sort((a, b) => listedOn(b).localeCompare(listedOn(a)));
-    let freshSet = byRecent.filter(r => listedOn(r) >= cutoff);
-    // if nothing listed inside the window, still lead with the newest so the block is never empty
-    if (!freshSet.length) freshSet = byRecent.slice(0, Math.min(NEW_MIN, byRecent.length));
+    // ONLY genuinely recent stock may sit under "NEW TO THE MARKET". There is NO fallback:
+    // with nothing inside the window the block is omitted entirely and everything presents
+    // under "OUR LISTINGS". Padding it with the newest-of-the-old labelled Belmont's
+    // FEBRUARY 2025 listing as "new to the market" (caught in the 18 Sep dry run).
+    const freshSet = byRecent.filter(r => listedOn(r) >= cutoff);
     const freshIds = new Set(freshSet.map(r => r.id));
     const fresh = order(freshSet);
     const rest = order(live.filter(r => !freshIds.has(r.id)));
