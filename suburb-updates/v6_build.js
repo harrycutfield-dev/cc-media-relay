@@ -592,9 +592,14 @@
     A.push(blk(''), blk('THE 30 SECOND VERSION', { h: true, bold: true }));
     thirtyLines(sub, bd).forEach(t => A.push(blk(t)));
     auctionLines.forEach(l => A.push(blk(l)));
-    A.push(blk(''), blk('WHAT SOLD IN ' + sub.toUpperCase(), { h: true, bold: true }));
-    bd.lines.forEach(l => A.push(blk(l)));
-    if (cnt > 1) A.push(blk(''), blk('Same suburb, same window, very different results. Presentation, pricing and campaign choice are what separate them.'));
+    // TWO SOLD BLOCKS (Harrison, 14 Sep 2026). bd.sold = {thisWeek, twoMonths} from v7_reinz,
+    // already ledger-filtered and deduped. Each line carries its unconditional sale date.
+    const SB = soldBlocks(sub, bd.sold || { thisWeek: [], twoMonths: [] }, (window.__VARY || {}).cap || 8);
+    A.push(blk(''), blk(SB.weekHeading, { h: true, bold: true }));
+    SB.weekLines.forEach(l => A.push(blk(l)));
+    A.push(blk(''), blk(SB.recentHeading, { h: true, bold: true }));
+    SB.recentLines.forEach(l => A.push(blk(l)));
+    if (SB.weekCount + SB.recentCount > 1) A.push(blk(''), blk('Same suburb, same window, very different results. Presentation, pricing and campaign choice are what separate them.'));
     const writtenA = clone(M.written);
     writtenA.contents = { textOne: { blocks: A, entityMap: { '0': { type: 'PLACEHOLDER', mutability: 'IMMUTABLE', data: { placeholder: 'contact.firstname' } } } } };
     const mk = arr => { const p = clone(M.textPanel); p.contents = { textOne: { blocks: arr, entityMap: {} } }; return p; };
