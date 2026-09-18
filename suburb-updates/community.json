@@ -1,0 +1,150 @@
+{
+ "_meta": {
+  "compiled": "2026-09-18",
+  "rule": "items with `on` are EVENTS (future only, soonest first). Items without `on` are NEWS. verified_on drives the 42 day expiry.",
+  "sources": "Eventfinda /next-week (occurrence dates only), Auckland Council local boards, Channel Magazine 178, HPRS, KCFT, Birkdale Beach Haven Community Project, Torbay Business Association, Upper Harbour board"
+ },
+ "_nearby_sources": "Albany and Birkenhead are not emailed suburbs; they exist here so NEARBY_OF lookups resolve.",
+
+ "Albany": [
+  {"t":"Digital Seniors Hub at Albany Village Library","b":"Free one to one help with phones, tablets and laptops.","on":"2026-09-23","verified_on":"2026-09-18"},
+  {"t":"Quiz Nights at Something & Social Albany","b":"Weekly quiz from 7pm.","on":"2026-09-23","verified_on":"2026-09-18"}
+ ],
+ "Birkenhead": [
+  {"t":"Digital Seniors Hub at Birkenhead Library","b":"Free tech help, midday.","on":"2026-09-24","verified_on":"2026-09-18"},
+  {"t":"Open Mic at The Good Home","b":"Local musicians from 7.30pm.","on":"2026-09-24","verified_on":"2026-09-18"}
+ ],
+
+ "Takapuna": [
+  {"t":"Roger Hall's Glide Time at The PumpHouse Theatre","b":"Fifty years since it first played, with a cast of Shore locals.","on":"2026-09-23","verified_on":"2026-09-18"},
+  {"t":"St George's Preschool Playgroup at St George's Church","b":"Weekly playgroup from 9.30am.","on":"2026-09-22","verified_on":"2026-09-18"},
+  {"t":"The council funding review reports back this month","b":"A proposed change to how local boards are funded could cut $1.5 million from the Devonport-Takapuna budget from 2028. The decision is due 29 September.","verified_on":"2026-09-18"}
+ ],
+ "Milford": [
+  {"t":"Candle Making Workshop at Milford Shopping Centre","b":"Family friendly session from 1pm.","on":"2026-09-26","verified_on":"2026-09-18"},
+  {"t":"The council funding review reports back this month","b":"A proposed funding change could cut $1.5 million from the Devonport-Takapuna budget from 2028, with a decision due 29 September.","verified_on":"2026-09-18"}
+ ],
+ "Devonport": [
+  {"t":"Quiz Night at The Kestrel","b":"From 7pm.","on":"2026-09-23","verified_on":"2026-09-18"},
+  {"t":"Marrow, a new butchery, has opened in Devonport","b":"Founder Nick Thomson is championing whole animal butchery on Victoria Road.","verified_on":"2026-09-18"},
+  {"t":"The council funding review reports back this month","b":"The Depot arts hub and Devonport Community House are named among those affected. Decision due 29 September.","verified_on":"2026-09-18"}
+ ],
+ "Belmont": [
+  {"t":"The Rose Centre is named in the council funding review","b":"A proposed change to local board funding could cut $1.5 million from the Devonport-Takapuna budget from 2028, with the Rose Centre among the facilities affected. The decision is due 29 September.","verified_on":"2026-09-18"}
+ ],
+ "Bayswater": [
+  {"t":"The council funding review reports back this month","b":"A proposed funding change could cut $1.5 million from the Devonport-Takapuna budget from 2028. The decision is due 29 September.","verified_on":"2026-09-18"}
+ ],
+ "Castor Bay": [
+  {"t":"The council funding review reports back this month","b":"A proposed funding change could cut $1.5 million from the Devonport-Takapuna budget from 2028. The decision is due 29 September.","verified_on":"2026-09-18"}
+ ],
+ "Hauraki": [
+  {"t":"The council funding review reports back this month","b":"A proposed funding change could cut $1.5 million from the Devonport-Takapuna budget from 2028. The decision is due 29 September.","verified_on":"2026-09-18"}
+ ],
+ "Forrest Hill": [
+  {"t":"The council funding review reports back this month","b":"A proposed funding change could cut $1.5 million from the Devonport-Takapuna budget from 2028. The decision is due 29 September.","verified_on":"2026-09-18"}
+ ],
+ "Sunnynook": [
+  {"t":"The council funding review reports back this month","b":"A proposed funding change could cut $1.5 million from the Devonport-Takapuna budget from 2028. The decision is due 29 September.","verified_on":"2026-09-18"}
+ ],
+
+ "Browns Bay": [
+  {"t":"Magic Loft Indoor Playground weekly special","b":"Indoor playground and cafe on Clyde Road.","on":"2026-09-21","verified_on":"2026-09-18"},
+  {"t":"Huge Vinyl Record Sale at St Anne's Hall","b":"From 10am, thousands of records.","on":"2026-09-26","verified_on":"2026-09-18"},
+  {"t":"The Hibiscus and Bays draft Local Board Plan is open for feedback","b":"Drop in sessions are running at East Coast Bays Library, with the final plan adopted in October.","verified_on":"2026-09-18"}
+ ],
+ "Mairangi Bay": [
+  {"t":"The Hibiscus and Bays draft Local Board Plan is open for feedback","b":"Drop in sessions are running at East Coast Bays Library, with the final plan adopted in October.","verified_on":"2026-09-18"}
+ ],
+ "Windsor Park": [
+  {"t":"Have Yourself a Merry Little Christmas at Windsor Park Baptist Church","b":"A morning concert from 11am.","on":"2026-11-18","verified_on":"2026-09-18"},
+  {"t":"The Hibiscus and Bays draft Local Board Plan is open for feedback","b":"The final plan is adopted in October.","verified_on":"2026-09-18"}
+ ],
+ "Torbay": [
+  {"t":"Torbay Community Champion Awards at The Imperial","b":"An evening celebrating the people who hold the area together, with dinner and entertainment.","on":"2026-11-21","verified_on":"2026-09-18"},
+  {"t":"Torbay Magazine reaches 7,200 homes across the area","b":"Published monthly by the Torbay Business Association for Waiake, Torbay, Long Bay and Okura.","verified_on":"2026-09-18"}
+ ],
+ "Waiake": [
+  {"t":"Torbay Community Champion Awards at The Imperial","b":"An evening celebrating local people, covering Waiake, Torbay, Long Bay and Okura.","on":"2026-11-21","verified_on":"2026-09-18"},
+  {"t":"Torbay Magazine reaches 7,200 homes across the area","b":"Published monthly by the Torbay Business Association, covering Waiake.","verified_on":"2026-09-18"}
+ ],
+ "Long Bay": [
+  {"t":"Torbay Community Champion Awards at The Imperial","b":"An evening celebrating local people, covering Long Bay.","on":"2026-11-21","verified_on":"2026-09-18"},
+  {"t":"Torbay Magazine reaches 7,200 homes across the area","b":"Published monthly by the Torbay Business Association, covering Long Bay.","verified_on":"2026-09-18"}
+ ],
+ "Campbells Bay": [
+  {"t":"Campbells Bay School's latest newsletter is out","b":"The 21 September issue covers term events and the year ahead.","verified_on":"2026-09-18"},
+  {"t":"The Hibiscus and Bays draft Local Board Plan is open for feedback","b":"The final plan is adopted in October.","verified_on":"2026-09-18"}
+ ],
+ "Murrays Bay": [
+  {"t":"The Hibiscus and Bays draft Local Board Plan is open for feedback","b":"Drop in sessions are running at East Coast Bays Library, with the final plan adopted in October.","verified_on":"2026-09-18"}
+ ],
+ "Rothesay Bay": [
+  {"t":"The Hibiscus and Bays draft Local Board Plan is open for feedback","b":"Drop in sessions are running at East Coast Bays Library, with the final plan adopted in October.","verified_on":"2026-09-18"}
+ ],
+ "Northcross": [
+  {"t":"The Hibiscus and Bays draft Local Board Plan is open for feedback","b":"Drop in sessions are running at East Coast Bays Library, with the final plan adopted in October.","verified_on":"2026-09-18"}
+ ],
+
+ "Glenfield": [
+  {"t":"Teachings on Buddhist Practice at Trashi Ganden Choepel Ling","b":"Sunday morning session from 10am.","on":"2026-09-27","verified_on":"2026-09-18"},
+  {"t":"The Kaipātiki Winter Fun programme is running now","b":"Free and low cost activities for families across the area, run by the Kaipātiki Community Facilities Trust.","verified_on":"2026-09-18"}
+ ],
+ "Northcote": [
+  {"t":"Karaoke Thursdays at Pats Garage","b":"From 8pm.","on":"2026-09-24","verified_on":"2026-09-18"},
+  {"t":"The Kaipātiki Community Response Plan has been released","b":"A plan of action for the area when disaster strikes, developed by the Kaipātiki Community Response Group.","verified_on":"2026-09-18"}
+ ],
+ "Beach Haven": [
+  {"t":"Beach Haven Community House runs weekly programmes","b":"At 130 Beach Haven Road, with classes and groups through the week.","verified_on":"2026-09-18"},
+  {"t":"The Kaipātiki Winter Fun programme is running now","b":"Free and low cost activities for families, run by the Kaipātiki Community Facilities Trust.","verified_on":"2026-09-18"}
+ ],
+ "Birkdale": [
+  {"t":"Birkdale Community House runs weekly programmes","b":"At 134 Birkdale Road, with classes and groups through the week.","verified_on":"2026-09-18"},
+  {"t":"The Kaipātiki Winter Fun programme is running now","b":"Free and low cost activities for families, run by the Kaipātiki Community Facilities Trust.","verified_on":"2026-09-18"}
+ ],
+ "Bayview": [
+  {"t":"The Kaipātiki Winter Fun programme is running now","b":"Free and low cost activities for families across the area.","verified_on":"2026-09-18"},
+  {"t":"The Kaipātiki Community Response Plan has been released","b":"A plan of action for the area when disaster strikes.","verified_on":"2026-09-18"}
+ ],
+ "Chatswood": [
+  {"t":"The Kaipātiki Winter Fun programme is running now","b":"Free and low cost activities for families across the area.","verified_on":"2026-09-18"},
+  {"t":"The Kaipātiki Community Response Plan has been released","b":"A plan of action for the area when disaster strikes.","verified_on":"2026-09-18"}
+ ],
+ "Hillcrest": [
+  {"t":"The Kaipātiki Winter Fun programme is running now","b":"Free and low cost activities for families across the area.","verified_on":"2026-09-18"},
+  {"t":"The Kaipātiki Community Response Plan has been released","b":"A plan of action for the area when disaster strikes.","verified_on":"2026-09-18"}
+ ],
+ "Tōtara Vale": [
+  {"t":"The Kaipātiki Winter Fun programme is running now","b":"Free and low cost activities for families across the area.","verified_on":"2026-09-18"},
+  {"t":"The Kaipātiki Community Response Plan has been released","b":"A plan of action for the area when disaster strikes.","verified_on":"2026-09-18"}
+ ],
+
+ "Greenhithe": [
+  {"t":"A new multi purpose basketball and netball court is planned for Greenhithe","b":"Part of the Upper Harbour recreation programme funded this year.","verified_on":"2026-09-18"},
+  {"t":"Upper Harbour is investing $32.7 million across the area this year","b":"$23.6 million for local services and programmes, plus $9.1 million for parks, sports fields and pathways.","verified_on":"2026-09-18"}
+ ],
+ "Hobsonville": [
+  {"t":"Auckland Transport is consulting on a protected cycleway along Hobsonville Road","b":"Feedback is open now through Auckland Transport.","verified_on":"2026-09-18"},
+  {"t":"A temporary road closure affects part of Bomb Point Drive","b":"In place over the coming weeks.","verified_on":"2026-09-18"}
+ ],
+ "Albany Heights": [
+  {"t":"A bigger library for Albany is moving closer","b":"The board is progressing planning and funding options this year.","verified_on":"2026-09-18"},
+  {"t":"Upper Harbour is investing $32.7 million across the area this year","b":"$23.6 million for local services and programmes, plus $9.1 million for parks, sports fields and pathways.","verified_on":"2026-09-18"}
+ ],
+ "Oteha": [
+  {"t":"A bigger library for Albany is moving closer","b":"The board is progressing planning and funding options this year.","verified_on":"2026-09-18"},
+  {"t":"Upper Harbour is investing $32.7 million across the area this year","b":"$23.6 million for local services and programmes, plus $9.1 million for parks, sports fields and pathways.","verified_on":"2026-09-18"}
+ ],
+ "Rosedale": [
+  {"t":"Upper Harbour is investing $32.7 million across the area this year","b":"$23.6 million for local services and programmes, plus $9.1 million for parks, sports fields and pathways.","verified_on":"2026-09-18"},
+  {"t":"A bigger library for Albany is moving closer","b":"The board is progressing planning and funding options this year.","verified_on":"2026-09-18"}
+ ],
+ "Pāremoremo": [
+  {"t":"Upper Harbour is investing $32.7 million across the area this year","b":"$23.6 million for local services and programmes, plus $9.1 million for parks, sports fields and pathways.","verified_on":"2026-09-18"},
+  {"t":"A bigger library for Albany is moving closer","b":"The board is progressing planning and funding options this year.","verified_on":"2026-09-18"}
+ ],
+ "Dairy Flat": [
+  {"t":"Upper Harbour is investing $32.7 million across the area this year","b":"$23.6 million for local services and programmes, plus $9.1 million for parks, sports fields and pathways.","verified_on":"2026-09-18"},
+  {"t":"A bigger library for Albany is moving closer","b":"The board is progressing planning and funding options this year.","verified_on":"2026-09-18"}
+ ]
+}
