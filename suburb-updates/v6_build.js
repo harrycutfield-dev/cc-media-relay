@@ -436,6 +436,26 @@
   //   <SUBURB> NEWS         - the latest news. If nothing has changed since last week, SAY SO
   //                           and still show the older news. THIS SECTION ALWAYS HAS SOMETHING.
   // An item is an EVENT if it carries `on` (event date); otherwise it is NEWS.
+  // NEARBY EVENTS (Harrison, 18 Sep 2026). When a suburb has no event of its own we do NOT print
+  // an empty "no events" line - a dead negative line earns nothing. Instead:
+  //   1. show a genuine event from an ADJACENT suburb under "NEARBY IN <THAT SUBURB>", honestly
+  //      labelled - true, and still useful to a reader five minutes away;
+  //   2. if there is no nearby event either, OMIT the events block entirely and let NEWS carry
+  //      the section with TWO items instead of one.
+  // Never fill the gap with a generic local anchor (the reserve, the school, the walkway) -
+  // that is what made 21 of 34 emails interchangeable on 13 Sep.
+  const NEARBY_OF = {
+    'Castor Bay': ['Milford', 'Takapuna'], 'Forrest Hill': ['Takapuna', 'Milford'],
+    'Sunnynook': ['Takapuna'], 'Hauraki': ['Takapuna'], 'Bayswater': ['Devonport', 'Belmont'],
+    'Murrays Bay': ['Mairangi Bay'], 'Campbells Bay': ['Mairangi Bay'],
+    'Rothesay Bay': ['Browns Bay'], 'Northcross': ['Browns Bay'], 'Windsor Park': ['Mairangi Bay'],
+    'Waiake': ['Torbay'], 'Long Bay': ['Torbay'],
+    'Bayview': ['Glenfield'], 'Beach Haven': ['Birkenhead', 'Glenfield'],
+    'Birkdale': ['Birkenhead', 'Glenfield'], 'Hillcrest': ['Glenfield'],
+    'Tōtara Vale': ['Glenfield'], 'Chatswood': ['Birkenhead'],
+    'Greenhithe': ['Albany'], 'Rosedale': ['Albany'], 'Pāremoremo': ['Albany'],
+    'Dairy Flat': ['Albany'], 'Albany Heights': ['Albany'], 'Oteha': ['Albany'] };
+
   const EVENT_MAX = 3;            // how many upcoming events to show; no DATE horizon
   function communityFor(sub) {
     const V = window.__VARY || {};
@@ -453,14 +473,31 @@
       .slice(0, EVENT_MAX);
     // NEWS: undated items (or dated beyond the horizon are simply not events this week)
     const news = all.filter(it => !it.on && fresh(it));
+    // No event of its own? Look to an adjacent suburb before giving up.
+    let nearbyFrom = null, nearby = [];
+    if (!events.length) {
+      for (const src of (NEARBY_OF[sub] || [])) {
+        const hits = (LOCAL[src] || [])
+          .filter(it => it.on && it.on >= today && fresh(it))
+          .sort((a, b) => String(a.on).localeCompare(String(b.on)));
+        if (hits.length) { nearbyFrom = src; nearby = hits.slice(0, EVENT_MAX); break; }
+      }
+    }
     const newsUnsent = news.filter(it => !led[String(it.t).toLowerCase().trim()]);
-    // the news block is NEVER empty: new news, else older news with an honest label
-    const newsItems = newsUnsent.length ? newsUnsent : news.slice(0, 2);
+    // The news block is NEVER empty. With no events at all it carries the section, so it shows
+    // TWO items instead of one.
+    const noEventsAtAll = !events.length && !nearby.length;
+    const pool = newsUnsent.length ? newsUnsent : news;
+    const newsItems = pool.slice(0, noEventsAtAll ? 2 : 1);
     return {
-      events, eventsEmpty: !events.length,
+      events, nearby, nearbyFrom,
+      showEvents: !!(events.length || nearby.length),
       news: newsItems, newsIsNew: newsUnsent.length > 0,
-      newsEmpty: !newsItems.length,
-      headings: { events: 'UPCOMING IN ' + sub.toUpperCase(), news: sub.toUpperCase() + ' NEWS' }
+      headings: {
+        events: events.length ? 'UPCOMING IN ' + sub.toUpperCase()
+          : (nearbyFrom ? 'NEARBY IN ' + nearbyFrom.toUpperCase() : null),
+        news: sub.toUpperCase() + ' NEWS'
+      }
     };
   }
 
@@ -574,15 +611,14 @@
     // planting days are the worked example: real in July, finished by September.
     // When nothing survives, SAY SO, then show the most recent, split into two.
     const comm = communityFor(sub);
-    // UPCOMING - events in the next two weeks, each with its date. Never a past event.
-    C.push(blk(comm.headings.events, { h: true, bold: true }));
-    if (comm.events.length) {
-      comm.events.forEach(it => {
+    // EVENTS - own first, else a genuine nearby one, else the block is omitted entirely.
+    // There is deliberately NO "no events listed" line: a dead negative earns nothing.
+    if (comm.showEvents) {
+      C.push(blk(comm.headings.events, { h: true, bold: true }));
+      (comm.events.length ? comm.events : comm.nearby).forEach(it => {
         C.push(blk(it.t + ' (' + fmtDate(it.on) + ').', { italic: true }));
         C.push(blk(it.b)); C.push(blk(''));
       });
-    } else {
-      C.push(blk('No events currently listed in ' + sub + '.')); C.push(blk(''));
     }
     // NEWS - always has something. Says so plainly when nothing has changed.
     C.push(blk(comm.headings.news, { h: true, bold: true }));
@@ -665,7 +701,8 @@
   }
 
   window.V6 = { API, AGID, APPRAISAL, SENTINEL, PREFS, MASTER, fold, J, normImgs, clone, blk,
-    winPhrase, introFor, LOCAL, SUB, DATED, communityHeading, communityFor, econLines,
+    winPhrase, introFor, LOCAL, SUB, DATED, communityHeading, communityFor, soldBlocks,
+    soldLine, fmtDate, NEARBY_OF, econLines,
     econFactsOk, ECON_BANK, subjectFor, preheaderFor, thirtyLines, pick, pickReinzLocation,
     parts, assemble, COST, TARGET, estimate, REPLY_BLOCKS, PREFS_BLOCKS };
 })();
