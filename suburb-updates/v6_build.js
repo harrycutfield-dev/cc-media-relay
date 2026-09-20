@@ -268,8 +268,9 @@
     // leaked after the stat card and the subject — "selling in a median of null days". When
     // there is no median, the pace sentence is simply omitted. (20 Sep 2026)
     const md = bd.days;
-    if (md == null) return '';
+    // No median (sample below the floor) => no pace sentence at all. (20 Sep 2026)
     const pace = !cnt0 ? ''
+      : md == null ? ''
       : md <= 35 ? ' Homes here are selling in a median of ' + md + ' days, which is quick by any measure.'
       : md <= 60 ? ' The median time to sell in ' + sub + ' is ' + md + ' days, so well presented homes are moving at a healthy pace.'
       : ' The median here sits at ' + md + ' days, which rewards the sellers who come to market properly presented and priced.';
