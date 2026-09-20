@@ -438,7 +438,7 @@
     const all = (sold.twoMonths || []).slice(0, cap);
     return {
       weekHeading: null, weekLines: [], weekCount: 0,
-      recentHeading: 'RECENTLY SETTLED IN ' + sub.toUpperCase(),
+      recentHeading: 'RECENTLY SOLD AND SETTLED IN ' + sub.toUpperCase(),
       recentLines: all.length ? all.map(s => soldLine(s, true))
         : ['No settled sales recorded in ' + sub + ' over the past three months.'],
       recentCount: all.length };
