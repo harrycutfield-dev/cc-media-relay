@@ -205,7 +205,7 @@
           return h.length >= 3 && h[h.length - 1].price >= h[0].price * 0.4; },
         s: () => { const h = rows.filter(r => r.beds >= 2 && r.price > 0).sort((a, b) => b.price - a.price);
           return 'sales ran from ' + fmt(h[h.length - 1].price) + ' to ' + fmt(h[0].price) + ', so there is genuine buyer depth across price points in ' + sub; } },
-      { k: 'vsmedian', ok: () => byDays.length >= 2 && byDays.filter(r => r.days < bd.days).length >= 1,
+      { k: 'vsmedian', ok: () => bd.days != null && byDays.length >= 2 && byDays.filter(r => r.days < bd.days).length >= 1,
         s: () => byDays.filter(r => r.days < bd.days).length + ' of the ' + rows.length + ' sales beat the ' + sub + ' median of ' + bd.days + ' days, which rewards getting the presentation right' },
       { k: 'beds', ok: () => bedTop && bedTop[1] >= 2,
         s: () => bedTop[1] + ' of the ' + rows.length + ' sales were ' + bedTop[0] + ' bedroom homes, so that is where the competition sits in ' + sub + ' at the moment' },
@@ -264,7 +264,11 @@
     }
     introFor.lastLens = lensKey;
     // The pace sentence must AGREE with the median, never contradict it.
+    // A suppressed median must not reach the INTRO either. This was the THIRD place the median
+    // leaked after the stat card and the subject — "selling in a median of null days". When
+    // there is no median, the pace sentence is simply omitted. (20 Sep 2026)
     const md = bd.days;
+    if (md == null) return '';
     const pace = !cnt0 ? ''
       : md <= 35 ? ' Homes here are selling in a median of ' + md + ' days, which is quick by any measure.'
       : md <= 60 ? ' The median time to sell in ' + sub + ' is ' + md + ' days, so well presented homes are moving at a healthy pace.'
