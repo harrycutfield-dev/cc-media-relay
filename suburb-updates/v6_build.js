@@ -700,10 +700,26 @@
     // agent's. AGID was defined at the top of this file and never used anywhere.
     // A property counts as Harrison's if he appears in extendeddata.agents[] (any position,
     // he is often position 2 on a co-listing) or is the listingagent by email.
-    const mineSold = (ctx.sold || []).filter(r => {
+    const mineSoldRaw = (ctx.sold || []).filter(r => {
       const ags = ((r.extendeddata || {}).agents) || [];
       return ags.some(a => a && (a.id === AGID || /harrison|cutfield/i.test(a.name || '' ) || /harrison/i.test(a.email || '')))
         || /harrison/i.test(r.listingagent || '');
+    });
+    // DEDUPE (Harrison, 21 Sep 2026: "remove the duplicate Ringa Matau listing").
+    // 12 Ringa Matau Road Hobsonville shipped TWICE - property ids 553125012 and 553148076,
+    // identical $698,000 / 2 bed / same listing, two rows in the ActivePipe sold feed.
+    // Key on the LISTING URL: it is the only field that is both present on every record and
+    // genuinely shared by the duplicate pair (both .../MRG33295). `sourceid` and `alternate_id`
+    // are DIFFERENT on the two rows, so keying on either lets the duplicate straight through.
+    // Address is a weaker key - unit-less street addresses repeat across suburbs. Falls back
+    // url -> sourceid -> address so a record missing a url is still deduped, never dropped.
+    // Keeps the FIRST occurrence, preserving feed order.
+    const seenSold = new Set();
+    const mineSold = mineSoldRaw.filter(r => {
+      const k = (r.url || r.externallink || r.sourceid ||
+        [r.streetnumber, r.streetname, r.city].filter(Boolean).join(' ').toLowerCase());
+      if (seenSold.has(k)) return false;
+      seenSold.add(k); return true;
     });
     const gridSold = clone(M.gridSold); gridSold.contents = { propertyListings: mineSold.map(r => normImgs(J(r))) };
     const closing = clone(M.closing);
