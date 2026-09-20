@@ -694,7 +694,18 @@
     const hb = headSub.contents.textOne.blocks[0];
     hb.text = 'LATEST ' + sub.toUpperCase() + ' PROPERTIES FOR SALE';
     hb.inlineStyleRanges = hb.inlineStyleRanges.map(r => ({ ...r, offset: 0, length: hb.text.length }));
-    const gridSold = clone(M.gridSold); gridSold.contents = { propertyListings: ctx.sold.map(r => normImgs(J(r))) };
+    // HARRISON'S OWN SOLD LISTINGS ONLY (Harrison, 21 Sep 2026: "these arent my listings").
+    // This used ctx.sold UNFILTERED — the whole office sold feed, 460 properties — under a
+    // heading that says "properties I have sold". The first record in that feed is another
+    // agent's. AGID was defined at the top of this file and never used anywhere.
+    // A property counts as Harrison's if he appears in extendeddata.agents[] (any position,
+    // he is often position 2 on a co-listing) or is the listingagent by email.
+    const mineSold = (ctx.sold || []).filter(r => {
+      const ags = ((r.extendeddata || {}).agents) || [];
+      return ags.some(a => a && (a.id === AGID || /harrison|cutfield/i.test(a.name || '' ) || /harrison/i.test(a.email || '')))
+        || /harrison/i.test(r.listingagent || '');
+    });
+    const gridSold = clone(M.gridSold); gridSold.contents = { propertyListings: mineSold.map(r => normImgs(J(r))) };
     const closing = clone(M.closing);
     const jb = closing.contents.textOne.blocks.find(b => b.inlineStyleRanges.some(r => r.style === 'BOLD') && b.inlineStyleRanges.some(r => r.style === 'ITALIC'));
     jb.text = joke; jb.inlineStyleRanges = jb.inlineStyleRanges.map(r => ({ ...r, offset: 0, length: joke.length }));
