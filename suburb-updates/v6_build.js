@@ -333,6 +333,14 @@
       'What ' + word.toLowerCase() + ' ' + sub + ' sales say about your street',
       'The ' + sub + ' numbers ' + wp,
       word + ' ' + sub + ' sales, and a median of ' + days + ' days'];
+
+    // A suppressed median (n below the floor) must never reach the SUBJECT. The banks above
+    // offer "and a median of <days> days" variants chosen on sale COUNT, not on whether a
+    // median exists — with days == null they rendered "a median of null days". (20 Sep 2026)
+    if (days == null) {
+      const safe = bank.filter(b => !/median of/i.test(b));
+      bank = safe.length ? safe : ['Your ' + sub + ' market update'];
+    }
     const start = ((opts.week || 0) + sub.length) % bank.length;
     for (let k = 0; k < bank.length; k++) {
       const c = bank[(start + k) % bank.length];
