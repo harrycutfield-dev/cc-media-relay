@@ -257,10 +257,10 @@
       const iL = (((window.__VARY || {}).week || 0) + sub.length) % poolL.length;
       const L = poolL[iL]; lensKey = L.k; lead = L.s();
     } else {
-      // "unconditional", NEVER "settled" (Harrison, 20 Sep 2026). These feeds are filtered to
-      // is_settled === false, so calling them settled is a false statement about legal status,
-      // not just loose wording. Shipped live in Belmont before it was caught.
-      lead = sub + ' was quiet on unconditional sales ' + wpL + ', and the homes on the market here are getting steady buyer attention';
+      // "settled", NEVER "unconditional" (Harrison, 20 Sep 2026 — RULE REVERSED same day).
+      // The feed is now filtered to is_settled === true because only SETTLED sales are public.
+      // Calling a settled sale "unconditional" is now the false statement.
+      lead = sub + ' was quiet on settled sales ' + wpL + ', and the homes on the market here are getting steady buyer attention';
     }
     introFor.lastLens = lensKey;
     // The pace sentence must AGREE with the median, never contradict it.
