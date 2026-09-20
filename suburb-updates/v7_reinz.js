@@ -94,9 +94,19 @@
     // REINZ returns both. For Mairangi Bay over Jul-Sep it was 32 sales: 14 already SETTLED and
     // 18 unconditional. `sale_date` is the unconditional date for BOTH, so a date filter alone
     // cannot separate them - only `is_settled` can. Everything settled is dropped here.
-    const unconditional = out.filter(s => s.is_settled === false);
+  // *** SETTLED SALES ONLY — Harrison, 20 Sep 2026. THIS REPLACES THE UNCONDITIONAL RULE. ***
+  // WHY THE RULE CHANGED: unconditional is the OPPOSITE of public. Settled sales reach LINZ,
+  // council records and the public portals; unconditional sales are pre-settlement and visible
+  // only to REINZ subscribers. On 20 Sep the run was about to email "194 Beach Road, Campbells
+  // Bay, $2,580,000, sold 18 Sep" while that property was STILL PUBLICLY LISTED, by negotiation,
+  // with a set date of sale of 22 September. Publishing it would have disclosed a price that was
+  // not public, before the deadline had even passed, against a live listing.
+  // Two exposures sat on top of each other: REINZ redistribution limits, and a vendor whose
+  // price appears before settlement. Both land on Harrison's licence.
+  // `is_settled === true` is now the gate. Never loosen it for fresher numbers.
+    const shippable = out.filter(s => s.is_settled === true);
     const byKey = new Map();
-    unconditional.forEach(s => {
+    shippable.forEach(s => {
       const prev = byKey.get(s.key);
       if (!prev || (s.sale_date && prev.sale_date && s.sale_date < prev.sale_date)) byKey.set(s.key, s);
     });
