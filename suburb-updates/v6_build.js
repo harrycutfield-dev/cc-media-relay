@@ -427,20 +427,21 @@
     return s.a + '  ' + money(s.p) + tail + (withDate && s.dt ? '  sold ' + fmtDate(s.dt) : '');
   }
   // sold = {thisWeek:[], twoMonths:[]} straight from v7_reinz
+  // ONE BLOCK, NOT TWO — Harrison, 20 Sep 2026 ("retire the weekly block").
+  // With SETTLED-only sales the weekly block was structurally empty: settlement lands four to
+  // eight weeks after a sale goes unconditional, so almost nothing settles within a week of
+  // selling. A "SOLD THIS WEEK" heading delivering nothing in 30 of 34 emails is the same
+  // defect as the "PAST TWO MONTHS" heading over a 35 day window (18 Sep). Change the promise,
+  // not the content. `sold.twoMonths` carries the full settled list; `thisWeek` is ignored.
   function soldBlocks(sub, sold, cap) {
     cap = cap || 8;
-    const wk = (sold.thisWeek || []).slice(0, cap);
-    const seen = new Set(wk.map(s => s.a));
-    const two = (sold.twoMonths || []).filter(s => !seen.has(s.a)).slice(0, cap);
+    const all = (sold.twoMonths || []).slice(0, cap);
     return {
-      weekHeading: 'SOLD THIS WEEK IN ' + sub.toUpperCase(),
-      weekLines: wk.length ? wk.map(s => soldLine(s, true))
-        : ['No new unconditional sales in ' + sub + ' this week.'],
-      recentHeading: 'RECENTLY SOLD IN ' + sub.toUpperCase() + ' (PAST TWO MONTHS)',
-      recentLines: two.length ? two.map(s => soldLine(s, true))
-        : ['No sales recorded in ' + sub + ' over the past two months.'],
-      weekCount: wk.length, recentCount: two.length
-    };
+      weekHeading: null, weekLines: [], weekCount: 0,
+      recentHeading: 'RECENTLY SETTLED IN ' + sub.toUpperCase(),
+      recentLines: all.length ? all.map(s => soldLine(s, true))
+        : ['No settled sales recorded in ' + sub + ' over the past three months.'],
+      recentCount: all.length };
   }
 
   const VERIFY_DAYS = 42;
@@ -624,8 +625,10 @@
     // TWO SOLD BLOCKS (Harrison, 14 Sep 2026). bd.sold = {thisWeek, twoMonths} from v7_reinz,
     // already ledger-filtered and deduped. Each line carries its unconditional sale date.
     const SB = soldBlocks(sub, bd.sold || { thisWeek: [], twoMonths: [] }, (window.__VARY || {}).cap || 8);
-    A.push(blk(''), blk(SB.weekHeading, { h: true, bold: true }));
-    SB.weekLines.forEach(l => A.push(blk(l)));
+    if (SB.weekHeading) {
+      A.push(blk(''), blk(SB.weekHeading, { h: true, bold: true }));
+      SB.weekLines.forEach(l => A.push(blk(l)));
+    }
     A.push(blk(''), blk(SB.recentHeading, { h: true, bold: true }));
     SB.recentLines.forEach(l => A.push(blk(l)));
     if (SB.weekCount + SB.recentCount > 1) A.push(blk(''), blk('Same suburb, same window, very different results. Presentation, pricing and campaign choice are what separate them.'));
