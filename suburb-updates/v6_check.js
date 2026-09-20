@@ -14,6 +14,17 @@
 
   // ctx: {current, sold} freshly pulled. maps: {MAP, CAMP, AUD, BD}. opts: {sendISO, namePrefix, joke}
   window.v6Check = async function (tag, ctx, maps, opts) {
+  // DASH GATE (M14, 20 Sep 2026). The old test was /[\u2013\u2014]/ — en and em dash ONLY, so it
+  // could not catch the very defect it existed for: "Devonport-Takapuna", a plain ASCII hyphen,
+  // shipped in 8 emails. Widening it naively false-fails real data, because legitimate addresses
+  // carry hyphens ("929-933 East Coast Road") and so do URLs. So: strip URLs, allow a hyphen
+  // that sits between digits (street ranges), and flag every other hyphen, en dash or em dash.
+  const badDash = t => {
+    const stripped = String(t || '')
+      .replace(/https?:\/\/\S+/g, ' ')        // URLs legitimately contain hyphens
+      .replace(/(?<=\d)-(?=\d)/g, ' ');       // 929-933 East Coast Road
+    return /[-\u2013\u2014]/.test(stripped);
+  };
     const store = {}; window['__' + tag] = store; window['__' + tag + 'DONE'] = false; window['__' + tag + 'ERR'] = null;
     try {
       for (const [sub, id] of Object.entries(maps.MAP)) {
@@ -48,7 +59,7 @@
         store.__blocks = store.__blocks || {}; store.__blocks[sub] = nowBlocks;
         if ((c.email.subject || '').indexOf(sub) < 0) E.push('subject does not name the suburb');
         if ((c.email.subject || '').length > 78) E.push('subject too long: ' + c.email.subject.length);
-        if (/[–—]/.test(c.email.subject || '')) E.push('dash in subject');
+        if (badDash(c.email.subject || '')) E.push('dash in subject');
         store.__subjects = store.__subjects || {};
         if (store.__subjects[c.email.subject]) E.push('DUPLICATE subject shared with ' + store.__subjects[c.email.subject]);
         store.__subjects[c.email.subject] = sub;
@@ -115,7 +126,7 @@
         if (ALL.indexOf('button below') < 0) E.push('hand-off line missing');
         if (/ONE QUESTION, ONE LINE BACK|MOVED HOME\?/.test(ALL)) E.push('old CTA copy still present');
         // 8 COPY HYGIENE
-        if (/[–—]/.test(ALL)) E.push('dash in copy');
+        if (badDash(ALL)) E.push('dash in copy');
         if (/\[[^\]]{0,40}\]/.test(ALL)) E.push('placeholder left');
         if (/\? bed/.test(ALL)) E.push('unknown bedroom count');
         if (/kia ora/i.test(ALL)) E.push('Kia ora used');
