@@ -84,9 +84,13 @@
         // TWO SOLD BLOCKS (14 Sep 2026). The checker calls the BUILDER'S soldBlocks so a change
         // to the copy cannot leave a stale assertion behind (failure shapes 11 and 14).
         const SB = V.soldBlocks(sub, bd.sold || { thisWeek: [], twoMonths: [] }, (opts.cap || 8));
-        if (ALL.indexOf(SB.weekHeading) < 0) E.push('missing heading: ' + SB.weekHeading);
+        // weekHeading is null since the weekly block was retired (20 Sep 2026). Assert it only
+        // when the builder still produces one, and assert it is ABSENT when it does not —
+        // both directions, per failure shape 15.
+        if (SB.weekHeading) { if (ALL.indexOf(SB.weekHeading) < 0) E.push('missing heading: ' + SB.weekHeading); }
+        else if (/SOLD THIS WEEK IN /.test(ALL)) E.push('retired weekly block still present in copy');
         if (ALL.indexOf(SB.recentHeading) < 0) E.push('missing heading: ' + SB.recentHeading);
-        SB.weekLines.forEach(l => { if (ALL.indexOf(l) < 0) E.push('week line missing: ' + l.slice(0, 30)); });
+        (SB.weekLines || []).forEach(l => { if (ALL.indexOf(l) < 0) E.push('week line missing: ' + l.slice(0, 30)); });
         SB.recentLines.forEach(l => { if (ALL.indexOf(l) < 0) E.push('recent line missing: ' + l.slice(0, 30)); });
         // every sold line that carries a date must show it, and no line may predate the window
         (bd.sold && bd.sold.twoMonths || []).forEach(s => {
