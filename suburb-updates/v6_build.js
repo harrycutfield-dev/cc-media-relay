@@ -95,15 +95,20 @@
   // *** WHEN THE OCR OR ANY FIGURE CHANGES, REWRITE THIS BANK WITH THE NEW FACTS. ***
   // Every variant must state the SAME verified numbers. Never let a variant drift from the data.
   const ECON_FACTS = { ocr: '2.75%', date: '2 September', bp: '25 basis point' };
+  // NEVER attribute a pause or a future OCR level to the Reserve Bank. The bank previously
+  // said it had "signalled a hold in October" - the RBNZ signalled no such thing. That was an
+  // economist's reading of the OCR track, and it went into all 34 emails as the Bank's own
+  // words. State only what the RBNZ published: the decision, the date, and the next review
+  // (28 October 2026). Harrison, 20 Sep 2026.
   const ECON_BANK = [
     ['The Reserve Bank lifted the OCR to 2.75% on 2 September.',
-     'A 25 basis point rise, with a hold signalled for October. Rates are moving because the economy is growing, and well priced homes are still meeting confident buyers.'],
+     'A 25 basis point rise, and the Reserve Bank says it is not on a preset course. Rates are moving because the economy is growing, and well priced homes are still meeting confident buyers.'],
     ['The OCR moved to 2.75% at the Reserve Bank review on 2 September.',
-     'That is a 25 basis point lift, and the Reserve Bank has signalled a hold in October. Rates move when the economy is growing, and well presented homes keep finding confident buyers.'],
+     'That is a 25 basis point lift, and the Reserve Bank has not ruled out a further rise this year. Rates move when the economy is growing, and well presented homes keep finding confident buyers.'],
     ['On 2 September the Reserve Bank took the OCR to 2.75%.',
-     'A 25 basis point increase, with October signalled as a hold. Rate movement of this kind reflects a growing economy, and buyers at our open homes are still committing.'],
+     'A 25 basis point increase, with the next review on 28 October. Rate movement of this kind reflects a growing economy, and buyers at our open homes are still committing.'],
     ['The Reserve Bank set the OCR at 2.75% on 2 September.',
-     'Up 25 basis points, and a hold is signalled for October. That shift reflects an economy that is growing, and well priced homes are still meeting confident buyers.']];
+     'Up 25 basis points, with the next review on 28 October. That shift reflects an economy that is growing, and well priced homes are still meeting confident buyers.']];
   // ITEM 4 (13 Sep 2026): the economy facts must be PULLED and DATED each run, never read from
   // a bank that can silently age. window.__ECONFACTS = {ocr, effective_date, bp, signal,
   // pulled_at, source}. econLines() REFUSES to emit if the facts are missing or were pulled
@@ -243,7 +248,10 @@
       const iL = (((window.__VARY || {}).week || 0) + sub.length) % poolL.length;
       const L = poolL[iL]; lensKey = L.k; lead = L.s();
     } else {
-      lead = sub + ' was quiet on settled sales ' + wpL + ', and the homes on the market here are getting steady buyer attention';
+      // "unconditional", NEVER "settled" (Harrison, 20 Sep 2026). These feeds are filtered to
+      // is_settled === false, so calling them settled is a false statement about legal status,
+      // not just loose wording. Shipped live in Belmont before it was caught.
+      lead = sub + ' was quiet on unconditional sales ' + wpL + ', and the homes on the market here are getting steady buyer attention';
     }
     introFor.lastLens = lensKey;
     // The pace sentence must AGREE with the median, never contradict it.
@@ -457,7 +465,11 @@
     'Dairy Flat': ['Albany'], 'Albany Heights': ['Albany'], 'Oteha': ['Albany'] };
 
   const EVENT_MAX = 3;            // how many upcoming events to show; no DATE horizon
+  const LOCAL_ACTIVE = () => (window.V6 && window.V6.LOCAL) || LOCAL;
   function communityFor(sub) {
+    if (LOCAL_ACTIVE().__builtin) throw new Error(
+      'COMMUNITY BLOCKED: V6.LOCAL is still the built-in 4 Sep table. Set V6.LOCAL to this '
+      + "run's gated community data (v7_community_gate.js must pass first).");
     const V = window.__VARY || {};
     const today = V.today || new Date().toISOString().slice(0, 10);
     const led = ((V.ledger || {})[sub] || {}).community || {};
@@ -506,7 +518,15 @@
     'Glenfield', 'Greenhithe', 'Hillcrest']);
   const communityHeading = sub => 'AROUND ' + sub.toUpperCase() + (DATED.has(sub) ? ' THIS MONTH' : '');
 
+  // M15 (20 Sep 2026): this hard-coded table was verified 4 Sep and still carries live-status
+  // claims with no status_until ("$450,000 in local grants IS OPEN", "returns Sunday 27
+  // September") — the exact defect class that shipped a closed consultation to 7 suburbs.
+  // It is a TRAP: it only applies when a build forgets `V6.LOCAL = <this run's community>`,
+  // and then it ships silently. It is now marked built-in and communityFor() REFUSES to use
+  // it. Supply fresh, gated community data every run or the build fails. Never delete the
+  // marker to 'make it work'.
   const LOCAL = {
+    __builtin: true,
     'Torbay': [SUB.torbay, HB.market, HB.grants], 'Long Bay': [HB.market, HB.park, HB.grants],
     'Waiake': [SUB.waiake, HB.market, HB.grants], 'Browns Bay': [HB.centre, HB.freyberg, HB.grants],
     'Rothesay Bay': [SUB.rothesayBay, HB.centre, HB.grants], 'Murrays Bay': [SUB.murraysBay, HB.mairangi, HB.grants],
