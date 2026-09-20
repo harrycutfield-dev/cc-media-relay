@@ -81,6 +81,15 @@
       h + ' sold ' + wp + '.',
       'Homes sold ' + wp + ': ' + c + '.',
       'Sales ' + wp + ': ' + h + '.'], VOPTS(sub, 't1'));
+    if (d == null) {
+      // No sales in the window, so there is no median to state. Say that plainly rather than
+      // rotating a sentence with a null in it.
+      return [l1, pick([
+        'No recent sales recorded in ' + sub + ' to set a pace.',
+        sub + ' has had no qualifying sales in the period.',
+        'No sales to measure in ' + sub + ' over recent weeks.',
+        'There is no recent sale pace to report for ' + sub + '.'], VOPTS(sub, 't2'))];
+    }
     const l2 = pick([
       'Median time to sell in ' + sub + ': ' + d + ' days.',
       sub + ' is taking a median of ' + d + ' days to sell.',
@@ -654,7 +663,11 @@
     const replyP = mk(REPLY_BLOCKS()), prefsP = mk(PREFS_BLOCKS());
     const stat = clone(M.stat);
     stat.contents.textOne.blocks = stat.contents.textOne.blocks.map((b, i) => {
-      const nb = J(b); nb.text = i === 0 ? 'MEDIAN TIME TO SELL' : bd.days + ' Days';
+      // A suburb with no qualifying sales has NO median. Printing 'null Days' on the stat
+      // card is worse than printing nothing (M13, 20 Sep 2026).
+      const nb = J(b); nb.text = i === 0
+        ? (bd.days == null ? 'RECENT SALES' : 'MEDIAN TIME TO SELL')
+        : (bd.days == null ? 'None recorded' : bd.days + ' Days');
       nb.inlineStyleRanges = (b.inlineStyleRanges || []).map(r => ({ ...r, offset: 0, length: nb.text.length })); return nb; });
     const pre = clone(M.pre);
     const vl = pre.contents.textOne.blocks.slice(-1)[0];
