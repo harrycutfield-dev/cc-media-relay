@@ -82,13 +82,24 @@
       'Homes sold ' + wp + ': ' + c + '.',
       'Sales ' + wp + ': ' + h + '.'], VOPTS(sub, 't1'));
     if (d == null) {
-      // No sales in the window, so there is no median to state. Say that plainly rather than
-      // rotating a sentence with a null in it.
-      return [l1, pick([
-        'No recent sales recorded in ' + sub + ' to set a pace.',
-        sub + ' has had no qualifying sales in the period.',
-        'No sales to measure in ' + sub + ' over recent weeks.',
-        'There is no recent sale pace to report for ' + sub + '.'], VOPTS(sub, 't2'))];
+      // M16 (21 Sep 2026): d is null whenever the median sample is below the floor (medianN < 5),
+      // which is NOT the same as no sales. The old bank denied the SALES ("no recent sales
+      // recorded", "no qualifying sales in the period") and so contradicted line 1 directly
+      // above it: Campbells Bay read "Sold over recent weeks: 1 home." then "No recent sales
+      // recorded in Campbells Bay to set a pace.", two lines under an intro naming a $1,357,000
+      // result. The wording is now chosen from the ACTUAL sale count, never from the median
+      // being null: with sales we deny only the MEDIAN, with none we deny the sales. Four
+      // variants either side so the rotation still works.
+      const bank = c > 0
+        ? ['Too few sales in ' + sub + ' to set a reliable median.',
+           'Not enough sales in ' + sub + ' yet for a reliable median.',
+           sub + ' has too few sales to put a reliable median on.',
+           'A reliable median needs more sales than ' + sub + ' has had.']
+        : ['No sales recorded in ' + sub + ' ' + wp + '.',
+           'There were no sales recorded in ' + sub + ' ' + wp + '.',
+           sub + ' had no recorded sales ' + wp + '.',
+           'No recorded sales in ' + sub + ' ' + wp + '.'];
+      return [l1, pick(bank, VOPTS(sub, 't2'))];
     }
     const l2 = pick([
       'Median time to sell in ' + sub + ': ' + d + ' days.',
@@ -489,14 +500,22 @@
 
   const EVENT_MAX = 3;            // how many upcoming events to show; no DATE horizon
   const LOCAL_ACTIVE = () => (window.V6 && window.V6.LOCAL) || LOCAL;
+  // M16 (21 Sep 2026): the M15 guard was VACUOUS. It tested LOCAL_ACTIVE().__builtin (the
+  // override) but every actual READ below still reached into the built-in `LOCAL` const, so
+  // setting `V6.LOCAL = <this run's community>` satisfied the guard and changed nothing that
+  // rendered. All 34 live emails shipped the stale hardcoded 4 Sep tables while the run's
+  // community.json sat unused. EVERY read of the community table now goes through
+  // LOCAL_ACTIVE(); read it once per call so the guard and the data can never diverge again.
+  // Do not reintroduce a bare `LOCAL[...]` lookup inside this function.
   function communityFor(sub) {
-    if (LOCAL_ACTIVE().__builtin) throw new Error(
+    const TBL = LOCAL_ACTIVE();
+    if (TBL.__builtin) throw new Error(
       'COMMUNITY BLOCKED: V6.LOCAL is still the built-in 4 Sep table. Set V6.LOCAL to this '
       + "run's gated community data (v7_community_gate.js must pass first).");
     const V = window.__VARY || {};
     const today = V.today || new Date().toISOString().slice(0, 10);
     const led = ((V.ledger || {})[sub] || {}).community || {};
-    const all = (LOCAL[sub] || []);
+    const all = (TBL[sub] || []);
     const fresh = it => {
       if (!it.verified_on) return true;
       return (new Date(today) - new Date(it.verified_on)) / 864e5 <= VERIFY_DAYS;
@@ -512,7 +531,7 @@
     let nearbyFrom = null, nearby = [];
     if (!events.length) {
       for (const src of (NEARBY_OF[sub] || [])) {
-        const hits = (LOCAL[src] || [])
+        const hits = (TBL[src] || [])       // M16: was LOCAL[src] (see note above)
           .filter(it => it.on && it.on >= today && fresh(it))
           .sort((a, b) => String(a.on).localeCompare(String(b.on)));
         if (hits.length) { nearbyFrom = src; nearby = hits.slice(0, EVENT_MAX); break; }
