@@ -68,19 +68,29 @@ window.SC = (function () {
   // Resolve by NAME so the pipeline cannot silently start writing to the wrong record if
   // an id is ever stale. Refuses on 0 matches and on more than 1, because guessing which
   // of two same-named emails is "the" one is exactly how you overwrite the wrong thing.
-  function resolveIssueEmail(name) {
-    return G('/communications?limit=500').then(function (list) {
+  // Harrison, 28 Aug 2026: the email is renamed "The Signature Collection volume <n>" each
+  // issue. So this matches on the PREFIX, not the exact name, or every run after the first
+  // rename would find zero and throw. It still refuses to guess: zero is a stop, and so is
+  // more than one, which is what protects a recycled email from being overwritten by a run
+  // that found the wrong record.
+  var ISSUE_EMAIL_PREFIX = 'The Signature Collection';
+
+  function resolveIssueEmail(prefix) {
+    var want = String(prefix || ISSUE_EMAIL_PREFIX).trim().toLowerCase();
+    return G('/communications?limit=1000').then(function (list) {
       var rows = Array.isArray(list) ? list : (list.data || []);
       var hits = rows.filter(function (c) {
-        return String(c.name || '').trim() === name && !c.archived;
+        var n = String(c.name || '').trim().toLowerCase();
+        return (n === want || n.indexOf(want + ' volume ') === 0) && !c.archived;
       });
       if (hits.length === 0) {
-        throw new Error('no communication named "' + name + '". This run updates an ' +
-          'existing email and will not create one. Create it once by hand, or restore it.');
+        throw new Error('no communication whose name starts with "' + prefix + '". This ' +
+          'run updates an existing email and will not create one. Create it once by hand, ' +
+          'or restore it.');
       }
       if (hits.length > 1) {
-        throw new Error(hits.length + ' communications named "' + name + '" (ids ' +
-          hits.map(function (h) { return h.id; }).join(', ') +
+        throw new Error(hits.length + ' communications match "' + prefix + '" (ids ' +
+          hits.map(function (h) { return h.id + ' ' + h.name; }).join('; ') +
           '). Refusing to guess which one to overwrite.');
       }
       return hits[0].id;
