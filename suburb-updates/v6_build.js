@@ -46,13 +46,17 @@
   // prior week, 10 of 34 preheaders, and the media paragraph + transition were CONSTANT for all
   // 34 suburbs every single week. A deterministic generator over slow-moving inputs always
   // converges on repetition. `prev` is last week's actual string for THIS suburb and block.
+  // opts.banned (25 Sep 2026) is EVERY string already used in any recent week for this block, not
+  // just last week's. A bank of N variants cannot survive N prior weeks on `prev` alone: Rosedale
+  // had BOTH of its two subject variants used (4 Sep and 12 Sep) and the walk returned a repeat.
   function pick(bank, opts) {
     opts = opts || {};
+    const banned = opts.banned || (opts.prev ? [opts.prev] : []);
     const seed = (opts.week || 0) + String(opts.seed || '').length;
     const start = ((seed % bank.length) + bank.length) % bank.length;
     for (let k = 0; k < bank.length; k++) {
       const c = bank[(start + k) % bank.length];
-      if (c !== opts.prev) return c;
+      if (banned.indexOf(c) < 0) return c;
     }
     return bank[start];
   }
@@ -61,14 +65,82 @@
 
   // Preheader: was a pure function of count + window, so it repeated whenever the market was
   // quiet. Same facts, four phrasings.
-  function preheaderFor(sub, bd) {
-    const c = bd.lines.length, wp = winPhrase(bd.label), h = c + ' home' + (c === 1 ? '' : 's');
-    return pick([
-      h + ' sold in ' + sub + ' ' + wp + ', plus what the latest numbers mean for your value.',
-      'The ' + sub + ' results ' + wp + ', and what they mean for your value.',
-      h + ' sold in ' + sub + ' ' + wp + '. Here is what that says about your place.',
-      'What sold in ' + sub + ' ' + wp + ', and what it means for your home.'],
-      VOPTS(sub, 'pre'));
+  //
+  // REWRITTEN 25 Sep 2026, same sitting as subjectFor. The preheader is the inbox preview line
+  // sitting directly beside the subject, so a mismatch is visible BEFORE anyone opens. The old
+  // version was subject-blind and count-led, which produced two live defects the moment the
+  // subjects changed:
+  //   Waiake   preview read "0 homes sold in Waiake over recent weeks." — a zero count as a
+  //            selling line, in the inbox, for a suburb with nothing to report.
+  //   Torbay   subject "Homes in Torbay are taking 61 days to sell" over a preheader reading
+  //            "8 homes sold in Torbay over recent weeks." — same topic, no added information.
+  //
+  // The preheader now COMPLEMENTS the subject: it is chosen from the SAME bank classifier the
+  // subject used (`subjectBank`), and it carries the figure the subject does NOT.
+  //   subject led on a MEDIAN (FAST / SLOW)  -> preheader leads on the SALES COUNT
+  //   subject led on a PRICE                 -> preheader leads on the MEDIAN, or on breadth
+  //                                             when there is no reliable median
+  //   subject led on the COUNT (INTERPRET)   -> preheader carries the MEDIAN
+  //   subject led on the COUNT (NOMEDIAN)    -> preheader carries NO figure (there is no
+  //                                             reliable median to quote, and the count is taken)
+  //   NOSALES                                -> no count, no median, ever. Local news and the
+  //                                             wider market, which every email does carry.
+  //
+  // ONE CLASSIFIER, TWO CALLERS. subjectFor and preheaderFor both read `subjectBank()`. They
+  // cannot drift into contradicting each other, because the pairing is not re-derived here —
+  // this is the M16 lesson (a guard that reads a different expression from the code it guards is
+  // not a guard) applied before it could bite.
+  //
+  // ZERO-COUNT GUARD: a reliable median needs medianN >= 5, but medianN counts in-window sales
+  // INCLUDING suppressed ones, so `bd.lines.length` can be 0 while `bd.days` is a real number.
+  // That combination would have put "0 recent sales" in the preview of a FAST or SLOW suburb.
+  // Every count-led branch is therefore gated on cnt > 0 and falls through to the no-figure
+  // wording, and a final hard filter drops any variant containing a zero count or a null figure.
+  function preheaderFor(sub, bd, opts) {
+    opts = opts || {};
+    const cl = subjectBank(sub, bd);
+    const cnt = cl.cnt, days = cl.days;
+    const Word = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight'][cnt] || String(cnt);
+    const word = Word.toLowerCase();
+    const one = cnt === 1;
+    // no figure at all: safe under every branch, used as the fallback everywhere
+    const NOFIG = ['The full ' + sub + ' figures, plus what is on the market right now.',
+                   'What the numbers mean for your ' + sub + ' home, plus local news.',
+                   'The ' + sub + ' numbers in full, plus your local update.'];
+    // count led: never reached with cnt === 0
+    const COUNT = one
+      ? ['One recent sale in ' + sub + ', plus what it means for your value.',
+         'The one recent ' + sub + ' sale in full, plus local news.',
+         'What the one home sold for in ' + sub + ', plus your local update.']
+      : [Word + ' recent sales in ' + sub + ', plus what they mean for your value.',
+         'The full list of ' + word + ' recent ' + sub + ' sales, plus local news.',
+         'What ' + word + ' homes sold for in ' + sub + ', plus your local update.'];
+    // median led: never reached with days == null
+    const MED = ['A median of ' + days + ' days in ' + sub + ', plus every recent result.',
+                 'The ' + sub + ' median sits at ' + days + ' days, plus the full list of sales.',
+                 'A ' + days + ' day median in ' + sub + ', plus what is on the market now.'];
+    let bank;
+    if (cl.bank === 'NOSALES') {
+      bank = ['Local ' + sub + ' news, plus where the market is heading for your place.',
+              'What the wider market means for your ' + sub + ' home, plus local news.',
+              'Your ' + sub + ' update: local news, the market, and what your place is worth.'];
+    } else if (cl.bank === 'FAST' || cl.bank === 'SLOW') {
+      bank = cnt > 0 ? COUNT : NOFIG;                 // subject already carries the median
+    } else if (cl.bank === 'PRICE') {
+      bank = days != null ? MED : NOFIG;              // subject already carries the price
+    } else if (cl.bank === 'INTERPRET') {
+      bank = MED;                                     // subject already carries the count
+    } else {                                          // NOMEDIAN: count taken, no median to quote
+      bank = NOFIG;
+    }
+    // HARD GATES, applied to the bank so a failing variant can never be selected. Same reasoning
+    // as subjectFor: filter before choosing, and COUNT the suburb rather than merely detecting it.
+    const once = s => s.split(sub).length - 1 === 1;
+    const clean = s => !/\b0 (home|homes|sale|sales|day|days)\b/.test(s)
+      && !/\b(null|undefined|NaN)\b/.test(s) && !DASHES.test(s);
+    const safe = bank.filter(s => s.length <= PRE_MAX && once(s) && clean(s));
+    const pool = safe.length ? safe : NOFIG.filter(s => s.length <= PRE_MAX && once(s) && clean(s));
+    return pick(pool, Object.assign(VOPTS(sub, 'pre'), opts.pre || {}));
   }
 
   // The 30 second block: same two facts, rotated phrasing. v6_check calls THIS function rather
@@ -122,13 +194,13 @@
   // (28 October 2026). Harrison, 20 Sep 2026.
   const ECON_BANK = [
     ['The Reserve Bank lifted the OCR to 2.75% on 2 September.',
-     'A 25 basis point rise, and the Reserve Bank says it is not on a preset course. Rates are moving because the economy is growing, and well priced homes are still meeting confident buyers.'],
+     'A 25 basis point rise, with the next review on 28 October. The Reserve Bank said it raised the OCR to return inflation to 2%, after inflation reached 4.1% in the June quarter.'],
     ['The OCR moved to 2.75% at the Reserve Bank review on 2 September.',
-     'That is a 25 basis point lift, and the Reserve Bank has not ruled out a further rise this year. Rates move when the economy is growing, and well presented homes keep finding confident buyers.'],
+     'That is a 25 basis point lift, and the next review is on 28 October. The Reserve Bank said the increase is to bring inflation back to 2%, following 4.1% inflation in the June quarter.'],
     ['On 2 September the Reserve Bank took the OCR to 2.75%.',
-     'A 25 basis point increase, with the next review on 28 October. Rate movement of this kind reflects a growing economy, and buyers at our open homes are still committing.'],
+     'A 25 basis point increase. Inflation was 4.1% in the June quarter, and the Reserve Bank said it lifted the OCR to return inflation to 2%. The next review is on 28 October.'],
     ['The Reserve Bank set the OCR at 2.75% on 2 September.',
-     'Up 25 basis points, with the next review on 28 October. That shift reflects an economy that is growing, and well priced homes are still meeting confident buyers.']];
+     'Up 25 basis points, with the next review on 28 October. The Reserve Bank said it raised the OCR so that inflation returns to 2%, after inflation reached 4.1% in the June quarter.']];
   // ITEM 4 (13 Sep 2026): the economy facts must be PULLED and DATED each run, never read from
   // a bank that can silently age. window.__ECONFACTS = {ocr, effective_date, bp, signal,
   // pulled_at, source}. econLines() REFUSES to emit if the facts are missing or were pulled
@@ -311,56 +383,130 @@
   // Generated per suburb. Lived here unasserted until 11 Sep 2026: v6_check had no subject
   // group at all, so a wrong subject would have shipped silently. Pulled out so the checker
   // can call the SAME function rather than re-deriving the rule (see failure shape 11).
-  // A PHRASING BANK, not a pure function of sale count (failure shape 16, 12 Sep 2026).
-  // The old one-line formula made the subject a pure function of the sale count, so a suburb with
-  // the same count two weeks running got a BYTE-IDENTICAL subject: 14 of 34 repeated on 12 Sep.
-  // It also read "One X sale and what THEY MEAN for you" — plural verb on a singular sale.
-  // opts.prev = the subject actually sent last week. The bank rotates by week and then walks
-  // forward until it finds one that is not last week's, so a repeat is structurally impossible.
+  //
+  // REWRITTEN 25 Sep 2026. Harrison: the subjects were "accurate but flat and have no hook" —
+  // 13 of 34 were a bare count plus median ("Eight Milford sales, and a median of 47 days") and
+  // 5 said nothing at all ("The Torbay numbers over recent weeks"). The subject now leads with
+  // the single most striking figure THAT SUBURB'S OWN DATA supports. Every figure is read back
+  // out of `bd`, which comes straight from dataset.json, so a subject can never quote a number
+  // the email itself does not also show, and never a number from another suburb.
+  //
+  // BANK PRIORITY — first applicable bank wins:
+  //   1 FAST      bd.days != null && bd.days <= FAST_MAX (40)
+  //   2 PRICE     the suburb has a STANDOUT top sale (see below)
+  //   3 SLOW      bd.days != null && bd.days >= SLOW_MIN (60), framed neutrally, never negatively
+  //   4 INTERPRET bd.days != null (41 to 59) — kept from the 12 Sep bank, it already works
+  //   5 NOMEDIAN  sales exist but the median sample is below the floor (bd.days == null)
+  //   6 NOSALES   no shipped sales at all
+  //
+  // STANDOUT is deliberately NOT "a top sale exists". Every suburb with a sale has a highest
+  // sale, so that reading puts 27 of 34 suburbs in bank 2 and simply swaps one monotony for
+  // another. A sale is standout when it is the suburb's ONLY settled sale (it is then the whole
+  // story), or when it is at least STANDOUT_X times the median of the OTHER shipped prices.
+  // STANDOUT_X is a dial: raise it to make price subjects rarer, lower it to make them common.
+  // Prices are REINZ SETTLED sales and therefore public, so quoting one is publishable.
+  //
+  // bd.days is already null whenever medianN < 5 (the caller applies the floor, 20 Sep 2026), so
+  // no bank here can quote an unreliable median: banks 1, 3 and 4 are all gated on days != null.
+  // Singular and plural are separate strings, never an "(s)" — a one sale suburb must read
+  // "it sold", never "they".
+  // opts.prev = the subject actually sent last week. opts.banned = every subject already used in
+  // any recent week. The bank rotates by week and then walks forward until it finds one that is
+  // in neither, so a repeat is structurally impossible.
+  // opts.why is SET by this function (out parameter) so the caller can print which bank fired
+  // and on what figure, for Harrison's review list.
+  const FAST_MAX = 40, SLOW_MIN = 60, STANDOUT_X = 2, SUBJ_MAX = 78, PRE_MAX = 110;
+  const DASHES = /[-–—]/;
+  // prices as shipped, highest first, parsed out of the rendered sold lines so the subject can
+  // only ever quote a figure that is actually printed in the email
+  function shippedPrices(lines) {
+    return (lines || []).map(l => {
+      const m = /\$([\d,]+)/.exec(String(l));
+      return m ? Number(m[1].replace(/,/g, '')) : null;
+    }).filter(p => p != null && p > 0).sort((a, b) => b - a);
+  }
+  const medOf = a => !a.length ? null
+    : (a.length % 2 ? a[(a.length - 1) / 2] : (a[a.length / 2 - 1] + a[a.length / 2]) / 2);
+  // THE classifier. subjectFor AND preheaderFor both read this, so the preheader can pair with
+  // the subject instead of re-deriving the rule and drifting out of step with it.
+  function subjectBank(sub, bd) {
+    const cnt = (bd.lines || []).length;
+    const days = bd.days;                       // null whenever medianN < 5
+    const prices = shippedPrices(bd.lines);
+    const top = prices.length ? prices[0] : null;
+    const medRest = medOf(prices.slice(1));
+    const standout = top != null && (prices.length === 1 || (medRest != null && top >= STANDOUT_X * medRest));
+    const bank = (days != null && days <= FAST_MAX) ? 'FAST'
+      : standout ? 'PRICE'
+      : (days != null && days >= SLOW_MIN) ? 'SLOW'
+      : days != null ? 'INTERPRET'
+      : cnt > 0 ? 'NOMEDIAN'
+      : 'NOSALES';
+    return { bank, cnt, days, top, standout };
+  }
   function subjectFor(sub, bd, opts) {
     opts = opts || {};
-    const cnt = bd.lines.length;
-    const fast = bd.lines.some(l => /, 1 day\)/.test(l));
+    const cl = subjectBank(sub, bd);
+    const cnt = cl.cnt, days = cl.days, top = cl.top, standout = cl.standout;
+    const one = cnt === 1;
     const word = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight'][cnt] || String(cnt);
-    const wp = winPhrase(bd.label);          // never "this recent weeks"
-    const days = bd.days;
-    // TONE (Harrison, 12 Sep 2026): "entice the client to open and read the email without being
-    // too salesy." So: concrete and specific, a real curiosity gap, personal relevance. NEVER
-    // hype words, urgency, exclamation marks, ALL CAPS, or a pitch. The subject states what is
-    // inside; it does not sell it. Always print the suburb->subject list for Harrison to review.
+    // TONE (Harrison, 12 Sep 2026, restated 25 Sep): concrete, curious, personally relevant.
+    // NEVER hype, urgency, exclamation marks, ALL CAPS or a pitch. The subject states the most
+    // interesting true thing inside; it does not sell it.
     let bank;
-    if (fast) bank = [
-      'A ' + sub + ' home sold in a single day',
-      'One day on the market in ' + sub,
-      'Sold in one day in ' + sub + '. Here is what that took',
-      'What a one day sale says about ' + sub + ' right now'];
-    else if (cnt === 0) bank = [                               // zero-sale week: was a latent bug
-      'What is on the market in ' + sub + ' right now',        // (empty word -> leading space)
-      'Your ' + sub + ' market update',
-      'The ' + sub + ' update ' + wp,
-      sub + ': what buyers are looking at right now'];
-    else if (cnt === 1) bank = [
-      'One ' + sub + ' sale ' + wp + ', and what it sold for',
-      'One ' + sub + ' sale, and a median of ' + days + ' days',
-      'What the latest ' + sub + ' sale tells us',
-      'The ' + sub + ' result ' + wp];
-    else bank = [
-      word + ' homes sold in ' + sub + ' ' + wp,
-      'What ' + word.toLowerCase() + ' ' + sub + ' sales say about your street',
-      'The ' + sub + ' numbers ' + wp,
-      word + ' ' + sub + ' sales, and a median of ' + days + ' days'];
-
-    // A suppressed median (n below the floor) must never reach the SUBJECT. The banks above
-    // offer "and a median of <days> days" variants chosen on sale COUNT, not on whether a
-    // median exists — with days == null they rendered "a median of null days". (20 Sep 2026)
-    if (days == null) {
-      const safe = bank.filter(b => !/median of/i.test(b));
-      bank = safe.length ? safe : ['Your ' + sub + ' market update'];
+    if (days != null && days <= FAST_MAX) {
+      opts.why = 'FAST median ' + days + ' days';
+      bank = ['Homes in ' + sub + ' are selling in ' + days + ' days',
+              days + ' days is the current pace in ' + sub,
+              'What a ' + days + ' day median says about ' + sub];
+    } else if (standout) {
+      opts.why = 'PRICE top settled sale ' + money(top);
+      bank = [sub + '’s top recent sale settled at ' + money(top),
+              'A ' + sub + ' home just settled at ' + money(top),
+              money(top) + ' was the top recent result in ' + sub];
+    } else if (days != null && days >= SLOW_MIN) {
+      opts.why = 'SLOW median ' + days + ' days';
+      bank = ['Homes in ' + sub + ' are taking ' + days + ' days to sell',
+              'What a ' + days + ' day median means for your ' + sub + ' home',
+              days + ' days is the current median in ' + sub];
+    } else if (days != null) {
+      opts.why = 'INTERPRET median ' + days + ' days, ' + cnt + ' sales';
+      bank = one
+        ? ['What one ' + sub + ' sale says about your street',
+           'One ' + sub + ' sale, and what it means for your place',
+           'What one recent ' + sub + ' sale says about pricing']
+        : ['What ' + word.toLowerCase() + ' ' + sub + ' sales say about your street',
+           word + ' ' + sub + ' sales, and what they mean for your place',
+           'What ' + word.toLowerCase() + ' recent ' + sub + ' sales say about pricing'];
+    } else if (cnt > 0) {
+      opts.why = 'NOMEDIAN ' + cnt + ' sales, median sample below the floor';
+      bank = one
+        ? ['What the latest ' + sub + ' sale tells us',
+           'One recent ' + sub + ' sale, and what it sold for',
+           'The latest ' + sub + ' sale, and what it sold for']
+        : ['What the latest ' + sub + ' sales tell us',
+           word + ' recent ' + sub + ' sales, and what they sold for',
+           'What ' + word.toLowerCase() + ' recent ' + sub + ' sales sold for'];
+    } else {
+      opts.why = 'NOSALES';
+      // THREE variants, not two: on 25 Sep Rosedale had BOTH of the original two in its banned
+      // list (used 4 Sep and 12 Sep), so the anti-repeat walk ran out of bank and returned a
+      // repeat. A bank of two cannot survive two prior weeks. Keep every bank at three.
+      bank = ['What is on the market in ' + sub + ' right now',
+              sub + ': what buyers are looking at right now',
+              'What buyers are watching in ' + sub + ' right now'];
     }
+    // HARD GATES, applied to the bank itself so a failing variant can never be selected:
+    // length, no dash of any kind, and the suburb named EXACTLY ONCE. A presence-only check
+    // passed "this Albany Heights" in four subjects on 18 Sep — count, do not merely detect.
+    const once = s => s.split(sub).length - 1 === 1;
+    const safe = bank.filter(s => s.length <= SUBJ_MAX && !DASHES.test(s) && once(s));
+    bank = safe.length ? safe : ['Your ' + sub + ' market update'];
+    const banned = opts.banned || (opts.prev ? [opts.prev] : []);
     const start = ((opts.week || 0) + sub.length) % bank.length;
     for (let k = 0; k < bank.length; k++) {
       const c = bank[(start + k) % bank.length];
-      if (c !== opts.prev) return c;
+      if (banned.indexOf(c) < 0) return c;
     }
     return bank[start];
   }
@@ -803,6 +949,6 @@
   window.V6 = { API, AGID, APPRAISAL, SENTINEL, PREFS, MASTER, fold, J, normImgs, clone, blk,
     winPhrase, introFor, LOCAL, SUB, DATED, communityHeading, communityFor, soldBlocks,
     soldLine, fmtDate, NEARBY_OF, econLines,
-    econFactsOk, ECON_BANK, subjectFor, preheaderFor, thirtyLines, pick, pickReinzLocation,
+    econFactsOk, ECON_BANK, subjectFor, subjectBank, preheaderFor, thirtyLines, pick, pickReinzLocation,
     parts, assemble, COST, TARGET, estimate, REPLY_BLOCKS, PREFS_BLOCKS };
 })();
